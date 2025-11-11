@@ -1,6 +1,6 @@
 [build]
-  command = "cd client && pnpm install && pnpm build"
-  publish = "client/dist"
+  command = "pnpm install && pnpm build"
+  publish = "dist/public"
 
 [[redirects]]
   from = "/*"
@@ -9,4 +9,4 @@
 
 [build.environment]
   NODE_VERSION = "22.13.0"
-  PNPM_VERSION = "9"
+  PNPM_VERSION = "10"
