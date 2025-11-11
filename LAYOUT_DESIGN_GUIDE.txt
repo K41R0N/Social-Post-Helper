@@ -1,0 +1,446 @@
+================================================================================
+CAROUSEL LAYOUT DESIGN METHODOLOGY
+================================================================================
+
+This guide explains how to design new layout types for the Instagram carousel
+post generator. Follow these principles to create layouts that are compatible
+with the existing system.
+
+================================================================================
+CORE PRINCIPLES
+================================================================================
+
+1. FIELD FLEXIBILITY
+   - Not all fields need to be used in every layout
+   - Design layouts that make sense with the available fields
+   - It's okay to ignore fields that don't fit the design concept
+
+2. VISUAL HIERARCHY
+   - Title should be the most prominent element (usually largest font)
+   - Body text should be readable (typically 24-40px font size)
+   - Accent colors should draw attention to key elements
+
+3. RESPONSIVE DESIGN
+   - All layouts render at 1080x1080px (Instagram square format)
+   - Use Tailwind spacing units (p-24, gap-6, etc.)
+   - Test with varying text lengths to ensure no overflow
+
+4. FONT SYSTEM
+   - headingFont: Used for titles and headers (bold, impactful)
+   - bodyFont: Used for main content (readable, clean)
+   - accentFont: Used for decorative elements (stylistic, unique)
+
+5. COLOR SYSTEM
+   - background_color: Main slide background
+   - font_color: Primary text color
+   - accent_color: Highlight color for emphasis
+
+================================================================================
+AVAILABLE FIELDS
+================================================================================
+
+Every slide has access to these fields (all optional):
+
+- slide_number: Integer (1-N)
+- layout_type: String (your layout identifier, use snake_case)
+- background_color: Hex color (e.g., "#ffffff")
+- font_color: Hex color (e.g., "#000000")
+- accent_color: Hex color (e.g., "#3b82f6")
+- title: String (main heading)
+- body_text: String (supports \n line breaks and <br> tags)
+- subtitle: String (secondary text)
+- quote: String (for testimonials or quotes)
+- image_url: String (URL to image asset)
+
+Field Usage Guidelines:
+- title: Almost always used (primary heading)
+- body_text: Very common (main content)
+- subtitle: Optional (use for secondary info)
+- quote: Specific use cases (testimonials, quotes)
+- image_url: Optional (for image-based layouts)
+
+================================================================================
+LAYOUT STRUCTURE TEMPLATE
+================================================================================
+
+function YourLayoutName({ slide }: { slide: SlideData }) {
+  // 1. Get font settings
+  const fontSettings = getFontSettings();
+  const headingFont = fontSettings.headingFont;
+  const bodyFont = fontSettings.bodyFont;
+  const accentFont = fontSettings.accentFont;
+
+  // 2. Parse body text if needed (for line breaks)
+  const parseBodyText = (text: string): string => {
+    if (!text) return '';
+    return text
+      .replace(/<br\s*\/?>\s*<br\s*\/?>/gi, '\n\n')
+      .replace(/<br\s*\/?>/gi, '\n');
+  };
+
+  // 3. Return JSX structure
+  return (
+    <div
+      className="w-full h-full flex items-center justify-center p-24"
+      style={{ backgroundColor: slide.background_color }}
+    >
+      {/* Your layout content here */}
+      <div className="max-w-4xl w-full">
+        <h2
+          style={{
+            fontFamily: accentFont,
+            fontSize: '70px',
+            color: slide.font_color,
+            fontWeight: 500,
+            lineHeight: '1.1',
+          }}
+        >
+          {slide.title}
+        </h2>
+
+        <p
+          className="whitespace-pre-wrap"
+          style={{
+            fontFamily: bodyFont,
+            fontSize: '32px',
+            color: slide.font_color,
+            fontWeight: 400,
+            lineHeight: '1.5',
+          }}
+        >
+          {parseBodyText(slide.body_text || '')}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+================================================================================
+DESIGN CONSIDERATIONS
+================================================================================
+
+1. SPACING
+   - Use consistent padding (p-24 is standard for outer container)
+   - Use gap utilities for spacing between elements (gap-6, gap-8)
+   - Leave breathing room around text (don't crowd the edges)
+
+2. TYPOGRAPHY
+   - Title: 60-80px (large, bold)
+   - Body: 28-40px (readable)
+   - Subtitle: 24-32px (smaller than body)
+   - Use lineHeight: '1.1' for titles, '1.5' for body text
+
+3. ALIGNMENT
+   - items-center justify-center: Centered layouts
+   - items-start: Top-aligned layouts
+   - flex-col: Vertical stacking
+   - grid: Grid-based layouts
+
+4. LINE BREAKS
+   - Always add className="whitespace-pre-wrap" to body text elements
+   - Use parseBodyText() helper to convert <br> tags to \n
+   - This allows natural Enter key line breaks to work
+
+5. SPECIAL CASES
+   - List Layout: Split body_text by \n or | to create items
+   - Quote Layout: Use quote field with special styling
+   - Image Layout: Use image_url with proper positioning
+
+================================================================================
+LAYOUT TYPES REFERENCE
+================================================================================
+
+Current layouts and their primary fields:
+
+1. dictionary_entry
+   - title (word), body_text (definition), subtitle (pronunciation)
+
+2. minimalist_focus
+   - title (main message), body_text (supporting text)
+
+3. bold_callout
+   - title (big statement)
+
+4. header_body
+   - title (header), body_text (content)
+
+5. quote_highlight
+   - quote (main quote), subtitle (attribution)
+
+6. list_layout
+   - title (list heading), body_text (items split by \n or |)
+
+7. stat_showcase
+   - title (statistic), body_text (context)
+
+8. split_content
+   - title (heading), body_text (left), subtitle (right)
+
+9. image_overlay
+   - image_url (background), title (overlay text)
+
+10. two_part_vertical
+    - title (top), body_text (bottom)
+
+================================================================================
+JSON PROMPT TEMPLATE FOR AI-ASSISTED LAYOUT DESIGN
+================================================================================
+
+Use this JSON structure when providing screenshots or design inspiration
+to an AI agent for creating new layouts:
+
+{
+  "task": "design_new_carousel_layout",
+  "layout_name": "your_layout_name_in_snake_case",
+  "design_inspiration": {
+    "images": [
+      "Attach screenshots or describe the visual style you want"
+    ],
+    "description": "Describe the overall aesthetic and purpose of this layout",
+    "target_use_case": "What type of content is this layout best for?"
+  },
+  "field_usage": {
+    "title": {
+      "required": true,
+      "usage": "How should the title be displayed?",
+      "styling": "Font size, weight, position, etc."
+    },
+    "body_text": {
+      "required": true,
+      "usage": "How should body text be formatted?",
+      "styling": "Font size, alignment, line breaks handling"
+    },
+    "subtitle": {
+      "required": false,
+      "usage": "Optional secondary text usage",
+      "styling": "Smaller, different position"
+    },
+    "quote": {
+      "required": false,
+      "usage": "For testimonials or quotes",
+      "styling": "Italic, larger, centered"
+    },
+    "image_url": {
+      "required": false,
+      "usage": "Background or inline image",
+      "styling": "Full bleed, overlay, or contained"
+    },
+    "accent_color": {
+      "usage": "What elements should use accent color?",
+      "examples": "Underlines, borders, icons, numbers"
+    }
+  },
+  "layout_structure": {
+    "alignment": "centered | top-aligned | split | grid",
+    "text_hierarchy": "Describe size relationships between elements",
+    "spacing": "Tight | balanced | spacious",
+    "special_features": [
+      "Any unique visual elements like borders, shapes, icons"
+    ]
+  },
+  "implementation_notes": {
+    "container_classes": "Tailwind classes for outer container",
+    "title_styles": "Inline styles for title element",
+    "body_styles": "Inline styles for body text",
+    "special_logic": "Any conditional rendering or data parsing needed"
+  },
+  "example_content": {
+    "title": "Sample title text",
+    "body_text": "Sample body text with\nline breaks\nto test rendering",
+    "subtitle": "Sample subtitle",
+    "colors": {
+      "background": "#ffffff",
+      "font": "#000000",
+      "accent": "#3b82f6"
+    }
+  }
+}
+
+================================================================================
+STEP-BY-STEP LAYOUT CREATION PROCESS
+================================================================================
+
+1. ANALYZE INSPIRATION
+   - Look at the reference image/design
+   - Identify key visual elements (title size, text position, colors)
+   - Determine which fields are needed
+
+2. PLAN STRUCTURE
+   - Sketch the layout hierarchy
+   - Decide on alignment (centered, top, split)
+   - Plan spacing and padding
+
+3. WRITE FUNCTION
+   - Copy the layout structure template
+   - Add your layout name in snake_case
+   - Implement the JSX structure
+
+4. STYLE ELEMENTS
+   - Set font sizes (title: 60-80px, body: 28-40px)
+   - Apply font families (heading, body, accent)
+   - Add colors (background, font, accent)
+
+5. HANDLE TEXT
+   - Add whitespace-pre-wrap for body text
+   - Use parseBodyText() if line breaks are needed
+   - Test with varying text lengths
+
+6. REGISTER LAYOUT
+   - Add to LayoutRenderer switch statement
+   - Add to layout type options in Editor
+   - Test in the editor interface
+
+7. TEST EXPORT
+   - Create a test slide with your layout
+   - Export as PNG to verify rendering
+   - Check font loading and text positioning
+
+================================================================================
+COMMON PATTERNS
+================================================================================
+
+CENTERED LAYOUT:
+<div className="w-full h-full flex items-center justify-center p-24">
+  <div className="max-w-4xl w-full text-center">
+    {/* Content */}
+  </div>
+</div>
+
+TOP-ALIGNED LAYOUT:
+<div className="w-full h-full flex items-start justify-center p-24">
+  <div className="max-w-4xl w-full">
+    {/* Content */}
+  </div>
+</div>
+
+SPLIT LAYOUT (LEFT/RIGHT):
+<div className="w-full h-full flex items-center justify-center p-24">
+  <div className="max-w-6xl w-full grid grid-cols-2 gap-16">
+    <div>{/* Left content */}</div>
+    <div>{/* Right content */}</div>
+  </div>
+</div>
+
+IMAGE BACKGROUND LAYOUT:
+<div className="w-full h-full relative">
+  <img src={slide.image_url} className="absolute inset-0 w-full h-full object-cover" />
+  <div className="absolute inset-0 bg-black/50" /> {/* Overlay */}
+  <div className="relative z-10 flex items-center justify-center h-full p-24">
+    {/* Content */}
+  </div>
+</div>
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+Issue: Text overflows the slide
+Solution: Reduce font size or add max-w-* constraints
+
+Issue: Line breaks not working
+Solution: Add className="whitespace-pre-wrap" and use parseBodyText()
+
+Issue: Fonts not loading in export
+Solution: Ensure getFontSettings() is called and fonts are applied via style prop
+
+Issue: Colors not showing
+Solution: Use inline styles, not Tailwind color classes (for export compatibility)
+
+Issue: Layout looks different in export vs. preview
+Solution: Check that all styles use inline style prop, not just classes
+
+================================================================================
+BEST PRACTICES
+================================================================================
+
+✅ DO:
+- Use inline styles for colors and fonts (for export compatibility)
+- Test with long and short text
+- Keep layouts simple and focused
+- Use consistent spacing units
+- Add whitespace-pre-wrap for body text
+- Use max-w-* to prevent overflow
+
+❌ DON'T:
+- Use Tailwind color classes for dynamic colors (use inline styles)
+- Hardcode specific text content in the layout
+- Create overly complex nested structures
+- Forget to handle empty/null fields
+- Use absolute positioning without careful testing
+- Ignore mobile readability (even though it's 1080x1080)
+
+================================================================================
+EXAMPLE: CREATING A NEW "MINIMAL QUOTE" LAYOUT
+================================================================================
+
+Goal: Create a layout with a large centered quote and small attribution
+
+Fields used: quote (main), subtitle (attribution), accent_color (decorative)
+
+function MinimalQuote({ slide }: { slide: SlideData }) {
+  const fontSettings = getFontSettings();
+  const bodyFont = fontSettings.bodyFont;
+  const accentFont = fontSettings.accentFont;
+
+  return (
+    <div
+      className="w-full h-full flex flex-col items-center justify-center p-24"
+      style={{ backgroundColor: slide.background_color }}
+    >
+      {/* Decorative top line */}
+      <div
+        className="w-24 h-1 mb-12"
+        style={{ backgroundColor: slide.accent_color }}
+      />
+
+      {/* Main quote */}
+      <blockquote
+        className="text-center max-w-3xl"
+        style={{
+          fontFamily: bodyFont,
+          fontSize: '48px',
+          color: slide.font_color,
+          fontStyle: 'italic',
+          lineHeight: '1.4',
+        }}
+      >
+        "{slide.quote}"
+      </blockquote>
+
+      {/* Attribution */}
+      {slide.subtitle && (
+        <p
+          className="mt-12"
+          style={{
+            fontFamily: accentFont,
+            fontSize: '24px',
+            color: slide.accent_color,
+            fontWeight: 500,
+          }}
+        >
+          — {slide.subtitle}
+        </p>
+      )}
+
+      {/* Decorative bottom line */}
+      <div
+        className="w-24 h-1 mt-12"
+        style={{ backgroundColor: slide.accent_color }}
+      />
+    </div>
+  );
+}
+
+Register in LayoutRenderer:
+case 'minimal_quote':
+  return <MinimalQuote slide={slide} />;
+
+Add to layout options in Editor:
+{ value: 'minimal_quote', label: 'Minimal Quote' }
+
+================================================================================
+END OF GUIDE
+================================================================================
+
+For questions or issues, refer to existing layouts in LayoutRenderer.tsx
+as working examples. All layouts follow these same principles.

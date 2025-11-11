@@ -1,0 +1,398 @@
+/**
+ * Platform Design Overrides - Dofinity-Inspired
+ * Applied ONLY to platform UI, NOT carousel slides
+ */
+
+/* Import design system variables */
+@import './design-system.css';
+
+/* === Global Platform Styles === */
+
+/* Override body for platform pages only (not carousel preview) */
+body {
+  font-family: var(--font-body);
+  background: var(--bg-primary);
+}
+
+/* === Dashboard Styles === */
+
+/* Dashboard header */
+.dashboard-header {
+  background: var(--bg-primary);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.dashboard-title {
+  font-family: var(--font-heading) !important;
+  font-size: var(--text-5xl) !important;
+  font-weight: var(--font-black) !important;
+  text-transform: uppercase !important;
+  letter-spacing: var(--tracking-tighter) !important;
+  line-height: var(--leading-tight) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Project cards */
+.project-card {
+  background: var(--bg-secondary) !important;
+  border: 1px solid var(--border-subtle) !important;
+  border-radius: var(--radius-lg) !important;
+  transition: all var(--transition-base) !important;
+}
+
+.project-card:hover {
+  border-color: var(--border-medium) !important;
+  box-shadow: var(--shadow-md) !important;
+  transform: translateY(-4px) !important;
+}
+
+.project-card-title {
+  font-family: var(--font-heading) !important;
+  font-size: var(--text-2xl) !important;
+  font-weight: var(--font-bold) !important;
+  color: var(--text-primary) !important;
+}
+
+/* === Editor Styles === */
+
+/* Editor sidebar */
+.editor-sidebar {
+  background: var(--bg-secondary) !important;
+  border-right: 1px solid var(--border-subtle) !important;
+}
+
+/* Slide list items */
+.slide-list-item {
+  background: var(--bg-primary) !important;
+  border: 1px solid var(--border-subtle) !important;
+  border-radius: var(--radius-md) !important;
+  transition: all var(--transition-base) !important;
+}
+
+.slide-list-item:hover {
+  border-color: var(--border-medium) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.slide-list-item.active {
+  border-color: var(--color-primary) !important;
+  background: rgba(107, 159, 255, 0.05) !important;
+}
+
+/* === Settings Styles === */
+
+/* Settings tabs */
+.settings-tabs {
+  border-bottom: 1px solid var(--border-subtle) !important;
+}
+
+.settings-tab {
+  font-family: var(--font-heading) !important;
+  font-weight: var(--font-semibold) !important;
+  text-transform: uppercase !important;
+  letter-spacing: var(--tracking-wide) !important;
+  font-size: var(--text-sm) !important;
+}
+
+/* Settings sections */
+.settings-section {
+  background: var(--bg-secondary) !important;
+  border: 1px solid var(--border-subtle) !important;
+  border-radius: var(--radius-lg) !important;
+  padding: var(--space-8) !important;
+}
+
+.settings-section-title {
+  font-family: var(--font-heading) !important;
+  font-size: var(--text-2xl) !important;
+  font-weight: var(--font-bold) !important;
+  color: var(--text-primary) !important;
+  margin-bottom: var(--space-4) !important;
+}
+
+/* === Button Overrides === */
+
+/* Primary buttons */
+button[class*="bg-blue-600"],
+button[class*="bg-primary"],
+.btn-primary {
+  background: var(--color-black) !important;
+  color: var(--color-white) !important;
+  border-radius: var(--radius-full) !important;
+  font-family: var(--font-heading) !important;
+  font-weight: var(--font-bold) !important;
+  text-transform: uppercase !important;
+  letter-spacing: var(--tracking-wide) !important;
+  padding: var(--space-4) var(--space-8) !important;
+  box-shadow: var(--shadow-sm) !important;
+  transition: all var(--transition-base) !important;
+  border: none !important;
+}
+
+button[class*="bg-blue-600"]:hover,
+button[class*="bg-primary"]:hover,
+.btn-primary:hover {
+  background: var(--color-dark-gray) !important;
+  transform: scale(1.05) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+/* Secondary/Outline buttons */
+button[variant="outline"],
+.btn-outlined {
+  background: transparent !important;
+  color: var(--color-black) !important;
+  border: 2px solid var(--color-black) !important;
+  border-radius: var(--radius-full) !important;
+  font-family: var(--font-heading) !important;
+  font-weight: var(--font-bold) !important;
+  text-transform: uppercase !important;
+  letter-spacing: var(--tracking-wide) !important;
+  transition: all var(--transition-base) !important;
+}
+
+button[variant="outline"]:hover,
+.btn-outlined:hover {
+  background: var(--color-black) !important;
+  color: var(--color-white) !important;
+}
+
+/* === Input Overrides === */
+
+input[type="text"],
+input[type="search"],
+textarea,
+select {
+  font-family: var(--font-body) !important;
+  border: 1px solid var(--border-subtle) !important;
+  border-radius: var(--radius-sm) !important;
+  transition: all var(--transition-fast) !important;
+}
+
+input[type="text"]:focus,
+input[type="search"]:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 3px rgba(107, 159, 255, 0.1) !important;
+  outline: none !important;
+}
+
+/* === Card Overrides === */
+
+[class*="card"],
+[class*="Card"] {
+  background: var(--bg-secondary) !important;
+  border: 1px solid var(--border-subtle) !important;
+  border-radius: var(--radius-lg) !important;
+  transition: all var(--transition-base) !important;
+}
+
+[class*="card"]:hover,
+[class*="Card"]:hover {
+  border-color: var(--border-medium) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+/* === Typography Overrides === */
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading) !important;
+  font-weight: var(--font-bold) !important;
+  letter-spacing: var(--tracking-tight) !important;
+  color: var(--text-primary) !important;
+}
+
+h1 {
+  font-size: var(--text-5xl) !important;
+  font-weight: var(--font-black) !important;
+  line-height: var(--leading-tight) !important;
+}
+
+h2 {
+  font-size: var(--text-4xl) !important;
+  line-height: var(--leading-snug) !important;
+}
+
+h3 {
+  font-size: var(--text-3xl) !important;
+  line-height: var(--leading-snug) !important;
+}
+
+p, span, div {
+  font-family: var(--font-body) !important;
+}
+
+/* === Dialog/Modal Overrides === */
+
+[role="dialog"] {
+  border-radius: var(--radius-lg) !important;
+}
+
+[role="dialog"] h2 {
+  font-family: var(--font-heading) !important;
+  font-weight: var(--font-bold) !important;
+}
+
+/* === Empty State Overrides === */
+
+.empty-state {
+  background: var(--bg-secondary) !important;
+  border-radius: var(--radius-lg) !important;
+  padding: var(--space-20) !important;
+}
+
+.empty-state h2 {
+  font-family: var(--font-heading) !important;
+  font-size: var(--text-3xl) !important;
+  font-weight: var(--font-bold) !important;
+  margin-bottom: var(--space-4) !important;
+}
+
+.empty-state p {
+  font-family: var(--font-body) !important;
+  font-size: var(--text-lg) !important;
+  color: var(--text-secondary) !important;
+}
+
+/* === Dropdown Menu Overrides === */
+
+[role="menu"] {
+  border-radius: var(--radius-md) !important;
+  border: 1px solid var(--border-subtle) !important;
+  box-shadow: var(--shadow-lg) !important;
+}
+
+[role="menuitem"] {
+  font-family: var(--font-body) !important;
+  transition: all var(--transition-fast) !important;
+}
+
+[role="menuitem"]:hover {
+  background: var(--bg-secondary) !important;
+}
+
+/* === Tag/Pill Overrides === */
+
+.tag,
+[class*="badge"],
+[class*="Badge"] {
+  display: inline-block;
+  border: 1px solid var(--border-subtle) !important;
+  border-radius: var(--radius-full) !important;
+  padding: var(--space-2) var(--space-4) !important;
+  font-family: var(--font-body) !important;
+  font-size: var(--text-sm) !important;
+  background: transparent !important;
+  transition: all var(--transition-base) !important;
+}
+
+.tag:hover,
+[class*="badge"]:hover,
+[class*="Badge"]:hover {
+  border-color: var(--border-medium) !important;
+  background: var(--bg-secondary) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* === Scrollbar Styling === */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-medium);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border-strong);
+}
+
+/* === Accent Colors for Different Sections === */
+
+/* Use Dofinity accent colors for visual interest */
+.accent-coral {
+  color: var(--color-coral) !important;
+}
+
+.accent-sky-blue {
+  color: var(--color-sky-blue) !important;
+}
+
+.accent-sage-green {
+  color: var(--color-sage-green) !important;
+}
+
+.bg-accent-coral {
+  background: var(--color-coral) !important;
+}
+
+.bg-accent-sky-blue {
+  background: var(--color-sky-blue) !important;
+}
+
+.bg-accent-sage-green {
+  background: var(--color-sage-green) !important;
+}
+
+/* === Responsive Adjustments === */
+
+@media (max-width: 1024px) {
+  .dashboard-title {
+    font-size: var(--text-4xl) !important;
+  }
+  
+  h1 {
+    font-size: var(--text-4xl) !important;
+  }
+  
+  h2 {
+    font-size: var(--text-3xl) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-title {
+    font-size: var(--text-3xl) !important;
+  }
+  
+  h1 {
+    font-size: var(--text-3xl) !important;
+  }
+  
+  h2 {
+    font-size: var(--text-2xl) !important;
+  }
+}
+
+/* === Ensure Carousel Preview is NOT Affected === */
+
+/* Exclude carousel preview container from platform styles */
+[class*="carousel-preview"],
+[class*="slide-preview"],
+[id*="carousel-preview"],
+[id*="slide-preview"] {
+  /* Reset to default */
+  font-family: inherit !important;
+  font-size: inherit !important;
+  font-weight: inherit !important;
+  color: inherit !important;
+  background: inherit !important;
+  border: inherit !important;
+  border-radius: inherit !important;
+}
+
+/* Exclude layout renderer from platform styles */
+[class*="LayoutRenderer"],
+[class*="layout-renderer"] * {
+  /* Preserve original carousel styles */
+  all: revert !important;
+}

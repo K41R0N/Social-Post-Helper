@@ -1,0 +1,10 @@
+carousel_id,slide_number,layout_type,background_color,title,body_text,subtitle,quote,font_color,accent_color
+intro_series,1,header_body,#ffffff,Welcome,"This is the first slide of the first carousel. Each carousel is identified by its carousel_id.",,,,#000000,#3b82f6
+intro_series,2,minimalist_focus,#1a1a1a,Key Concept,"The carousel_id column groups slides together into a single carousel.",,,,#ffffff,#3b82f6
+intro_series,3,bold_callout,#3b82f6,,"Use different carousel_id values to create multiple separate carousels in one CSV file.",,,,#ffffff,#ffffff
+tips_series,1,header_body,#f0f9ff,Design Tips,"This is a different carousel (tips_series) in the same CSV file.",,,,#1e3a8a,#3b82f6
+tips_series,2,list_layout,#ffffff,Best Practices,"Keep text concise | Use high contrast colors | Maintain consistent spacing | Test on mobile",,,,#000000,#3b82f6
+tips_series,3,quote_highlight,#1e3a8a,,"Good design is as little design as possible.","Dieter Rams",,#ffffff,#60a5fa
+stats_showcase,1,stat_showcase,#fef3c7,80%,"of users engage more with visual content than text-only posts","Engagement Rate",,#92400e,#f59e0b
+stats_showcase,2,stat_showcase,#dcfce7,10x,"higher retention rate for carousel posts vs single images","Retention Boost",,#14532d,#22c55e
+stats_showcase,3,bold_callout,#4ade80,,"Visual storytelling is the future of social media.",,,,#ffffff,#ffffff

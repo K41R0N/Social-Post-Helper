@@ -1,0 +1,4 @@
+carousel_id,slide_number,layout_type,background_color,title,body_text,subtitle,quote,font_color,accent_color,image_url
+my_carousel,1,header_body,#ffffff,Your Title Here,Your body text goes here,,,,#000000,#3b82f6,
+my_carousel,2,bold_callout,#3b82f6,,Your bold statement here,,,,#ffffff,#ffffff,
+my_carousel,3,quote_highlight,#f0f9ff,,,Your quote text here,Author Name,#1e3a8a,#60a5fa,

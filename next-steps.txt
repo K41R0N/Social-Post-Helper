@@ -1,0 +1,115 @@
+INSTAGRAM CAROUSEL GENERATOR - NEXT STEPS
+==========================================
+
+Future Feature Ideas (Not Yet Implemented)
+-------------------------------------------
+
+VISUAL ENHANCEMENTS
+- Add slide preview thumbnails in the sidebar showing miniature versions of each slide for easier visual navigation
+- Implement slide duplication with a "Duplicate" button in the slide list to quickly create variations
+- Add color palette presets with popular brand color schemes (e.g., "Modern Tech," "Warm Earth Tones," "Bold & Vibrant")
+
+EDITING IMPROVEMENTS
+- Implement undo/redo functionality to let users revert changes when editing slides
+- Add rich text editor for body text with formatting options (bold, italic, line breaks)
+- Create a color picker with saved color history for quick access to recently used colors
+
+FONT & TYPOGRAPHY
+- Add custom font upload so users can upload their own brand fonts (OTF/TTF) and apply them to slides
+- Implement font size controls for more granular typography adjustments
+- Add text alignment options (left, center, right, justify)
+
+PROJECT MANAGEMENT
+- Add a "Save Project" feature that exports the entire carousel configuration as a JSON file
+- Implement "Load Project" to import previously saved JSON configurations
+- Add carousel naming and description fields for better organization
+
+EXPORT ENHANCEMENTS
+- Add watermark/logo overlay option for branding
+- Implement batch export with custom naming patterns
+- Add export quality settings (resolution, compression)
+- Create ZIP download for all slides in a carousel
+
+COLLABORATION
+- Add shareable links for carousel previews
+- Implement version history for carousels
+- Add comments/notes on individual slides
+
+ANALYTICS
+- Track which templates are most popular
+- Add usage statistics dashboard
+- Export analytics on carousel creation patterns
+
+ACCESSIBILITY
+- Add alt text fields for slides
+- Implement keyboard shortcuts for common actions
+- Add screen reader support improvements
+
+INTEGRATION
+- Direct social media posting (Instagram API integration)
+- Canva import/export compatibility
+- Figma plugin integration
+
+
+PRIORITY FEATURES (Recently Suggested)
+---------------------------------------
+
+SLIDE PREVIEW THUMBNAILS
+- Add miniature preview images in the sidebar for each slide
+- Show visual representation instead of just text
+- Make it easier to identify slides at a glance
+- Update thumbnails in real-time when slides are edited
+
+KEYBOARD SHORTCUTS
+- ← / → arrows for slide navigation
+- E key to edit current slide
+- Delete key to delete current slide
+- N key to create new slide
+- Escape to close modals
+- Ctrl/Cmd + S to export CSV
+- Ctrl/Cmd + D to download current slide
+- Add keyboard shortcut help modal (? key)
+
+BULK EDIT MODE
+- Select multiple slides with checkboxes
+- Change background color across selected slides
+- Change font color across selected slides
+- Change accent color across selected slides
+- Change layout type for multiple slides
+- Apply template styling to multiple slides
+- Bulk delete with confirmation
+
+PROJECT DASHBOARD
+- Landing page showing all carousel projects
+- Grid/list view of projects with thumbnails
+- Create new project button
+- Rename projects
+- Delete projects with confirmation
+- Duplicate projects
+- Search/filter projects
+- Sort by date created, modified, or name
+- Show project metadata (slide count, last modified, etc.)
+
+
+FONT MANAGEMENT SYSTEM
+-----------------------
+- Create "Fonts" tab in Settings panel
+- Add font upload functionality (TTF, OTF, WOFF, WOFF2)
+- Store uploaded fonts in localStorage as base64
+- Generate @font-face CSS for uploaded fonts
+- Integrate Google Fonts API for browsing/importing fonts
+- Create Google Fonts browser/search interface
+- Add font preview in font selector
+- Allow font assignment to text types (heading, body, accent)
+- Apply selected fonts globally across all layouts
+- Show currently active fonts in Settings
+- Delete uploaded custom fonts
+
+CSS VARIABLES FOR CUSTOM LAYOUTS
+---------------------------------
+- Add CSS variables section in custom layout editor
+- Support defining color scheme variables (--primary, --secondary, etc.)
+- Support defining spacing/sizing variables (--spacing-sm, --spacing-lg, etc.)
+- Auto-inject CSS variables into custom layout styles
+- Provide variable picker/autocomplete in Monaco editor
+- Document CSS variable usage in help section
