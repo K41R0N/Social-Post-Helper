@@ -127,8 +127,7 @@ export default function FontsSettings() {
     const customFontFamilies = customFonts.map(f => f.family);
     const googleFontFamilies = fontSettings.googleFonts;
     const defaultFonts = [
-      "'Kyrios Standard', serif",
-      "'Kyrios Text', sans-serif",
+      "'Roboto', sans-serif",
       "'Merriweather', serif",
       "Arial, sans-serif",
       "Georgia, serif",

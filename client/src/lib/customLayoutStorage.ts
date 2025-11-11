@@ -128,7 +128,7 @@ export const DEFAULT_CSS_TEMPLATE = `.slide-container {
 }
 
 .title {
-  font-family: 'Kyrios Standard', serif;
+  font-family: 'Roboto', sans-serif;
   font-size: 48px;
   font-weight: 600;
   margin-bottom: 24px;

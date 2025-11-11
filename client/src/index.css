@@ -1,40 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@font-face {
-  font-family: 'Kyrios Standard';
-  src: url('/KyriosStandard-Regular.otf') format('opentype');
-  font-weight: 400;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'Kyrios Standard';
-  src: url('/KyriosStandard-Medium.otf') format('opentype');
-  font-weight: 500;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'Kyrios Text';
-  src: url('/KyriosText-Regular.otf') format('opentype');
-  font-weight: 400;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'Kyrios Text';
-  src: url('/KyriosText-Medium.otf') format('opentype');
-  font-weight: 500;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'Kyrios Text';
-  src: url('/KyriosText-Bold.otf') format('opentype');
-  font-weight: 700;
-  font-style: normal;
-}
 
 @custom-variant dark (&:is(.dark *));
 

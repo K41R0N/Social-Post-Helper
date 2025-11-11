@@ -21,8 +21,8 @@ export interface FontSettings {
 }
 
 export const DEFAULT_FONT_SETTINGS: FontSettings = {
-  headingFont: "'Kyrios Standard', serif",
+  headingFont: "'Roboto', sans-serif",
   bodyFont: "'Merriweather', serif",
-  accentFont: "'Kyrios Text', sans-serif",
-  googleFonts: [],
+  accentFont: "'Roboto', sans-serif",
+  googleFonts: ['Roboto'],
 };

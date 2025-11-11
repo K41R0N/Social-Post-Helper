@@ -18,19 +18,14 @@ export function injectGlobalFontStyles(): void {
       --accent-font: ${fontSettings.accentFont};
     }
     
-    /* Override Kyrios Standard with heading font */
-    * [style*="'Kyrios Standard'"] {
+    /* Override Roboto with heading font */
+    * [style*="'Roboto'"] {
       font-family: var(--heading-font) !important;
     }
     
     /* Override Merriweather with body font */
     * [style*="'Merriweather'"] {
       font-family: var(--body-font) !important;
-    }
-    
-    /* Override Kyrios Text with accent font */
-    * [style*="'Kyrios Text'"] {
-      font-family: var(--accent-font) !important;
     }
   `;
   
