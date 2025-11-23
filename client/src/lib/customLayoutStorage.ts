@@ -1,4 +1,5 @@
 import type { CustomLayout } from '../types/customLayout';
+import { ANTI_MARKETING_LAYOUTS } from './antiMarketingLayouts';
 
 const STORAGE_KEY = 'custom_layouts';
 
@@ -20,15 +21,15 @@ export function getCustomLayout(id: string): CustomLayout | null {
 export function saveCustomLayout(layout: CustomLayout): void {
   const layouts = getAllCustomLayouts();
   const index = layouts.findIndex(l => l.id === layout.id);
-  
+
   layout.modifiedAt = new Date().toISOString();
-  
+
   if (index >= 0) {
     layouts[index] = layout;
   } else {
     layouts.push(layout);
   }
-  
+
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(layouts));
   } catch (error) {
@@ -40,7 +41,7 @@ export function saveCustomLayout(layout: CustomLayout): void {
 export function deleteCustomLayout(id: string): void {
   const layouts = getAllCustomLayouts();
   const filtered = layouts.filter(l => l.id !== id);
-  
+
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
   } catch (error) {
@@ -64,7 +65,7 @@ export function createCustomLayout(
     createdAt: new Date().toISOString(),
     modifiedAt: new Date().toISOString(),
   };
-  
+
   saveCustomLayout(layout);
   return layout;
 }
@@ -78,23 +79,53 @@ export function importCustomLayouts(jsonString: string): number {
   try {
     const imported = JSON.parse(jsonString) as CustomLayout[];
     const existing = getAllCustomLayouts();
-    
+
     // Merge, avoiding duplicates by ID
     const merged = [...existing];
     let importedCount = 0;
-    
+
     imported.forEach(layout => {
       if (!merged.find(l => l.id === layout.id)) {
         merged.push(layout);
         importedCount++;
       }
     });
-    
+
     localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
     return importedCount;
   } catch (error) {
     console.error('Error importing custom layouts:', error);
     throw new Error('Invalid JSON format');
+  }
+}
+
+export function seedAntiMarketingLayouts(): void {
+  const layouts = getAllCustomLayouts();
+  let modified = false;
+
+  ANTI_MARKETING_LAYOUTS.forEach(seedLayout => {
+    const existingIndex = layouts.findIndex(l => l.id === seedLayout.id);
+    if (existingIndex === -1) {
+      // Add new layout if it doesn't exist
+      layouts.push(seedLayout);
+      modified = true;
+    } else {
+      // Update existing layout to ensure latest version is used
+      layouts[existingIndex] = {
+        ...seedLayout,
+        createdAt: layouts[existingIndex].createdAt, // Preserve original creation date
+        modifiedAt: new Date().toISOString(), // Update modification date
+      };
+      modified = true;
+    }
+  });
+
+  if (modified) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(layouts));
+    } catch (error) {
+      console.error('Error seeding anti-marketing layouts:', error);
+    }
   }
 }
 

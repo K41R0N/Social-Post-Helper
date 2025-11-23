@@ -38,6 +38,7 @@ import {
   saveCustomLayout,
   exportCustomLayouts,
   importCustomLayouts,
+  seedAntiMarketingLayouts,
   TEMPLATE_VARIABLES,
   DEFAULT_HTML_TEMPLATE,
   DEFAULT_CSS_TEMPLATE,
@@ -51,7 +52,7 @@ export default function Settings() {
   const [editingLayout, setEditingLayout] = useState<CustomLayout | null>(null);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewLayout, setPreviewLayout] = useState<CustomLayout | null>(null);
-  
+
   // Form state
   const [layoutName, setLayoutName] = useState('');
   const [layoutDescription, setLayoutDescription] = useState('');
@@ -63,6 +64,7 @@ export default function Settings() {
   }, []);
 
   const loadCustomLayouts = () => {
+    seedAntiMarketingLayouts();
     const layouts = getAllCustomLayouts();
     setCustomLayouts(layouts);
   };
@@ -116,7 +118,7 @@ export default function Settings() {
         );
         toast.success('Layout created!');
       }
-      
+
       loadCustomLayouts();
       setEditorOpen(false);
     } catch (error) {
@@ -225,19 +227,19 @@ export default function Settings() {
       <div className="max-w-[1600px] mx-auto px-8 py-16">
         <Tabs defaultValue="layouts" className="w-full">
           <TabsList className="mb-10 bg-gray-100 p-2 rounded-full border-3 border-black">
-            <TabsTrigger 
+            <TabsTrigger
               value="layouts"
               className="rounded-full px-10 py-3.5 font-bold uppercase text-sm data-[state=active]:bg-black data-[state=active]:text-white transition-all"
             >
               Custom Layouts
             </TabsTrigger>
-            <TabsTrigger 
+            <TabsTrigger
               value="fonts"
               className="rounded-full px-10 py-3.5 font-bold uppercase text-sm data-[state=active]:bg-black data-[state=active]:text-white transition-all"
             >
               Fonts
             </TabsTrigger>
-            <TabsTrigger 
+            <TabsTrigger
               value="general"
               className="rounded-full px-10 py-3.5 font-bold uppercase text-sm data-[state=active]:bg-black data-[state=active]:text-white transition-all"
             >

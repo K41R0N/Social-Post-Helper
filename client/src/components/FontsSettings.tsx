@@ -130,6 +130,7 @@ export default function FontsSettings() {
       "'Roboto', sans-serif",
       "'Merriweather', serif",
       "Arial, sans-serif",
+      "Helvetica, sans-serif",
       "Georgia, serif",
       "Times New Roman, serif",
       "Courier New, monospace",
