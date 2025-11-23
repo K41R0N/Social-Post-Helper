@@ -128,6 +128,22 @@ export function validateSlideData(slide: SlideData): string[] {
       if (!slide.title) errors.push('two_part_vertical requires title');
       if (!slide.body_text) errors.push('two_part_vertical requires body_text');
       break;
+
+    case 'anti_marketing_hook':
+      if (!slide.title) errors.push('anti_marketing_hook requires title');
+      if (!slide.subtitle) errors.push('anti_marketing_hook requires subtitle');
+      if (!slide.body_text) errors.push('anti_marketing_hook requires body_text');
+      break;
+
+    case 'anti_marketing_content':
+      if (!slide.title) errors.push('anti_marketing_content requires title');
+      if (!slide.body_text) errors.push('anti_marketing_content requires body_text');
+      break;
+
+    case 'anti_marketing_cta':
+      if (!slide.title) errors.push('anti_marketing_cta requires title');
+      if (!slide.body_text) errors.push('anti_marketing_cta requires body_text');
+      break;
   }
   
   return errors;

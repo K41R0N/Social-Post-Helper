@@ -182,6 +182,15 @@ Current layouts and their primary fields:
 10. two_part_vertical
     - title (top), body_text (bottom)
 
+11. anti_marketing_hook
+    - title (hook), subtitle (strapline), body_text (italic kicker)
+
+12. anti_marketing_content
+    - title (headline), body_text (short bullets), subtitle (label)
+
+13. anti_marketing_cta
+    - title (cta headline), body_text (action), subtitle (optional tag)
+
 ================================================================================
 JSON PROMPT TEMPLATE FOR AI-ASSISTED LAYOUT DESIGN
 ================================================================================

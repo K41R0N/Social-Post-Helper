@@ -7,7 +7,7 @@ A powerful, browser-based tool for creating stunning Instagram carousel posts wi
 ## ✨ Features
 
 ### Core Functionality
-- **10 Professional Layout Types**: Bold callouts, quote highlights, dictionary entries, stats showcases, and more
+- **13 Professional Layout Types**: Bold callouts, quote highlights, dictionary entries, raw anti-marketing hooks, stats showcases, and more
 - **CSV-Powered Workflow**: Import carousel data from CSV files for bulk creation
 - **Visual Editor**: Edit slides with an intuitive visual interface
 - **Multi-Platform Export**: Export to Instagram (1080×1080), Instagram Story (1080×1920), LinkedIn (1080×1080), and Twitter (1200×675)
@@ -131,16 +131,19 @@ my_carousel,2,header_body,#FFFFFF,Key Points,"Point 1<br /><br />Point 2<br /><b
 ```
 
 **Available Layout Types:**
-- `bold_callout` - Large centered text for impact
-- `header_body` - Title with body text
-- `quote_highlight` - Featured quote with attribution
-- `stat_showcase` - Large number with context
-- `dictionary_entry` - Word definition style
-- `minimalist_focus` - Clean, minimal design
-- `two_part_vertical` - Split screen vertical
-- `two_part_horizontal` - Split screen horizontal
-- `list_layout` - Numbered or bulleted list
-- `image_caption` - Image with overlay text
+- `dictionary_entry` - Dictionary-style definition with pronunciation and etymology
+- `minimalist_focus` - Clean headline plus supporting paragraph
+- `bold_callout` - Centered, high-impact statements
+- `header_body` - Classic header plus multi-paragraph body
+- `quote_highlight` - Featured quote with attribution divider
+- `list_layout` - Numbered or bulleted steps
+- `stat_showcase` - Oversized statistics with context
+- `split_content` - Title column paired with copy column
+- `image_overlay` - Text overlay on full-bleed image
+- `two_part_vertical` - Top/bottom split sections
+- `anti_marketing_hook` - Brutalist hook with strapline and kicker
+- `anti_marketing_content` - Editorial content block with accent ruler
+- `anti_marketing_cta` - CTA card with heavy border, arrow, and action line
 
 Download the [example CSV file](./client/public/examples/solenopsism.csv) to get started.
 

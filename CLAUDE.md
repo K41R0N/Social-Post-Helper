@@ -26,7 +26,7 @@ The Instagram Carousel Generator is a client-side web application built with Rea
 The application supports multiple export formats (Instagram, LinkedIn, Twitter, Facebook, Pinterest) and provides real-time preview with drag-and-drop slide management.
 
 ### Core Capabilities
-- **10 Layout Types**: Dictionary entry, minimalist focus, bold callout, header/body, quote highlight, list layout, stat showcase, split content, image overlay, two-part vertical
+- **13 Layout Types**: Dictionary entry, minimalist focus, bold callout, header/body, quote highlight, list layout, stat showcase, split content, image overlay, two-part vertical, plus the Anti Marketing hook/content/cta sequence
 - **Multi-Platform Export**: 6 social media platform presets with automatic dimension scaling
 - **Visual CSV Editor**: Full CRUD operations on slides without external tools
 - **Template Library**: 5 pre-designed carousel templates across different categories
@@ -184,7 +184,7 @@ client/
 │   │   │   ├── select.tsx
 │   │   │   ├── input.tsx
 │   │   │   └── textarea.tsx
-│   │   ├── LayoutRenderer.tsx    # Renders all 10 layout types
+│   │   ├── LayoutRenderer.tsx    # Renders all 13 layout types
 │   │   └── SlideEditor.tsx       # Slide CRUD modal
 │   ├── lib/
 │   │   ├── csvParser.ts          # CSV parsing & validation
@@ -215,7 +215,7 @@ client/
 interface SlideData {
   carousel_id: string;           // Groups slides into carousels
   slide_number: number;          // Order within carousel
-  layout_type: LayoutType;       // One of 10 layout types
+  layout_type: LayoutType;       // One of 13 layout types
   background_color: string;      // Hex color
   font_color: string;            // Hex color
   accent_color: string;          // Hex color
@@ -332,9 +332,12 @@ switch (slide.layout_type) {
   case 'quote_highlight':     // Large quote with attribution
   case 'list_layout':         // Title with bulleted/numbered list
   case 'stat_showcase':       // Large number with context
-  case 'split_content':       // Two-column layout
-  case 'image_overlay':       // Text over background image
-  case 'two_part_vertical':   // Top/bottom sections
+  case 'split_content':           // Two-column layout
+  case 'image_overlay':           // Text over background image
+  case 'two_part_vertical':       // Top/bottom sections
+  case 'anti_marketing_hook':     // Brutalist hook with strapline and kicker
+  case 'anti_marketing_content':  // Editorial block with accent rule
+  case 'anti_marketing_cta':      // CTA card with arrow and underline
 }
 ```
 
@@ -376,7 +379,7 @@ interface SlideEditorProps {
 **Validation**
 - All color fields must be valid hex codes
 - Slide number must be positive integer
-- Layout type must be one of 10 valid types
+- Layout type must be one of 13 valid types
 - Required fields depend on layout type
 
 ---
@@ -550,7 +553,7 @@ Users can customize templates by:
 **Required Columns**
 - `carousel_id`: Groups slides into carousels
 - `slide_number`: Numeric order (1, 2, 3...)
-- `layout_type`: One of 10 valid layout types
+- `layout_type`: One of 13 valid layout types
 - `background_color`: Hex color code
 - `font_color`: Hex color code
 - `accent_color`: Hex color code

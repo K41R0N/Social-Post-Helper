@@ -10,6 +10,44 @@ export interface CarouselTemplate {
 
 export const CAROUSEL_TEMPLATES: CarouselTemplate[] = [
   {
+    id: 'anti-marketing-sequence',
+    name: 'Anti Marketing Carousel',
+    description: 'Hook, raw content, and brutalist CTA inspired by the Figma set.',
+    category: 'Marketing',
+    slides: [
+      {
+        slide_number: 1,
+        layout_type: 'anti_marketing_hook',
+        background_color: '#0F0F0F',
+        title: 'STOP TRUSTING MARKETING',
+        subtitle: 'ANTI MARKETING HOOK',
+        body_text: 'If the pitch sounds perfect, they rehearsed it too many times.',
+        font_color: '#F9F6F1',
+        accent_color: '#F97316',
+      },
+      {
+        slide_number: 2,
+        layout_type: 'anti_marketing_content',
+        background_color: '#050505',
+        title: 'Great products don’t need smoke & mirrors',
+        subtitle: 'FIELD NOTES',
+        body_text: '• Ship something people actually need\n• Tell them the truth about it\n• Let proof replace persuasion',
+        font_color: '#F5F5F5',
+        accent_color: '#F97316',
+      },
+      {
+        slide_number: 3,
+        layout_type: 'anti_marketing_cta',
+        background_color: '#F97316',
+        title: 'Build trust by skipping the hype',
+        subtitle: 'DO THE OPPOSITE',
+        body_text: 'DM “ANTI” for the raw playbook',
+        font_color: '#111111',
+        accent_color: '#111111',
+      },
+    ],
+  },
+  {
     id: 'product-launch',
     name: 'Product Launch',
     description: 'Announce a new product with impact',

@@ -8,7 +8,10 @@ export type LayoutType =
   | 'stat_showcase'
   | 'header_body'
   | 'image_overlay'
-  | 'two_part_vertical';
+  | 'two_part_vertical'
+  | 'anti_marketing_hook'
+  | 'anti_marketing_content'
+  | 'anti_marketing_cta';
 
 export interface SlideData {
   carousel_id: string;

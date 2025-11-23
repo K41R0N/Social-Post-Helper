@@ -180,6 +180,60 @@ This document defines all standardized layout types for the Instagram Carousel G
 
 ---
 
+### 11. `anti_marketing_hook`
+**Description:** Oversized brutalist hook with strapline and italic kicker.
+
+**Required Fields:**
+- `title`: Main hook statement
+- `subtitle`: Upper strapline (e.g., label or topic)
+- `body_text`: Short italic kicker line
+
+**Visual Structure:**
+- Subtitle set in uppercase with generous tracking
+- Giant uppercase title (160-190px) hugging the left edge
+- Thin accent line underneath title
+- Italic footer copy anchored to the bottom
+
+**Best For:** Carousel slide 1 hooks, contrarian statements, manifesto openers
+
+---
+
+### 12. `anti_marketing_content`
+**Description:** Editorial column with slide number bar and accent ruler for copy.
+
+**Required Fields:**
+- `title`: Main content headline
+- `body_text`: Supporting bullet points or paragraphs
+- `subtitle`: Optional label displayed in the header bar
+
+**Visual Structure:**
+- Monospace slide number paired with label bar
+- Uppercase headline spanning most of the canvas
+- Body copy indented behind a vertical accent rule
+- Works well with short bullet lines (use `\n` or `|`)
+
+**Best For:** Value slides, field notes, blunt lessons
+
+---
+
+### 13. `anti_marketing_cta`
+**Description:** Brutalist CTA card with underline action and oversized arrow.
+
+**Required Fields:**
+- `title`: CTA headline
+- `body_text`: Action copy (underlined for emphasis)
+- `subtitle`: Optional label above the card
+
+**Visual Structure:**
+- Solid background color with centered white card
+- Heavy border and offset drop shadow using accent color
+- Arrow icon between title and CTA copy
+- CTA text rendered bold with underline styling
+
+**Best For:** Final slide CTAs, download prompts, DM/lead magnets
+
+---
+
 ## CSV Column Mapping
 
 | CSV Column | Purpose | Required | Default |
@@ -205,6 +259,9 @@ solenopsism,2,minimalist_focus,#1A1A1A,Solipsistic Tendencies,"We exist in a sea
 solenopsism,3,minimalist_focus,#d01c1f,People are a Hivemind,"Solenopsis—fire ants—move as one...",,,,#FAF7F2,#FAF7F2
 solenopsism,4,header_body,#f4f1ee,OUR DIGITAL HIVE,"Modern society has perfected...",,,,#1A1A1A,#B8312F
 solenopsism,5,bold_callout,#d01c1f,,"We are fire ants in a digital colony...",,,,#FAF7F2,#FAF7F2
+antimarketing,1,anti_marketing_hook,#0f0f0f,STOP TRUSTING MARKETING,"The best hook is honesty.",ANTI MARKETING,,,#F9F6F1,#F97316
+antimarketing,2,anti_marketing_content,#050505,The raw truth,"Ship what people actually need<br /><br />Tell them the truth about it<br /><br />Let proof replace persuasion",FIELD NOTES,,,#F5F5F5,#F97316
+antimarketing,3,anti_marketing_cta,#F97316,Build trust by skipping the hype,"DM “ANTI” for the raw playbook",DO THE OPPOSITE,,,#111111,#111111
 ```
 
 ## Font Specifications

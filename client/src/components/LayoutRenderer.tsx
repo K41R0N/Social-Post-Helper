@@ -56,6 +56,12 @@ export default function LayoutRenderer({ slide }: LayoutRendererProps) {
       return <ImageOverlay slide={slide} />;
     case 'two_part_vertical':
       return <TwoPartVertical slide={slide} />;
+    case 'anti_marketing_hook':
+      return <AntiMarketingHook slide={slide} />;
+    case 'anti_marketing_content':
+      return <AntiMarketingContent slide={slide} />;
+    case 'anti_marketing_cta':
+      return <AntiMarketingCTA slide={slide} />;
     default:
       return <div className="w-full h-full flex items-center justify-center">
         <p style={{ color: slide.font_color }}>Unsupported layout type: {slide.layout_type}</p>
@@ -675,6 +681,267 @@ function TwoPartVertical({ slide }: { slide: SlideData }) {
   );
 }
 
+// Anti Marketing Hook Layout
+function AntiMarketingHook({ slide }: { slide: SlideData }) {
+  const fontSettings = getFontSettings();
+  const headingFont = fontSettings.headingFont;
+  const bodyFont = fontSettings.bodyFont;
+  const accentFont = fontSettings.accentFont;
+
+  const parseBodyText = (text: string) => {
+    if (!text) return '';
+    return text
+      .replace(/<br\s*\/?>\s*<br\s*\/?>/gi, '\n\n')
+      .replace(/<br\s*\/?>/gi, '\n');
+  };
+
+  return (
+    <div
+      className="w-full h-full flex flex-col"
+      style={{
+        backgroundColor: slide.background_color,
+        padding: '80px 96px 72px 96px',
+        color: slide.font_color,
+      }}
+    >
+      <div className="flex-1 flex flex-col justify-center gap-10" style={{ maxWidth: '900px' }}>
+        {slide.subtitle && (
+          <p
+            style={{
+              fontFamily: accentFont,
+              fontSize: '48px',
+              textTransform: 'uppercase',
+              letterSpacing: '0.08em',
+              color: slide.font_color,
+              margin: 0,
+            }}
+          >
+            {slide.subtitle}
+          </p>
+        )}
+
+        <h1
+          style={{
+            fontFamily: headingFont,
+            fontSize: '180px',
+            fontWeight: 600,
+            lineHeight: 0.9,
+            margin: 0,
+            textTransform: 'uppercase',
+            letterSpacing: '-0.01em',
+            color: slide.font_color,
+          }}
+        >
+          {slide.title}
+        </h1>
+
+        <div
+          style={{
+            width: '320px',
+            height: '4px',
+            backgroundColor: slide.accent_color,
+            marginTop: '16px',
+          }}
+        />
+      </div>
+
+      {slide.body_text && (
+        <p
+          style={{
+            fontFamily: bodyFont,
+            fontSize: '36px',
+            fontStyle: 'italic',
+            letterSpacing: '0.04em',
+            color: slide.font_color,
+            marginBottom: 0,
+            whiteSpace: 'pre-wrap',
+          }}
+        >
+          {parseBodyText(slide.body_text)}
+        </p>
+      )}
+    </div>
+  );
+}
+
+// Anti Marketing Content Layout
+function AntiMarketingContent({ slide }: { slide: SlideData }) {
+  const fontSettings = getFontSettings();
+  const headingFont = fontSettings.headingFont;
+  const bodyFont = fontSettings.bodyFont;
+  const accentFont = fontSettings.accentFont;
+
+  const parseBodyText = (text: string) => {
+    if (!text) return '';
+    return text
+      .replace(/<br\s*\/?>\s*<br\s*\/?>/gi, '\n\n')
+      .replace(/<br\s*\/?>/gi, '\n');
+  };
+
+  const slideNumberLabel = slide.slide_number
+    ? slide.slide_number.toString().padStart(2, '0')
+    : '01';
+
+  return (
+    <div
+      className="w-full h-full flex flex-col"
+      style={{
+        backgroundColor: slide.background_color,
+        color: slide.font_color,
+        padding: '64px 72px',
+      }}
+    >
+      <div
+        className="flex items-center justify-between border-b"
+        style={{
+          borderColor: `${slide.font_color}33`,
+          paddingBottom: '24px',
+          fontFamily: 'monospace',
+          fontSize: '28px',
+        }}
+      >
+        <span style={{ color: slide.accent_color, fontWeight: 700 }}>{slideNumberLabel}</span>
+        {slide.subtitle && (
+          <span
+            style={{
+              fontFamily: accentFont,
+              textTransform: 'uppercase',
+              letterSpacing: '0.12em',
+              fontSize: '20px',
+              color: slide.font_color,
+            }}
+          >
+            {slide.subtitle}
+          </span>
+        )}
+      </div>
+
+      <div className="flex-1 flex flex-col justify-center gap-10 max-w-4xl">
+        <h2
+          style={{
+            fontFamily: headingFont,
+            fontSize: '96px',
+            fontWeight: 600,
+            lineHeight: 1,
+            letterSpacing: '-0.02em',
+            margin: 0,
+            textTransform: 'uppercase',
+            color: slide.font_color,
+          }}
+        >
+          {slide.title}
+        </h2>
+
+        <div
+          style={{
+            borderLeft: `6px solid ${slide.accent_color}`,
+            paddingLeft: '32px',
+          }}
+        >
+          <p
+            style={{
+              fontFamily: bodyFont,
+              fontSize: '32px',
+              lineHeight: 1.6,
+              color: slide.font_color,
+              margin: 0,
+              whiteSpace: 'pre-wrap',
+            }}
+          >
+            {parseBodyText(slide.body_text || '')}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Anti Marketing CTA Layout
+function AntiMarketingCTA({ slide }: { slide: SlideData }) {
+  const fontSettings = getFontSettings();
+  const headingFont = fontSettings.headingFont;
+  const bodyFont = fontSettings.bodyFont;
+  const accentFont = fontSettings.accentFont;
+
+  const parseBodyText = (text: string) => {
+    if (!text) return '';
+    return text
+      .replace(/<br\s*\/?>\s*<br\s*\/?>/gi, '\n\n')
+      .replace(/<br\s*\/?>/gi, '\n');
+  };
+
+  return (
+    <div
+      className="w-full h-full flex items-center justify-center p-16"
+      style={{ backgroundColor: slide.background_color }}
+    >
+      <div
+        className="w-full max-w-3xl text-center"
+        style={{
+          backgroundColor: '#ffffff',
+          border: `8px solid ${slide.font_color}`,
+          boxShadow: `24px 24px 0 ${slide.accent_color}`,
+          padding: '72px 64px',
+        }}
+      >
+        {slide.subtitle && (
+          <p
+            style={{
+              fontFamily: accentFont,
+              textTransform: 'uppercase',
+              letterSpacing: '0.3em',
+              fontSize: '18px',
+              margin: '0 0 24px 0',
+              color: slide.accent_color,
+            }}
+          >
+            {slide.subtitle}
+          </p>
+        )}
+
+        <h2
+          style={{
+            fontFamily: headingFont,
+            fontSize: '72px',
+            textTransform: 'uppercase',
+            fontWeight: 700,
+            lineHeight: 1.05,
+            margin: '0 0 24px 0',
+            color: slide.font_color,
+          }}
+        >
+          {slide.title}
+        </h2>
+
+        <div
+          style={{
+            fontSize: '82px',
+            lineHeight: 1,
+            marginBottom: '24px',
+            color: slide.accent_color,
+          }}
+        >
+          ↓
+        </div>
+
+        <p
+          style={{
+            fontFamily: bodyFont,
+            fontSize: '32px',
+            fontWeight: 600,
+            textDecoration: 'underline',
+            letterSpacing: '0.08em',
+            color: slide.font_color,
+            whiteSpace: 'pre-wrap',
+            margin: 0,
+          }}
+        >
+          {parseBodyText(slide.body_text || '')}
+        </p>
+      </div>
+    </div>
+  );
+}
 
 // Custom Layout Renderer
 function CustomLayoutRenderer({ slide, layout }: { slide: SlideData; layout: CustomLayout }) {

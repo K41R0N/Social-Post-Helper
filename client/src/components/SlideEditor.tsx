@@ -41,6 +41,9 @@ const LAYOUT_TYPES: { value: LayoutType; label: string }[] = [
   { value: 'split_content', label: 'Split Content' },
   { value: 'image_overlay', label: 'Image Overlay' },
   { value: 'two_part_vertical', label: 'Two Part Vertical' },
+  { value: 'anti_marketing_hook', label: 'Anti Marketing Hook' },
+  { value: 'anti_marketing_content', label: 'Anti Marketing Content' },
+  { value: 'anti_marketing_cta', label: 'Anti Marketing CTA' },
 ];
 
 export default function SlideEditor({
