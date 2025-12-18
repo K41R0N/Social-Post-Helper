@@ -355,7 +355,7 @@ export default function ComponentLayoutsSettings() {
               {QUICK_START_TEMPLATES.length > 0 && (
                 <div className="mb-12">
                   <div className="flex items-center gap-3 mb-6">
-                    <Sparkles className="h-6 w-6 text-coral" />
+                    <Sparkles className="h-6 w-6" style={{ color: '#FF6B5A' }} />
                     <h3 className="dof-subtitle">QUICK START TEMPLATES</h3>
                   </div>
                   <div className="dof-grid dof-grid-2">

@@ -30,6 +30,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
@@ -751,7 +752,7 @@ export default function Editor() {
                             {...provided.draggableProps}
                             className={`group relative bg-white border-3 rounded-2xl p-4 transition-all duration-200 ${
                               index === currentSlideIndex
-                                ? 'border-coral shadow-lg'
+                                ? 'shadow-lg'
                                 : 'border-black hover:shadow-md'
                             } ${snapshot.isDragging ? 'shadow-2xl' : ''}`}
                             style={{

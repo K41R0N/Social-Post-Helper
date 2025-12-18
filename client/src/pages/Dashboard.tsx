@@ -222,7 +222,10 @@ export default function Dashboard() {
                 placeholder="Search projects..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-14 pr-6 py-4 border-3 border-black rounded-2xl text-base font-medium focus:outline-none focus:border-coral transition-colors"
+                className="w-full pl-14 pr-6 py-4 border-3 border-black rounded-2xl text-base font-medium focus:outline-none transition-colors"
+                style={{ outlineColor: '#FF6B5A' }}
+                onFocus={(e) => e.currentTarget.style.borderColor = '#FF6B5A'}
+                onBlur={(e) => e.currentTarget.style.borderColor = '#000'}
               />
             </div>
             <div className="flex gap-2 border-3 border-black rounded-full p-1.5 bg-white">

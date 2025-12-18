@@ -183,9 +183,13 @@ export default function LayoutExplorer({
                     key={layout.id}
                     className={`cursor-pointer transition-all p-3 rounded-xl border-[3px] ${
                       previewLayout === layout.id
-                        ? 'border-coral bg-coral bg-opacity-5 shadow-md'
+                        ? 'shadow-md'
                         : 'border-black hover:bg-gray-50'
                     }`}
+                    style={previewLayout === layout.id ? {
+                      borderColor: '#FF6B5A',
+                      backgroundColor: 'rgba(255, 107, 90, 0.05)'
+                    } : {}}
                     onClick={() => setPreviewLayout(layout.id)}
                   >
                     <div className="flex items-start gap-2">
