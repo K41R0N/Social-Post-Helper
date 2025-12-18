@@ -1,4 +1,11 @@
 import type { Project, ProjectMetadata } from '../types/project';
+import {
+  safeSetItem,
+  estimateDataSize,
+  formatBytes,
+  getStorageQuota,
+  hasEnoughSpace
+} from './storageUtils';
 
 const STORAGE_KEY = 'carousel_projects';
 
@@ -20,19 +27,36 @@ export function getProject(id: string): Project | null {
 export function saveProject(project: Project): void {
   const projects = getAllProjects();
   const index = projects.findIndex(p => p.id === project.id);
-  
+
   project.modifiedAt = new Date().toISOString();
-  
+
   if (index >= 0) {
     projects[index] = project;
   } else {
     projects.push(project);
   }
-  
+
+  // Check storage quota before saving
+  const dataSize = estimateDataSize(projects);
+  const quota = getStorageQuota();
+
+  if (!hasEnoughSpace(dataSize)) {
+    throw new Error(
+      `Cannot save project: localStorage quota would be exceeded.\n\n` +
+      `Project data size: ${formatBytes(dataSize)}\n` +
+      `Storage used: ${formatBytes(quota.used)} / ${formatBytes(quota.total)}\n` +
+      `Available: ${formatBytes(quota.available)}\n\n` +
+      `Try removing some old projects or custom fonts to free up space.`
+    );
+  }
+
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(projects));
+    safeSetItem(STORAGE_KEY, JSON.stringify(projects));
   } catch (error) {
     console.error('Error saving project:', error);
+    if (error instanceof Error) {
+      throw error;
+    }
     throw new Error('Failed to save project');
   }
 }

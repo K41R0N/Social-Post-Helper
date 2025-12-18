@@ -1,7 +1,9 @@
 import axios from 'axios';
 import type { GoogleFont } from '../types/font';
 
-const GOOGLE_FONTS_API_KEY = 'AIzaSyDNGkF8VZq_wZ8vZJxJ3Q3qQ8nQ8nQ8nQ8'; // Public demo key
+// Get API key from environment variables
+// To use Google Fonts API, add VITE_GOOGLE_FONTS_API_KEY to your .env file
+const GOOGLE_FONTS_API_KEY = import.meta.env.VITE_GOOGLE_FONTS_API_KEY || '';
 const GOOGLE_FONTS_API_URL = 'https://www.googleapis.com/webfonts/v1/webfonts';
 
 let cachedFonts: GoogleFont[] | null = null;
@@ -9,6 +11,16 @@ let cachedFonts: GoogleFont[] | null = null;
 export async function fetchGoogleFonts(): Promise<GoogleFont[]> {
   if (cachedFonts) {
     return cachedFonts;
+  }
+
+  // If no API key is configured, return popular fonts fallback
+  if (!GOOGLE_FONTS_API_KEY) {
+    console.warn(
+      'Google Fonts API key not configured. Using fallback list of popular fonts.\n' +
+      'To enable full Google Fonts integration, add VITE_GOOGLE_FONTS_API_KEY to your .env file.\n' +
+      'Get your API key at: https://console.cloud.google.com/apis/credentials'
+    );
+    return getPopularFonts();
   }
 
   try {
@@ -29,6 +41,7 @@ export async function fetchGoogleFonts(): Promise<GoogleFont[]> {
     return fonts;
   } catch (error) {
     console.error('Error fetching Google Fonts:', error);
+    console.warn('Falling back to popular fonts list');
     // Return popular fonts as fallback
     return getPopularFonts();
   }

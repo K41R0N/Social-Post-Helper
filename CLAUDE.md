@@ -1,36 +1,64 @@
-# Instagram Carousel Generator - Architecture Documentation
+# Social Post Helper - Architecture Documentation
 
 ## Table of Contents
 1. [System Overview](#system-overview)
 2. [Architecture](#architecture)
 3. [User Flow](#user-flow)
-4. [Site Architecture](#site-architecture)
-5. [Data Flow](#data-flow)
+4. [Application Structure](#application-structure)
+5. [Data Flow & State Management](#data-flow--state-management)
 6. [Component Architecture](#component-architecture)
-7. [State Management](#state-management)
-8. [Export System](#export-system)
-9. [Template System](#template-system)
-10. [CSV Processing](#csv-processing)
-11. [Future Considerations](#future-considerations)
+7. [Storage System](#storage-system)
+8. [Custom Layout System](#custom-layout-system)
+9. [Font Management System](#font-management-system)
+10. [Export System](#export-system)
+11. [Template System](#template-system)
+12. [CSV Processing](#csv-processing)
+13. [Development Guide](#development-guide)
 
 ---
 
 ## System Overview
 
-The Instagram Carousel Generator is a client-side web application built with React 19 that enables users to create professional social media carousels through three primary methods:
+The Social Post Helper is a **multi-page client-side web application** built with React 18 that enables users to create professional social media carousels through a comprehensive project management interface. The application has evolved far beyond a simple carousel generator into a sophisticated design platform.
 
-1. **CSV Upload**: Import carousel data from standardized CSV files
-2. **Visual Editor**: Create and edit slides using a built-in WYSIWYG interface
-3. **Templates**: Start from pre-designed carousel templates
+### Core Features
 
-The application supports multiple export formats (Instagram, LinkedIn, Twitter, Facebook, Pinterest) and provides real-time preview with drag-and-drop slide management.
+**Project Management**
+- Create, rename, duplicate, and delete projects
+- Each project contains multiple carousels with metadata
+- Grid/list view toggle with search functionality
+- localStorage persistence with auto-save
 
-### Core Capabilities
-- **13 Layout Types**: Dictionary entry, minimalist focus, bold callout, header/body, quote highlight, list layout, stat showcase, split content, image overlay, two-part vertical, plus the Anti Marketing hook/content/cta sequence
-- **Multi-Platform Export**: 6 social media platform presets with automatic dimension scaling
-- **Visual CSV Editor**: Full CRUD operations on slides without external tools
-- **Template Library**: 5 pre-designed carousel templates across different categories
-- **Drag-and-Drop Reordering**: Intuitive slide sequence management
+**13 Built-in Layout Types + Custom Layouts**
+- Dictionary entry, minimalist focus, bold callout, header/body
+- Quote highlight, list layout, stat showcase, split content
+- Image overlay, two-part vertical
+- Anti-marketing layouts (hook, content, CTA)
+- **User-created custom layouts** with HTML/CSS editor
+
+**Font Management**
+- Upload custom fonts (TTF, OTF, WOFF, WOFF2)
+- Google Fonts integration with 1000+ font families
+- Separate font settings for heading, body, and accent text
+- Base64 encoding for localStorage storage
+
+**Multi-Platform Export**
+- 6 social media platform presets (Instagram, LinkedIn, Twitter, Facebook, Pinterest, Story)
+- Bulk ZIP download of entire carousels
+- High-quality PNG export at 2x resolution
+- Automatic dimension scaling
+
+**Advanced Editing**
+- Drag-and-drop slide reordering
+- CSV import/export for batch editing
+- Visual slide editor with live preview
+- Pan/zoom canvas for navigation
+- Template library with 6 pre-designed carousels
+
+### Target Platforms
+- **Desktop only** - Mobile users see a warning screen
+- Chrome/Edge (Chromium), Firefox, Safari supported
+- Requires JavaScript enabled
 
 ---
 
@@ -39,220 +67,319 @@ The application supports multiple export formats (Instagram, LinkedIn, Twitter, 
 ### Technology Stack
 
 **Frontend Framework**
-- React 19 (latest stable)
-- TypeScript for type safety
-- Wouter for lightweight routing
+- React 18.3.1 (not 19 as previously documented)
+- TypeScript 5.6.3 with strict mode
+- Wouter 3.3.5 for lightweight routing
 
-**Styling**
-- Tailwind CSS 4 with custom design tokens
-- shadcn/ui component library
-- Custom fonts: Kyrios (Standard, Text) and Merriweather
+**UI Framework**
+- Tailwind CSS 4.1.14 with custom design system
+- shadcn/ui component library (20+ Radix UI components)
+- class-variance-authority for variant styling
+- Dofinity design system with custom tokens
 
 **Key Libraries**
-- `html2canvas`: Client-side PNG export
-- `papaparse`: CSV parsing and generation
-- `@hello-pangea/dnd`: Drag-and-drop functionality
-- `sonner`: Toast notifications
+- `html2canvas` 1.4.1: Client-side PNG export
+- `papaparse` 5.5.3: CSV parsing and generation
+- `@hello-pangea/dnd` 18.0.1: Drag-and-drop functionality
+- `sonner` 2.0.7: Toast notifications
+- `jszip` 3.10.1: Bulk carousel downloads
+- `@monaco-editor/react` 4.7.0: VS Code-style code editor
+- `nanoid` 5.1.5: ID generation
+- `axios` 1.12.2: HTTP client for Google Fonts API
 
 **Build Tools**
-- Vite for fast development and optimized builds
-- pnpm for package management
+- Vite 7.1.7: Fast dev server and bundler
+- @tailwindcss/vite 4.1.3: Tailwind CSS v4 integration
+- pnpm: Package management
 
-### Application Type
-Pure client-side single-page application (SPA) with no backend dependencies. All data processing, rendering, and export happens in the browser.
+**Development Tools**
+- ESLint with TypeScript rules
+- Prettier for code formatting
+- TypeScript path aliases (@/, @shared/, @assets/)
+
+### Application Architecture
+
+**Type**: Multi-page application (MPA) with client-side routing
+
+**Deployment**: Static hosting (Vercel, Netlify, etc.)
+
+**Data Persistence**: localStorage for all data (projects, custom layouts, fonts, settings)
+
+**Platform Integration**: Manus runtime for deployment platform features
 
 ---
 
 ## User Flow
 
-### Primary User Journeys
-
-#### Journey 1: CSV Upload Workflow
+### Journey 1: New User Onboarding
 ```
-1. User lands on home page
-2. Clicks "Upload CSV File"
-3. Selects CSV file from file system
-4. System parses CSV and validates data
-5. Carousels are loaded into the application
-6. User navigates through slides using carousel controls
-7. User selects export platform preset
-8. User downloads individual slides or entire carousel
+1. User visits site → Redirected to /dashboard
+2. Empty state shows "Create your first project"
+3. User clicks "New Project" button
+4. Modal prompts for project name
+5. Project created → Redirected to /editor/{projectId}
+6. Editor shows empty carousel
+7. User chooses: Upload CSV, Browse Templates, or Create Manually
+8. User edits slides and exports
 ```
 
-#### Journey 2: Template-Based Creation
+### Journey 2: Template-Based Creation
 ```
-1. User lands on home page
-2. Clicks "Browse Templates"
-3. Modal displays 5 template options
-4. User selects a template (e.g., "Product Launch")
-5. Template loads with placeholder content
-6. User edits slides using visual editor
-7. User customizes colors, text, and layout
-8. User exports slides for chosen platform
-```
-
-#### Journey 3: Manual Creation
-```
-1. User uploads a minimal CSV or template
-2. User clicks "+" button in slide sidebar
-3. Slide editor modal opens
-4. User fills in slide properties:
-   - Slide number
-   - Layout type
-   - Colors (background, text, accent)
-   - Content (title, body, subtitle, quote)
-5. User saves slide
-6. Slide appears in carousel
-7. User reorders slides via drag-and-drop
-8. User exports final carousel
+1. User on Dashboard clicks "New Project"
+2. Names project (e.g., "Summer Campaign")
+3. In Editor, clicks "Browse Templates"
+4. Modal displays 6 template options
+5. User selects "Anti-Marketing Hook"
+6. Template loads with 3 pre-designed slides
+7. User edits text, colors, and layout
+8. User exports slides for Instagram
+9. Downloads ZIP with all slides
 ```
 
-### Navigation Patterns
+### Journey 3: CSV Import Workflow
+```
+1. User creates CSV file with carousel data
+2. Opens existing project or creates new one
+3. In Editor, clicks "Upload CSV"
+4. Selects CSV file from file system
+5. System validates and parses CSV
+6. Carousels appear in carousel selector
+7. User navigates through slides
+8. User adjusts colors and text via SlideEditor
+9. User exports to multiple platforms
+```
 
-**Home Page (No Carousels)**
-- Large centered card with upload and template buttons
-- Quick start instructions
-- Example CSV download link
+### Journey 4: Custom Layout Creation
+```
+1. User navigates to /settings
+2. Clicks "Custom Layouts" tab
+3. Clicks "Create New Layout"
+4. Names layout (e.g., "Product Showcase")
+5. Writes HTML template with variables: {{title}}, {{body_text}}, etc.
+6. Writes CSS styles in separate editor
+7. Previews layout with sample data
+8. Saves layout
+9. Layout appears in SlideEditor layout selector
+10. User can now use custom layout in any slide
+```
 
-**Main Editor View (With Carousels)**
-- Header: Carousel selector, export preset selector, action buttons
-- Left Sidebar: Draggable slide list with edit/delete controls
-- Center: Large slide preview (scaled to fit)
-- Footer: Slide indicators, download buttons
+### Journey 5: Font Customization
+```
+1. User navigates to /settings
+2. Clicks "Fonts" tab
+3. Chooses to upload custom font or browse Google Fonts
+4. If Google Fonts: searches "Poppins", previews, adds
+5. If custom: uploads TTF file, names it "Brand Font"
+6. In Font Settings section, assigns:
+   - Heading: Brand Font
+   - Body: Poppins
+   - Accent: Inter
+7. Returns to Editor
+8. All slides now use new fonts
+```
 
 ---
 
-## Site Architecture
+## Application Structure
 
 ### Route Structure
 ```
-/ (Home)
-  ├─ Empty State (no carousels)
-  │  └─ Upload/Template selection
-  └─ Editor State (carousels loaded)
-     ├─ Slide List Sidebar
-     ├─ Slide Preview
-     └─ Export Controls
+/ (Root)
+  └─> Redirects to /dashboard
+
+/dashboard
+  ├─ Empty State (no projects)
+  │  └─ "Create your first project" CTA
+  └─ Projects View (has projects)
+     ├─ Header with search and view toggle
+     ├─ Grid/List of project cards
+     └─ New Project button
+
+/editor/:projectId
+  ├─ Header
+  │  ├─ Back to Dashboard button
+  │  ├─ Project name display
+  │  ├─ Carousel selector dropdown
+  │  ├─ Export preset selector
+  │  └─ Action buttons (Upload CSV, Templates, Export CSV)
+  ├─ Slide List Sidebar
+  │  ├─ Add Slide button
+  │  └─ Draggable slide thumbnails with edit/delete
+  ├─ Main Canvas
+  │  ├─ PanZoomCanvas wrapper
+  │  └─ LayoutRenderer (current slide)
+  ├─ Slide Navigation
+  │  ├─ Previous/Next arrows
+  │  └─ Slide indicators (dots)
+  └─ Export Controls
+     ├─ Download Slide button
+     └─ Download All (ZIP) button
+
+/settings
+  ├─ Tabs
+  │  ├─ Custom Layouts
+  │  └─ Fonts
+  ├─ Custom Layouts Tab
+  │  ├─ Layout list with edit/delete
+  │  ├─ Create New Layout button
+  │  └─ Monaco code editor (HTML + CSS)
+  └─ Fonts Tab
+     ├─ Google Fonts browser
+     ├─ Custom font uploader
+     └─ Font settings (heading, body, accent)
+
+/404
+  └─ Not Found page with back to dashboard link
 ```
 
-### Component Hierarchy
-```
-App
-├── ThemeProvider
-│   └── TooltipProvider
-│       └── Router
-│           └── Home
-│               ├── FileInput (hidden)
-│               ├── Header
-│               │   ├── CarouselSelector
-│               │   ├── ExportPresetSelector
-│               │   └── ActionButtons
-│               ├── SlideListSidebar
-│               │   └── DragDropContext
-│               │       └── Droppable
-│               │           └── Draggable[] (slides)
-│               ├── SlidePreview
-│               │   ├── LayoutRenderer
-│               │   └── NavigationArrows
-│               ├── FooterControls
-│               │   ├── SlideIndicators
-│               │   └── DownloadButtons
-│               ├── SlideEditor (Modal)
-│               │   └── Dialog
-│               │       └── Form Fields
-│               └── TemplateSelector (Modal)
-│                   └── Dialog
-│                       └── Template Grid
-```
-
-### File Structure
+### File Structure (Actual)
 ```
 client/
-├── public/
-│   ├── fonts/                    # Custom font files
-│   │   ├── AT-KyriosStandard-*.otf
-│   │   └── AT-KyriosText-*.otf
-│   └── examples/                 # Example CSV files
-│       ├── solenopsism.csv
-│       ├── multi_carousel_example.csv
-│       └── template.csv
 ├── src/
 │   ├── components/
-│   │   ├── ui/                   # shadcn/ui components
+│   │   ├── ui/                      # 50+ shadcn/ui components
 │   │   │   ├── button.tsx
 │   │   │   ├── dialog.tsx
 │   │   │   ├── select.tsx
 │   │   │   ├── input.tsx
-│   │   │   └── textarea.tsx
-│   │   ├── LayoutRenderer.tsx    # Renders all 13 layout types
-│   │   └── SlideEditor.tsx       # Slide CRUD modal
-│   ├── lib/
-│   │   ├── csvParser.ts          # CSV parsing & validation
-│   │   ├── carouselTemplates.ts  # Template definitions
-│   │   └── exportPresets.ts      # Platform export configs
-│   ├── types/
-│   │   └── carousel.ts           # TypeScript interfaces
+│   │   │   ├── textarea.tsx
+│   │   │   ├── tabs.tsx
+│   │   │   └── ... (many more)
+│   │   ├── ErrorBoundary.tsx        # React error boundary
+│   │   ├── LayoutRenderer.tsx       # Renders all layout types (974 lines)
+│   │   ├── SlideEditor.tsx          # Slide CRUD modal
+│   │   ├── PanZoomCanvas.tsx        # Canvas with pan/zoom
+│   │   ├── MobileWarning.tsx        # Desktop-only enforcement
+│   │   ├── FontsSettings.tsx        # Font management UI
+│   │   └── CustomLayoutEditor.tsx   # Monaco editor wrapper
 │   ├── pages/
-│   │   ├── Home.tsx              # Main application page
-│   │   └── NotFound.tsx          # 404 page
+│   │   ├── Dashboard.tsx            # Project management (524 lines)
+│   │   ├── Editor.tsx               # Main carousel editor (869 lines)
+│   │   ├── Settings.tsx             # Settings page (518 lines)
+│   │   ├── NotFound.tsx             # 404 page
+│   │   └── Home.tsx                 # Redirect to dashboard
+│   ├── lib/
+│   │   ├── csvParser.ts             # CSV parsing & validation
+│   │   ├── carouselTemplates.ts     # 6 template definitions
+│   │   ├── exportPresets.ts         # Platform export configs
+│   │   ├── projectStorage.ts        # Project CRUD operations
+│   │   ├── layoutStorage.ts         # Custom layout storage
+│   │   ├── fontStorage.ts           # Font management storage
+│   │   ├── googleFonts.ts           # Google Fonts API integration
+│   │   ├── storageUtils.ts          # Storage quota checking
+│   │   ├── exportUtils.ts           # Export helper functions
+│   │   ├── utils.ts                 # General utilities
+│   │   └── constants.ts             # App-wide constants
+│   ├── types/
+│   │   ├── carousel.ts              # Carousel & slide types
+│   │   ├── project.ts               # Project types
+│   │   ├── customLayout.ts          # Custom layout types
+│   │   └── font.ts                  # Font types
 │   ├── contexts/
-│   │   └── ThemeContext.tsx      # Theme management
-│   ├── hooks/                    # Custom React hooks
-│   ├── const.ts                  # App constants
-│   ├── App.tsx                   # Root component
-│   ├── main.tsx                  # Entry point
-│   └── index.css                 # Global styles & fonts
+│   │   └── ThemeContext.tsx         # Dark/light theme
+│   ├── hooks/
+│   │   ├── useMobile.ts             # Mobile detection
+│   │   ├── usePersistFn.ts          # Persistent function refs
+│   │   └── useComposition.ts        # Input composition
+│   ├── App.tsx                      # Root component with routing
+│   ├── main.tsx                     # Entry point
+│   ├── index.css                    # Global styles & Tailwind
+│   ├── dofinity-bold.css            # Dofinity design system
+│   ├── design-system.css            # Design tokens
+│   └── platform-design.css          # Platform-specific styles
+├── public/
+│   └── examples/                    # Example CSV files
+│       ├── solenopsism.csv
+│       ├── multi_carousel_example.csv
+│       └── template.csv
+├── fonts/                           # Custom font files
+│   ├── AT-KyriosStandard-*.otf
+│   └── AT-KyriosText-*.otf
+├── vite.config.ts                   # Vite configuration
+├── tailwind.config.ts               # Tailwind CSS config
+├── tsconfig.json                    # TypeScript config
+└── package.json                     # Dependencies
 ```
 
 ---
 
-## Data Flow
+## Data Flow & State Management
 
 ### Data Models
 
-#### SlideData Interface
+#### Project Interface
 ```typescript
-interface SlideData {
-  carousel_id: string;           // Groups slides into carousels
-  slide_number: number;          // Order within carousel
-  layout_type: LayoutType;       // One of 13 layout types
-  background_color: string;      // Hex color
-  font_color: string;            // Hex color
-  accent_color: string;          // Hex color
-  title?: string;                // Optional main heading
-  body_text?: string;            // Optional main content
-  subtitle?: string;             // Optional secondary text
-  quote?: string;                // Optional quote/etymology
-  image_url?: string;            // Optional background image
+interface Project {
+  id: string;                  // Unique project ID (nanoid)
+  name: string;                // User-defined name
+  carousels: CarouselData[];   // Array of carousels
+  createdAt: number;           // Timestamp
+  updatedAt: number;           // Timestamp
+  color?: string;              // Project accent color
 }
 ```
 
 #### CarouselData Interface
 ```typescript
 interface CarouselData {
-  id: string;                    // Unique carousel identifier
-  slides: SlideData[];           // Array of slides
+  id: string;                  // Unique carousel ID
+  slides: SlideData[];         // Array of slides
 }
 ```
 
-#### ExportPreset Interface
+#### SlideData Interface
 ```typescript
-interface ExportPreset {
-  id: string;                    // Preset identifier
-  name: string;                  // Display name
-  platform: string;              // Platform name
-  width: number;                 // Export width in pixels
-  height: number;                // Export height in pixels
-  aspectRatio: string;           // Display ratio
-  description: string;           // Preset description
+interface SlideData {
+  carousel_id: string;         // Parent carousel ID
+  slide_number: number;        // Order within carousel (1-based)
+  layout_type: LayoutType | string; // Layout identifier
+  background_color: string;    // Hex color
+  font_color: string;          // Hex color
+  accent_color: string;        // Hex color
+  title?: string;              // Optional heading
+  body_text?: string;          // Optional main content
+  subtitle?: string;           // Optional subheading
+  quote?: string;              // Optional quote/callout
+  image_url?: string;          // Optional background image
 }
 ```
 
-### State Flow
-
-#### Application State (Home.tsx)
+#### CustomLayout Interface
 ```typescript
-const [carousels, setCarousels] = useState<CarouselData[]>([]);
+interface CustomLayout {
+  id: string;                  // Unique layout ID
+  name: string;                // Display name
+  htmlTemplate: string;        // HTML with {{variables}}
+  cssTemplate: string;         // CSS styles
+  description?: string;        // Optional description
+  createdAt: number;           // Timestamp
+}
+```
+
+#### FontSettings Interface
+```typescript
+interface FontSettings {
+  heading: string;             // Font family for headings
+  body: string;                // Font family for body text
+  accent: string;              // Font family for accents
+}
+```
+
+### State Management
+
+**Architecture**: Local state with React hooks (no Redux/Zustand)
+
+**Persistence**: localStorage with auto-save
+
+**State Locations**:
+- **Dashboard.tsx**: Project list, search, view mode
+- **Editor.tsx**: Current project, carousel selection, slide navigation
+- **Settings.tsx**: Custom layouts, fonts, Google Fonts search
+- **ThemeContext**: Dark/light mode preference
+
+#### Editor State (Editor.tsx)
+```typescript
+const [project, setProject] = useState<Project | null>(null);
 const [selectedCarouselIndex, setSelectedCarouselIndex] = useState(0);
 const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
 const [exportPreset, setExportPreset] = useState<ExportPreset>(getDefaultPreset());
@@ -262,287 +389,792 @@ const [templatesOpen, setTemplatesOpen] = useState(false);
 const [isExporting, setIsExporting] = useState(false);
 ```
 
-#### State Transitions
-
-**CSV Upload**
-```
-User selects file
-  → FileReader reads file
-  → parseCarouselCSV() processes content
-  → Validation runs on each slide
-  → setCarousels() updates state
-  → UI re-renders with loaded carousels
-```
-
-**Slide Editing**
-```
-User clicks edit button
-  → setEditingSlide(slide) stores current slide
-  → setEditorOpen(true) shows modal
-  → User modifies form fields
-  → User clicks save
-  → handleSaveSlide() updates carousel
-  → setCarousels() triggers re-render
-  → setEditorOpen(false) closes modal
+#### Storage Keys
+```typescript
+const STORAGE_KEYS = {
+  PROJECTS: 'carousel_projects',
+  CUSTOM_LAYOUTS: 'custom_layouts',
+  CUSTOM_FONTS: 'custom_fonts',
+  FONT_SETTINGS: 'font_settings',
+  THEME: 'theme_preference'
+};
 ```
 
-**Slide Reordering**
+### Data Flow Patterns
+
+#### Project Creation Flow
 ```
-User drags slide
-  → @hello-pangea/dnd tracks movement
-  → onDragEnd() fires with result
-  → Array manipulation reorders slides
-  → Slide numbers are recalculated
-  → setCarousels() updates state
-  → UI reflects new order
+User clicks "New Project"
+  → Dashboard shows name input modal
+  → User enters name
+  → generateId() creates unique ID
+  → New Project object created with empty carousels array
+  → saveProject() writes to localStorage
+  → Navigate to /editor/{projectId}
+  → Editor loads project from localStorage
 ```
 
-**Export**
+#### Auto-Save Flow
 ```
-User clicks download
-  → setIsExporting(true) disables controls
-  → html2canvas captures slideRef
-  → Canvas converted to PNG data URL
-  → Download link created and clicked
-  → setIsExporting(false) re-enables controls
+User edits slide in Editor
+  → handleSaveSlide() updates slide in carousel
+  → setProject() triggers re-render
+  → useEffect() watches project changes
+  → saveProject() debounced write to localStorage
+  → Toast notification: "Project saved"
+```
+
+#### Export Flow
+```
+User clicks "Download All"
+  → setIsExporting(true) shows loading state
+  → For each slide:
+    → html2canvas captures slideRef
+    → Canvas converted to PNG blob
+    → Add blob to JSZip instance
+  → Generate ZIP file
+  → Create download link
+  → Click link programmatically
+  → setIsExporting(false) hides loading
+  → Toast: "Carousel exported successfully"
 ```
 
 ---
 
 ## Component Architecture
 
-### LayoutRenderer Component
+### Core Components
 
-**Purpose**: Renders slides based on layout type
+#### LayoutRenderer.tsx (974 lines)
+**Purpose**: Renders slides based on layout type with font settings
 
-**Props**
-```typescript
-interface LayoutRendererProps {
-  slide: SlideData;
-}
-```
+**Key Features**:
+- Renders 13 built-in layout types
+- Renders custom layouts with template variable substitution
+- Applies font settings from fontStorage
+- Handles image overlays and background colors
+- Exports at correct dimensions based on preset
 
-**Layout Type Mapping**
+**Layout Type Switching**:
 ```typescript
 switch (slide.layout_type) {
-  case 'dictionary_entry':    // Title, pronunciation, etymology, definition
-  case 'minimalist_focus':    // Large title and body on solid background
-  case 'bold_callout':        // Centered large text for impact
-  case 'header_body':         // Simple title + body layout
-  case 'quote_highlight':     // Large quote with attribution
-  case 'list_layout':         // Title with bulleted/numbered list
-  case 'stat_showcase':       // Large number with context
-  case 'split_content':           // Two-column layout
-  case 'image_overlay':           // Text over background image
-  case 'two_part_vertical':       // Top/bottom sections
-  case 'anti_marketing_hook':     // Brutalist hook with strapline and kicker
-  case 'anti_marketing_content':  // Editorial block with accent rule
-  case 'anti_marketing_cta':      // CTA card with arrow and underline
+  case 'dictionary_entry':
+    return <DictionaryEntry slide={slide} fonts={fonts} />;
+  case 'minimalist_focus':
+    return <MinimalistFocus slide={slide} fonts={fonts} />;
+  // ... 11 more built-in layouts
+  default:
+    // Custom layout (format: "custom-{id}")
+    if (slide.layout_type.startsWith('custom-')) {
+      return <CustomLayoutRenderer slide={slide} layoutId={layoutId} />;
+    }
 }
 ```
 
-**Rendering Strategy**
-- Each layout type has dedicated JSX structure
-- Colors applied via inline styles for export compatibility
-- Fonts applied via fontFamily CSS property
-- Text parsing handles `<br />` tags for line breaks
-- Responsive sizing based on export preset dimensions
-
-### SlideEditor Component
-
-**Purpose**: Modal for creating/editing slides
-
-**Props**
+**Template Variable Substitution**:
 ```typescript
-interface SlideEditorProps {
-  open: boolean;
-  onClose: () => void;
-  onSave: (slide: SlideData) => void;
-  slide?: SlideData;              // Undefined for new slides
-  carouselId: string;
-  nextSlideNumber: number;
-}
+const renderCustomLayout = (layout: CustomLayout, slide: SlideData) => {
+  let html = layout.htmlTemplate;
+  html = html.replace(/\{\{title\}\}/g, slide.title || '');
+  html = html.replace(/\{\{body_text\}\}/g, slide.body_text || '');
+  html = html.replace(/\{\{subtitle\}\}/g, slide.subtitle || '');
+  html = html.replace(/\{\{quote\}\}/g, slide.quote || '');
+  // ... more replacements
+  return html;
+};
 ```
 
-**Form Fields**
-- Slide number (number input)
-- Layout type (dropdown select)
-- Background color (color picker + text input)
-- Font color (color picker + text input)
-- Accent color (color picker + text input)
-- Title (text input)
-- Body text (textarea)
-- Subtitle (text input)
-- Quote (textarea)
-- Image URL (text input)
+**Performance Consideration**: Should use React.memo to prevent unnecessary re-renders
 
-**Validation**
-- All color fields must be valid hex codes
-- Slide number must be positive integer
-- Layout type must be one of 13 valid types
-- Required fields depend on layout type
+#### SlideEditor.tsx
+**Purpose**: Modal for creating/editing slides with all layout types
+
+**Features**:
+- Form with all slide properties
+- Color pickers with hex input validation
+- Layout type selector (includes custom layouts dynamically)
+- Live validation and error messages
+- Supports both create and edit modes
+
+**Layout Type Selector**:
+```typescript
+const layoutOptions = [
+  ...BUILT_IN_LAYOUTS,
+  ...getCustomLayouts().map(l => ({
+    id: `custom-${l.id}`,
+    name: l.name
+  }))
+];
+```
+
+#### PanZoomCanvas.tsx
+**Purpose**: Wrapper for slide preview with pan/zoom functionality
+
+**Features**:
+- Mouse drag to pan
+- Scroll wheel to zoom
+- Reset view button
+- Maintains aspect ratio
+- Performance optimized with requestAnimationFrame
+
+**Usage**:
+```typescript
+<PanZoomCanvas>
+  <LayoutRenderer slide={currentSlide} exportPreset={exportPreset} />
+</PanZoomCanvas>
+```
+
+#### FontsSettings.tsx (14KB)
+**Purpose**: Comprehensive font management interface
+
+**Features**:
+- Google Fonts API integration with search
+- Custom font upload (drag-and-drop)
+- Font preview with sample text
+- Font settings for heading/body/accent
+- Base64 encoding for localStorage
+- Error handling for API failures
+
+**Google Fonts Integration**:
+```typescript
+const searchGoogleFonts = async (query: string) => {
+  const apiKey = import.meta.env.VITE_GOOGLE_FONTS_API_KEY;
+  const response = await axios.get(
+    `https://www.googleapis.com/webfonts/v1/webfonts`,
+    { params: { key: apiKey, sort: 'popularity' } }
+  );
+  return response.data.items.filter(font =>
+    font.family.toLowerCase().includes(query.toLowerCase())
+  );
+};
+```
+
+#### CustomLayoutEditor.tsx
+**Purpose**: Monaco editor for HTML/CSS editing
+
+**Features**:
+- Syntax highlighting for HTML and CSS
+- Auto-completion
+- Error highlighting
+- Live preview with sample data
+- Import/export layouts as JSON
+
+**Template Variables**:
+```
+{{title}}          - Slide title
+{{body_text}}      - Main content
+{{subtitle}}       - Subheading
+{{quote}}          - Quote text
+{{image_url}}      - Background image
+{{background_color}} - Background color
+{{font_color}}     - Text color
+{{accent_color}}   - Accent color
+```
+
+### Page Components
+
+#### Dashboard.tsx (524 lines)
+**Purpose**: Project management interface
+
+**Features**:
+- Grid/list view toggle
+- Search projects by name
+- Create new project modal
+- Rename project inline editing
+- Duplicate project
+- Delete with confirmation
+- Empty state with onboarding
+- Mobile detection with warning
+
+**State**:
+```typescript
+const [projects, setProjects] = useState<Project[]>([]);
+const [searchQuery, setSearchQuery] = useState('');
+const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+const [isCreating, setIsCreating] = useState(false);
+```
+
+#### Editor.tsx (869 lines)
+**Purpose**: Main carousel editing interface
+
+**Features**:
+- CSV upload/download
+- Template selector modal
+- Drag-and-drop slide reordering
+- Slide editor modal
+- Export preset selector
+- Bulk export with JSZip
+- Auto-save on changes
+- Keyboard navigation (arrow keys)
+
+**Key Functions**:
+```typescript
+const handleCSVUpload = (file: File) => { /* ... */ };
+const handleLoadTemplate = (templateId: string) => { /* ... */ };
+const handleSlideReorder = (result: DropResult) => { /* ... */ };
+const handleDownloadSlide = () => { /* ... */ };
+const handleDownloadAll = () => { /* ... */ };
+```
+
+#### Settings.tsx (518 lines)
+**Purpose**: Application settings and customization
+
+**Features**:
+- Tabbed interface (Custom Layouts | Fonts)
+- Custom layout CRUD operations
+- Monaco code editor integration
+- Google Fonts browser
+- Custom font upload
+- Font settings management
+- Import/export layouts
+
+**Tabs**:
+```typescript
+<Tabs defaultValue="layouts">
+  <TabsList>
+    <TabsTrigger value="layouts">Custom Layouts</TabsTrigger>
+    <TabsTrigger value="fonts">Fonts</TabsTrigger>
+  </TabsList>
+  <TabsContent value="layouts">
+    <CustomLayoutEditor />
+  </TabsContent>
+  <TabsContent value="fonts">
+    <FontsSettings />
+  </TabsContent>
+</Tabs>
+```
 
 ---
 
-## State Management
+## Storage System
 
-### Local State Pattern
+### Architecture
 
-The application uses React's built-in useState for all state management. No external state management library (Redux, Zustand, etc.) is used.
+**Storage Backend**: localStorage (browser API)
 
-**Rationale**
-- Single-page application with limited complexity
-- State is localized to Home component
-- No need for global state across routes
-- Props drilling is minimal due to flat component hierarchy
+**Quota**: ~5-10MB depending on browser (no checking currently implemented)
 
-### State Persistence
+**Serialization**: JSON with base64 encoding for binary data (fonts)
 
-**Current Behavior**: No persistence. Refreshing the page clears all data.
+**Error Handling**: Try-catch blocks with fallback to default values
 
-**Workaround**: Users can export to CSV and re-import later.
+### Storage Modules
 
-**Future Enhancement**: localStorage or IndexedDB for auto-save functionality.
+#### projectStorage.ts
+```typescript
+export function getAllProjects(): Project[] {
+  const data = localStorage.getItem(STORAGE_KEYS.PROJECTS);
+  return data ? JSON.parse(data) : [];
+}
+
+export function getProject(id: string): Project | null {
+  const projects = getAllProjects();
+  return projects.find(p => p.id === id) || null;
+}
+
+export function saveProject(project: Project): void {
+  const projects = getAllProjects();
+  const index = projects.findIndex(p => p.id === project.id);
+  if (index >= 0) {
+    projects[index] = { ...project, updatedAt: Date.now() };
+  } else {
+    projects.push({ ...project, createdAt: Date.now(), updatedAt: Date.now() });
+  }
+  localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(projects));
+}
+
+export function deleteProject(id: string): void {
+  const projects = getAllProjects().filter(p => p.id !== id);
+  localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(projects));
+}
+```
+
+#### layoutStorage.ts
+```typescript
+export function getCustomLayouts(): CustomLayout[] {
+  const data = localStorage.getItem(STORAGE_KEYS.CUSTOM_LAYOUTS);
+  return data ? JSON.parse(data) : [];
+}
+
+export function saveCustomLayout(layout: CustomLayout): void {
+  const layouts = getCustomLayouts();
+  layouts.push(layout);
+  localStorage.setItem(STORAGE_KEYS.CUSTOM_LAYOUTS, JSON.stringify(layouts));
+}
+
+export function updateCustomLayout(id: string, updates: Partial<CustomLayout>): void {
+  const layouts = getCustomLayouts();
+  const index = layouts.findIndex(l => l.id === id);
+  if (index >= 0) {
+    layouts[index] = { ...layouts[index], ...updates };
+    localStorage.setItem(STORAGE_KEYS.CUSTOM_LAYOUTS, JSON.stringify(layouts));
+  }
+}
+
+export function deleteCustomLayout(id: string): void {
+  const layouts = getCustomLayouts().filter(l => l.id !== id);
+  localStorage.setItem(STORAGE_KEYS.CUSTOM_LAYOUTS, JSON.stringify(layouts));
+}
+```
+
+#### fontStorage.ts
+```typescript
+export function getCustomFonts(): CustomFont[] {
+  const data = localStorage.getItem(STORAGE_KEYS.CUSTOM_FONTS);
+  return data ? JSON.parse(data) : [];
+}
+
+export function saveCustomFont(font: CustomFont): void {
+  const fonts = getCustomFonts();
+  fonts.push(font);
+  localStorage.setItem(STORAGE_KEYS.CUSTOM_FONTS, JSON.stringify(fonts));
+}
+
+export function getFontSettings(): FontSettings {
+  const data = localStorage.getItem(STORAGE_KEYS.FONT_SETTINGS);
+  return data ? JSON.parse(data) : {
+    heading: 'AT-Kyrios Standard',
+    body: 'AT-Kyrios Text',
+    accent: 'Merriweather'
+  };
+}
+
+export function saveFontSettings(settings: FontSettings): void {
+  localStorage.setItem(STORAGE_KEYS.FONT_SETTINGS, JSON.stringify(settings));
+}
+```
+
+### Storage Limitations
+
+**Current Issues**:
+1. ❌ No quota checking before saving
+2. ❌ Custom fonts stored as base64 (inefficient)
+3. ❌ No compression for large datasets
+4. ❌ No error recovery if quota exceeded
+
+**Recommendations**:
+1. ✅ Implement quota checking (see Phase 1 tasks)
+2. ✅ Warn users when approaching limit
+3. ✅ Compress JSON data with LZ-string
+4. ✅ Consider IndexedDB for large fonts
+
+---
+
+## Custom Layout System
+
+### Overview
+
+The custom layout system allows users to create their own slide layouts using HTML and CSS templates with variable substitution.
+
+### Layout Template Format
+
+**HTML Template**:
+```html
+<div class="custom-layout">
+  <h1 class="title">{{title}}</h1>
+  <p class="body">{{body_text}}</p>
+  <div class="accent-bar" style="background: {{accent_color}}"></div>
+</div>
+```
+
+**CSS Template**:
+```css
+.custom-layout {
+  background: {{background_color}};
+  color: {{font_color}};
+  padding: 40px;
+  font-family: {{heading_font}};
+}
+
+.title {
+  font-size: 48px;
+  margin-bottom: 20px;
+}
+
+.body {
+  font-size: 24px;
+  line-height: 1.5;
+}
+
+.accent-bar {
+  width: 100%;
+  height: 4px;
+  margin-top: 20px;
+}
+```
+
+### Available Variables
+
+| Variable | Description | Example Value |
+|----------|-------------|---------------|
+| `{{title}}` | Slide title | "Welcome to Our Product" |
+| `{{body_text}}` | Main content | "This is the main content..." |
+| `{{subtitle}}` | Subheading | "A brief description" |
+| `{{quote}}` | Quote text | "The best product ever" |
+| `{{image_url}}` | Background image URL | "https://..." |
+| `{{background_color}}` | Background hex color | "#1a1a1a" |
+| `{{font_color}}` | Text hex color | "#ffffff" |
+| `{{accent_color}}` | Accent hex color | "#3b82f6" |
+| `{{heading_font}}` | Font family for headings | "Poppins, sans-serif" |
+| `{{body_font}}` | Font family for body | "Inter, sans-serif" |
+| `{{accent_font}}` | Font family for accents | "Merriweather, serif" |
+
+### Security Considerations
+
+**XSS Risk**: Custom layouts use `dangerouslySetInnerHTML`
+
+**Current Implementation** (UNSAFE):
+```typescript
+<div dangerouslySetInnerHTML={{ __html: renderedHTML }} />
+```
+
+**Recommended Fix**: Sanitize with DOMPurify
+```typescript
+import DOMPurify from 'isomorphic-dompurify';
+
+<div dangerouslySetInnerHTML={{
+  __html: DOMPurify.sanitize(renderedHTML, {
+    ALLOWED_TAGS: ['div', 'p', 'h1', 'h2', 'h3', 'span', 'img'],
+    ALLOWED_ATTR: ['class', 'style', 'src', 'alt']
+  })
+}} />
+```
+
+### Import/Export
+
+**Export Format** (JSON):
+```json
+{
+  "id": "layout-abc123",
+  "name": "Product Showcase",
+  "htmlTemplate": "<div>...</div>",
+  "cssTemplate": ".custom-layout { ... }",
+  "description": "A layout for showcasing products",
+  "createdAt": 1234567890
+}
+```
+
+Users can export layouts as JSON files and share them with others or use as backups.
+
+---
+
+## Font Management System
+
+### Architecture
+
+The font management system supports two sources:
+1. **Google Fonts API**: 1000+ font families
+2. **Custom Fonts**: User-uploaded font files
+
+### Google Fonts Integration
+
+**API Endpoint**: `https://www.googleapis.com/webfonts/v1/webfonts`
+
+**API Key**: Stored in environment variable `VITE_GOOGLE_FONTS_API_KEY`
+
+**Current Issue**: Placeholder key in source code (needs migration to .env)
+
+**Search Flow**:
+```
+User types "Poppins" in search
+  → searchGoogleFonts('Poppins') called
+  → Axios GET request to Google Fonts API
+  → Filter results by query
+  → Display font cards with preview
+  → User clicks "Add Font"
+  → Font added to available fonts
+  → Font appears in font settings dropdowns
+```
+
+**Font Loading**:
+```typescript
+// Dynamically load Google Font
+const loadGoogleFont = (fontFamily: string) => {
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.href = `https://fonts.googleapis.com/css2?family=${fontFamily.replace(' ', '+')}:wght@400;700&display=swap`;
+  document.head.appendChild(link);
+};
+```
+
+### Custom Font Upload
+
+**Supported Formats**: TTF, OTF, WOFF, WOFF2
+
+**Upload Flow**:
+```
+User selects font file
+  → FileReader reads file as ArrayBuffer
+  → Convert to base64 string
+  → Create CustomFont object
+  → Save to localStorage
+  → Generate @font-face CSS
+  → Inject CSS into document
+  → Font available for use
+```
+
+**Font Object**:
+```typescript
+interface CustomFont {
+  id: string;
+  name: string;
+  family: string;
+  data: string;        // Base64-encoded font file
+  format: string;      // 'truetype', 'opentype', 'woff', 'woff2'
+  createdAt: number;
+}
+```
+
+**@font-face Generation**:
+```typescript
+const generateFontFace = (font: CustomFont) => {
+  return `
+    @font-face {
+      font-family: '${font.family}';
+      src: url(data:font/${font.format};base64,${font.data}) format('${font.format}');
+      font-weight: normal;
+      font-style: normal;
+    }
+  `;
+};
+```
+
+### Font Settings
+
+Users configure three font categories:
+
+1. **Heading Font**: Used for slide titles (h1, h2)
+2. **Body Font**: Used for main content (p, div)
+3. **Accent Font**: Used for quotes, callouts, special text
+
+**Settings Storage**:
+```typescript
+{
+  "heading": "Poppins",
+  "body": "Inter",
+  "accent": "Merriweather"
+}
+```
+
+**Application**:
+```typescript
+// In LayoutRenderer
+const fonts = getFontSettings();
+
+<h1 style={{ fontFamily: fonts.heading }}>
+  {slide.title}
+</h1>
+<p style={{ fontFamily: fonts.body }}>
+  {slide.body_text}
+</p>
+```
+
+### Storage Concerns
+
+**Issue**: Base64-encoded fonts can be very large (200KB - 2MB per font)
+
+**Example**:
+- Poppins Regular TTF: ~180KB → ~240KB base64
+- Multiple fonts quickly fill localStorage (5-10MB limit)
+
+**Recommendation**:
+- Implement quota checking
+- Warn users before uploading large fonts
+- Consider IndexedDB for font storage
+- Provide font optimization tips
 
 ---
 
 ## Export System
 
-### Export Process Flow
-
-```
-1. User selects export preset (platform + dimensions)
-2. User clicks "Download Slide" or "Download All"
-3. Application sets isExporting = true
-4. For each slide to export:
-   a. Ensure slide is rendered in DOM (via slideRef)
-   b. Call html2canvas(slideRef.current, options)
-   c. Canvas is created with 2x scale for quality
-   d. Canvas converted to PNG data URL
-   e. Download link created with filename
-   f. Link clicked programmatically
-   g. Wait 300ms before next slide (rate limiting)
-5. Application sets isExporting = false
-```
-
 ### Export Presets
 
-**Instagram Square** (1080x1080)
-- Default preset
-- 1:1 aspect ratio
-- Optimal for Instagram feed posts
+**6 Platform Presets**:
 
-**Instagram Story** (1080x1920)
-- 9:16 aspect ratio
-- Vertical format for Stories and Reels
+| Preset | Dimensions | Aspect Ratio | Platform |
+|--------|-----------|--------------|----------|
+| Instagram Square | 1080x1080 | 1:1 | Instagram Feed |
+| Instagram Story | 1080x1920 | 9:16 | Stories/Reels |
+| LinkedIn Post | 1200x1200 | 1:1 | LinkedIn |
+| Twitter Post | 1200x675 | 16:9 | Twitter/X |
+| Facebook Post | 1200x630 | 1.91:1 | Facebook |
+| Pinterest Pin | 1000x1500 | 2:3 | Pinterest |
 
-**LinkedIn Post** (1200x1200)
-- 1:1 aspect ratio
-- Slightly larger than Instagram for quality
+### Export Process
 
-**Twitter Post** (1200x675)
-- 16:9 aspect ratio
-- Landscape format for Twitter/X
+**Single Slide Export**:
+```
+1. User clicks "Download Slide"
+2. setIsExporting(true) disables UI
+3. html2canvas captures slideRef with options:
+   - scale: 2 (2x resolution)
+   - width: exportPreset.width
+   - height: exportPreset.height
+4. Canvas converted to PNG blob
+5. Create download link with filename
+6. Click link programmatically
+7. setIsExporting(false) enables UI
+8. Toast: "Slide downloaded"
+```
 
-**Facebook Post** (1200x630)
-- 1.91:1 aspect ratio
-- Optimized for Facebook feed
+**Bulk Export (All Slides)**:
+```
+1. User clicks "Download All"
+2. Create new JSZip instance
+3. For each slide in carousel:
+   a. Render slide
+   b. Capture with html2canvas
+   c. Convert to blob
+   d. Add to zip: zip.file(`slide-${n}.png`, blob)
+   e. Wait 300ms (rate limiting)
+4. Generate zip file: zip.generateAsync()
+5. Create download link
+6. Click link: `{carousel_id}-{preset_id}.zip`
+7. Toast: "Carousel exported"
+```
 
-**Pinterest Pin** (1000x1500)
-- 2:3 aspect ratio
-- Vertical format for Pinterest
+### Export Configuration
 
-### Export Quality Settings
-
+**html2canvas Options**:
 ```typescript
-const canvasOptions = {
-  scale: 2,                    // 2x resolution for retina displays
-  backgroundColor: null,       // Transparent background
-  logging: false,              // Disable console logs
-  width: exportPreset.width,   // Target width
-  height: exportPreset.height, // Target height
+const exportOptions = {
+  scale: 2,                      // 2x for retina displays
+  backgroundColor: null,         // Transparent background
+  logging: false,                // Disable console logs
+  width: exportPreset.width,
+  height: exportPreset.height,
+  useCORS: true,                 // Allow cross-origin images
+  allowTaint: false,             // Security
+  windowWidth: exportPreset.width,
+  windowHeight: exportPreset.height
 };
 ```
 
 ### Filename Convention
 
+**Single Slide**:
 ```
 {carousel_id}-slide-{slide_number}-{preset_id}.png
 
-Examples:
-- solenopsism-slide-1-instagram-square.png
-- product-launch-slide-3-twitter-post.png
+Example: product-launch-slide-1-instagram-square.png
+```
+
+**Bulk ZIP**:
+```
+{carousel_id}-{preset_id}.zip
+
+Example: product-launch-instagram-square.zip
+```
+
+### Performance Issues
+
+**Current Bottleneck**: html2canvas is synchronous and blocks main thread
+
+**Impact**:
+- UI freezes during export
+- Large carousels (10+ slides) cause noticeable lag
+- Browser may show "page unresponsive" warning
+
+**Recommended Solution**: Web Workers
+```typescript
+// exportWorker.ts
+self.onmessage = async (e) => {
+  const { slideHTML, options } = e.data;
+  const canvas = await html2canvas(slideHTML, options);
+  const blob = await canvas.toBlob();
+  self.postMessage({ blob });
+};
+
+// Editor.tsx
+const worker = new Worker(new URL('./exportWorker.ts', import.meta.url));
+worker.postMessage({ slideHTML, options });
+worker.onmessage = (e) => {
+  downloadBlob(e.data.blob);
+};
 ```
 
 ---
 
 ## Template System
 
-### Template Structure
+### Available Templates
 
-Templates are defined in `client/src/lib/carouselTemplates.ts` as static data.
+**6 Pre-designed Templates**:
 
+1. **Anti-Marketing Hook** (Anti-Marketing)
+   - 3 slides
+   - Brutalist design with bold typography
+   - Sequence: Hook → Content → CTA
+   - Color scheme: Black, white, red accent
+
+2. **Product Launch** (Business)
+   - 5 slides
+   - Professional corporate style
+   - Sequence: Intro → Problem → Solution → Features → CTA
+   - Color scheme: Dark blue, white, light blue
+
+3. **Educational Series** (Education)
+   - 5 slides
+   - Clean, readable layout
+   - Sequence: Title → Definition → Importance → Steps → Follow-up
+   - Color scheme: Warm yellow and orange
+
+4. **Quote Collection** (Inspiration)
+   - 5 slides
+   - Minimalist quote layouts
+   - Sequence: Title → Quote 1 → Quote 2 → Quote 3 → Engagement
+   - Color scheme: Pink and white
+
+5. **Stats Showcase** (Business)
+   - 5 slides
+   - Large numbers with context
+   - Sequence: Title → Stat 1 → Stat 2 → Stat 3 → CTA
+   - Color scheme: Green and white
+
+6. **Brand Story** (Branding)
+   - 5 slides
+   - Storytelling layouts
+   - Sequence: Title → Origin → Mission → Values → CTA
+   - Color scheme: Purple and white
+
+### Template Loading
+
+**Template Structure**:
 ```typescript
 interface CarouselTemplate {
-  id: string;                    // Unique identifier
-  name: string;                  // Display name
-  description: string;           // Short description
-  category: string;              // Category for grouping
-  slides: Omit<SlideData, 'carousel_id'>[]; // Slide definitions
+  id: string;
+  name: string;
+  description: string;
+  category: string;
+  slides: Omit<SlideData, 'carousel_id'>[];
 }
 ```
 
-### Available Templates
-
-**1. Product Launch** (Business)
-- 5 slides
-- Sequence: Bold intro → Problem → Solution → Features → CTA
-- Color scheme: Dark, white, light blue, blue accent
-
-**2. Educational Series** (Education)
-- 5 slides
-- Sequence: Title → Definition → Importance → Steps → Follow-up
-- Color scheme: Warm yellows and oranges
-
-**3. Quote Collection** (Inspiration)
-- 5 slides
-- Sequence: Title → Quote 1 → Quote 2 → Quote 3 → Engagement
-- Color scheme: Pink and white
-
-**4. Stats Showcase** (Business)
-- 5 slides
-- Sequence: Title → Stat 1 → Stat 2 → Stat 3 → CTA
-- Color scheme: Green and white
-
-**5. Brand Story** (Branding)
-- 5 slides
-- Sequence: Title → Origin → Mission → Values → CTA
-- Color scheme: Purple and white
-
-### Template Loading Process
-
+**Loading Process**:
 ```
-1. User clicks "Browse Templates"
-2. Modal displays all templates in grid
-3. User clicks a template card
+1. User in Editor clicks "Browse Templates"
+2. Modal displays template grid with previews
+3. User clicks template card
 4. handleLoadTemplate(templateId) fires
-5. Template data retrieved from CAROUSEL_TEMPLATES
-6. New CarouselData object created
-7. Template slides copied with carousel_id added
-8. New carousel appended to carousels array
+5. Template retrieved from CAROUSEL_TEMPLATES
+6. New carousel created with nanoid()
+7. Slides copied with carousel_id assigned
+8. Carousel added to project.carousels array
 9. selectedCarouselIndex set to new carousel
-10. Modal closes
-11. User can now edit template content
+10. Auto-save triggered
+11. Modal closes
+12. User can now edit template
 ```
 
 ### Template Customization
 
-Users can customize templates by:
-- Editing text content via SlideEditor
-- Changing colors (background, font, accent)
-- Reordering slides via drag-and-drop
-- Adding or removing slides
-- Changing layout types
+Users can fully customize templates:
+- Edit all text content
+- Change all colors
+- Modify layout types
+- Add/remove slides
+- Reorder slides
+- Export to CSV for future use
 
 ---
 
@@ -550,230 +1182,474 @@ Users can customize templates by:
 
 ### CSV Format Specification
 
-**Required Columns**
-- `carousel_id`: Groups slides into carousels
-- `slide_number`: Numeric order (1, 2, 3...)
-- `layout_type`: One of 13 valid layout types
-- `background_color`: Hex color code
-- `font_color`: Hex color code
-- `accent_color`: Hex color code
+**Required Columns**:
+```
+carousel_id, slide_number, layout_type,
+background_color, font_color, accent_color
+```
 
-**Optional Columns**
-- `title`: Main heading text
-- `body_text`: Main content text
-- `subtitle`: Secondary text
-- `quote`: Quote or etymology text
-- `image_url`: Background image URL
+**Optional Columns**:
+```
+title, body_text, subtitle, quote, image_url
+```
 
-### CSV Parsing Flow
+**Example CSV**:
+```csv
+carousel_id,slide_number,layout_type,background_color,font_color,accent_color,title,body_text
+product-launch,1,bold_callout,#1a1a1a,#ffffff,#3b82f6,Welcome,Our new product is here
+product-launch,2,header_body,#ffffff,#1a1a1a,#3b82f6,Features,Check out these amazing features
+```
+
+### CSV Import Flow
 
 ```
-1. User selects CSV file
-2. FileReader reads file as text
-3. parseCarouselCSV(csvContent) called
-4. PapaParse parses CSV into array of objects
-5. Rows grouped by carousel_id
-6. Each group converted to CarouselData
-7. Validation runs on each slide
-8. Errors collected and displayed
-9. Valid carousels returned
-10. State updated with new carousels
+1. User clicks "Upload CSV" in Editor
+2. File input dialog opens
+3. User selects CSV file
+4. FileReader reads file as text
+5. parseCarouselCSV(csvContent) called
+6. PapaParse parses CSV:
+   - header: true (first row as keys)
+   - skipEmptyLines: true
+   - transformHeader: (h) => h.trim()
+7. Rows grouped by carousel_id
+8. Each group converted to CarouselData
+9. Validation for each slide:
+   - Valid layout_type
+   - Valid hex colors
+   - Positive slide_number
+10. Errors collected and displayed in toast
+11. Valid carousels added to project
+12. First carousel selected
+13. Auto-save triggered
+```
+
+### CSV Export Flow
+
+```
+1. User clicks "Export CSV" in Editor
+2. All carousels flattened to slide array
+3. PapaParse.unparse(slides) converts to CSV
+4. Blob created with CSV content
+5. Download link created
+6. Filename: `{project_name}-export.csv`
+7. Click link programmatically
+8. Toast: "CSV exported"
 ```
 
 ### Validation Rules
 
-**Slide Number**
-- Must be positive integer
-- No duplicate slide numbers within same carousel
+**Layout Type**:
+```typescript
+const validLayouts = [
+  'dictionary_entry', 'minimalist_focus', 'bold_callout',
+  'header_body', 'quote_highlight', 'list_layout',
+  'stat_showcase', 'split_content', 'image_overlay',
+  'two_part_vertical', 'anti_marketing_hook',
+  'anti_marketing_content', 'anti_marketing_cta'
+];
 
-**Layout Type**
-- Must be one of: dictionary_entry, minimalist_focus, bold_callout, header_body, quote_highlight, list_layout, stat_showcase, split_content, image_overlay, two_part_vertical
-
-**Colors**
-- Must be valid hex codes (#RRGGBB or #RGB)
-- Case insensitive
-
-**Content Fields**
-- No strict validation (can be empty)
-- HTML tags in body_text are parsed for line breaks
-
-### CSV Export
-
-Users can export their carousels back to CSV format:
-
-```
-1. User clicks "Export CSV"
-2. All carousels flattened to array of slide objects
-3. PapaParse converts to CSV string
-4. Blob created with CSV content
-5. Download link created
-6. File downloaded as "carousels-export.csv"
+// Also accept custom layouts: custom-{id}
+const isValid = validLayouts.includes(layout_type) ||
+                layout_type.startsWith('custom-');
 ```
 
-This allows users to:
-- Save their work for later editing
-- Share carousels with others
-- Version control via CSV files
-- Batch edit in spreadsheet software
+**Colors**:
+```typescript
+const hexColorRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
+
+if (!hexColorRegex.test(background_color)) {
+  errors.push(`Invalid background_color: ${background_color}`);
+}
+```
+
+**Slide Number**:
+```typescript
+if (isNaN(slide_number) || slide_number < 1) {
+  errors.push(`Invalid slide_number: ${slide_number}`);
+}
+```
+
+### Error Handling
+
+**Error Display**:
+```typescript
+if (errors.length > 0) {
+  toast.error(
+    `CSV validation failed:\n${errors.join('\n')}`,
+    { duration: 5000 }
+  );
+  return;
+}
+```
+
+**Partial Import**:
+- Valid carousels are imported
+- Invalid carousels are skipped with error message
+- User can fix CSV and re-import
 
 ---
 
-## Future Considerations
-
-### Scalability
-
-**Current Limitations**
-- All data stored in memory (no persistence)
-- Large CSV files (1000+ slides) may cause performance issues
-- No pagination or virtualization for slide lists
-
-**Potential Solutions**
-- Implement virtual scrolling for large slide lists
-- Add localStorage/IndexedDB for persistence
-- Lazy load slide previews
-- Implement carousel pagination
-
-### Performance Optimization
-
-**Current Bottlenecks**
-- html2canvas is synchronous and blocks UI during export
-- Drag-and-drop re-renders entire slide list
-- No memoization of LayoutRenderer
-
-**Optimization Opportunities**
-- Use React.memo for LayoutRenderer
-- Implement Web Workers for export processing
-- Add loading states and progress indicators
-- Optimize re-render triggers with useCallback/useMemo
-
-### Accessibility
-
-**Current State**
-- Basic keyboard navigation supported
-- No ARIA labels on custom components
-- Color contrast not validated
-
-**Improvements Needed**
-- Add ARIA labels to all interactive elements
-- Implement keyboard shortcuts (e.g., arrow keys for navigation)
-- Add focus management for modals
-- Validate color contrast ratios
-- Add alt text fields for slides
-
-### Browser Compatibility
-
-**Tested Browsers**
-- Chrome/Edge (Chromium) - Full support
-- Firefox - Full support
-- Safari - Full support (with minor CSS differences)
-
-**Known Issues**
-- html2canvas may have rendering differences across browsers
-- Custom fonts require proper CORS headers
-- File downloads may behave differently on mobile
-
-### Mobile Support
-
-**Current State**
-- Responsive design with Tailwind breakpoints
-- Touch events supported for drag-and-drop
-- Mobile file upload supported
-
-**Limitations**
-- Small screen makes slide editing challenging
-- Export preview may be too small on mobile
-- Drag-and-drop less intuitive on touch devices
-
-**Recommendations**
-- Consider mobile-specific UI for slide editor
-- Add pinch-to-zoom for slide preview
-- Implement swipe gestures for navigation
-
----
-
-## Development Workflow
+## Development Guide
 
 ### Local Development
 
+**Setup**:
 ```bash
+# Clone repository
+git clone <repo_url>
+cd Social-Post-Helper
+
 # Install dependencies
 pnpm install
+
+# Set up environment variables
+cp .env.example .env
+# Add VITE_GOOGLE_FONTS_API_KEY=your_key_here
 
 # Start dev server
 pnpm dev
 
-# Build for production
+# Open browser to http://localhost:3000
+```
+
+**Build**:
+```bash
+# Production build
 pnpm build
 
 # Preview production build
 pnpm preview
+
+# Output: dist/public/
 ```
 
 ### Adding New Layout Types
 
-1. Add new layout type to `LayoutType` union in `types/carousel.ts`
-2. Add layout definition to `LAYOUT_TYPES` array in `SlideEditor.tsx`
-3. Implement rendering logic in `LayoutRenderer.tsx` switch statement
-4. Update validation in `csvParser.ts`
-5. Document layout in `LAYOUT_TYPES.md`
-6. Add example to template CSV files
+**Step 1**: Add to TypeScript types
+```typescript
+// client/src/types/carousel.ts
+export type LayoutType =
+  | 'dictionary_entry'
+  // ... existing types
+  | 'your_new_layout';
+```
+
+**Step 2**: Add to layout constants
+```typescript
+// client/src/lib/constants.ts
+export const BUILT_IN_LAYOUTS = [
+  // ... existing layouts
+  { id: 'your_new_layout', name: 'Your New Layout' }
+];
+```
+
+**Step 3**: Implement rendering
+```typescript
+// client/src/components/LayoutRenderer.tsx
+case 'your_new_layout':
+  return (
+    <div style={{
+      background: slide.background_color,
+      color: slide.font_color,
+      fontFamily: fonts.heading
+    }}>
+      <h1>{slide.title}</h1>
+      <p>{slide.body_text}</p>
+    </div>
+  );
+```
+
+**Step 4**: Update validation
+```typescript
+// client/src/lib/csvParser.ts
+const validLayouts = [
+  // ... existing layouts
+  'your_new_layout'
+];
+```
+
+**Step 5**: Document in LAYOUT_TYPES.md
 
 ### Adding New Export Presets
 
-1. Add preset definition to `EXPORT_PRESETS` array in `exportPresets.ts`
-2. Test export with different layout types
-3. Verify aspect ratio scaling
-4. Update README documentation
+**Step 1**: Add to exportPresets.ts
+```typescript
+export const EXPORT_PRESETS: ExportPreset[] = [
+  // ... existing presets
+  {
+    id: 'tiktok-video',
+    name: 'TikTok',
+    platform: 'TikTok',
+    width: 1080,
+    height: 1920,
+    aspectRatio: '9:16',
+    description: 'Optimized for TikTok videos'
+  }
+];
+```
+
+**Step 2**: Test with various layouts
+
+**Step 3**: Update documentation
 
 ### Adding New Templates
 
-1. Define template in `carouselTemplates.ts`
-2. Include 3-5 slides with placeholder content
-3. Choose cohesive color scheme
-4. Test template loading and editing
-5. Add template to documentation
-
----
-
-## Deployment
-
-### Build Output
-
+**Step 1**: Define template
+```typescript
+// client/src/lib/carouselTemplates.ts
+export const CAROUSEL_TEMPLATES: CarouselTemplate[] = [
+  // ... existing templates
+  {
+    id: 'fitness-challenge',
+    name: '30-Day Fitness Challenge',
+    description: 'Motivational fitness carousel',
+    category: 'Health',
+    slides: [
+      {
+        slide_number: 1,
+        layout_type: 'bold_callout',
+        background_color: '#ff6b6b',
+        font_color: '#ffffff',
+        accent_color: '#ffd93d',
+        title: '30-Day Fitness Challenge',
+        body_text: 'Transform your body in 30 days'
+      },
+      // ... more slides
+    ]
+  }
+];
 ```
-dist/
-├── index.html              # Entry point
-├── assets/
-│   ├── index-[hash].js     # Bundled JavaScript
-│   ├── index-[hash].css    # Bundled CSS
-│   └── fonts/              # Font files
-└── examples/               # Example CSV files
+
+**Step 2**: Add template preview image (optional)
+
+**Step 3**: Test template loading and editing
+
+### Testing
+
+**Unit Tests** (to be implemented):
+```bash
+# Install testing dependencies
+pnpm add -D vitest @testing-library/react @testing-library/jest-dom
+
+# Run tests
+pnpm test
+
+# Coverage
+pnpm test:coverage
+```
+
+**E2E Tests** (to be implemented):
+```bash
+# Install Playwright
+pnpm add -D @playwright/test
+
+# Run E2E tests
+pnpm test:e2e
 ```
 
 ### Environment Variables
 
-No environment variables required. Application is fully client-side.
+**Required**:
+```env
+VITE_GOOGLE_FONTS_API_KEY=your_google_fonts_api_key_here
+```
 
-### Hosting Recommendations
+**Optional**:
+```env
+VITE_APP_NAME=Social Post Helper
+VITE_MAX_STORAGE_MB=5
+VITE_ENABLE_ANALYTICS=false
+```
 
-**Static Hosting Platforms**
-- Vercel (recommended)
-- Netlify
-- GitHub Pages
-- Cloudflare Pages
+### Browser Support
 
-**Configuration**
-- Build command: `pnpm build`
-- Output directory: `dist`
-- Node version: 22.x
+**Tested**:
+- Chrome/Edge 90+
+- Firefox 88+
+- Safari 14+
 
-### CDN Considerations
+**Required Features**:
+- localStorage API
+- FileReader API
+- Canvas API
+- ES2020+ JavaScript
+- CSS Grid & Flexbox
 
-- Font files should be served with proper CORS headers
-- Example CSV files should be accessible
-- Assets are content-hashed for cache busting
+### Deployment
+
+**Vercel** (Recommended):
+```bash
+# Install Vercel CLI
+pnpm add -G vercel
+
+# Deploy
+vercel
+
+# Production
+vercel --prod
+```
+
+**Configuration** (vercel.json):
+```json
+{
+  "buildCommand": "pnpm build",
+  "outputDirectory": "dist/public",
+  "framework": "vite",
+  "env": {
+    "VITE_GOOGLE_FONTS_API_KEY": "@google-fonts-api-key"
+  }
+}
+```
+
+**Netlify**:
+```toml
+# netlify.toml
+[build]
+  command = "pnpm build"
+  publish = "dist/public"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+```
+
+### Performance Monitoring
+
+**Recommended Tools**:
+- Lighthouse for performance audits
+- React DevTools Profiler
+- Chrome DevTools Performance tab
+- localStorage usage monitoring
+
+**Key Metrics**:
+- First Contentful Paint < 1.5s
+- Time to Interactive < 3s
+- localStorage usage < 5MB
+- Bundle size < 500KB (gzipped)
+
+---
+
+## Security Considerations
+
+### XSS Vulnerabilities
+
+**Issue**: Custom layouts use `dangerouslySetInnerHTML`
+
+**Location**: `client/src/components/Settings.tsx:199`
+
+**Risk**: Users can inject malicious JavaScript
+
+**Mitigation**: Sanitize HTML with DOMPurify (Phase 1 task)
+
+### Data Privacy
+
+**Current State**:
+- All data stored client-side in localStorage
+- No server-side storage
+- No analytics or tracking
+- No user authentication
+
+**Considerations**:
+- Users should not store sensitive information
+- localStorage is unencrypted
+- Clearing browser data deletes all projects
+
+### API Key Security
+
+**Issue**: Google Fonts API key hardcoded in source
+
+**Risk**: Key exposure in client-side code
+
+**Mitigation**: Use environment variables (Phase 1 task)
+
+### Content Security Policy
+
+**Recommended CSP Headers**:
+```
+Content-Security-Policy:
+  default-src 'self';
+  script-src 'self' 'unsafe-inline';
+  style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+  font-src 'self' https://fonts.gstatic.com data:;
+  img-src 'self' data: https:;
+```
+
+---
+
+## Known Issues & Limitations
+
+### Current Issues
+
+1. **localStorage Quota**: No checking before save
+2. **Google Fonts API Key**: Hardcoded in source
+3. **XSS Risk**: Custom HTML not sanitized
+4. **Export Performance**: html2canvas blocks UI
+5. **No Mobile Support**: Desktop-only enforcement
+6. **No Tests**: Zero test coverage
+7. **No Virtualization**: Large slide lists render all items
+8. **React 18 vs 19**: Documentation claimed React 19
+
+### Limitations
+
+1. **Storage**: 5-10MB localStorage limit
+2. **Export**: Synchronous, blocks main thread
+3. **Fonts**: Base64 encoding inefficient
+4. **Images**: No image optimization or CDN
+5. **Collaboration**: No multi-user support
+6. **Versioning**: No undo/redo functionality
+7. **Offline**: No service worker or PWA features
+
+---
+
+## Roadmap
+
+### Phase 1: Critical Fixes ✅ (In Progress)
+- Update documentation (this file)
+- Add localStorage quota checking
+- Move API keys to environment variables
+- Add React.memo to LayoutRenderer
+- Sanitize custom HTML with DOMPurify
+
+### Phase 2: Performance ⏳
+- Implement Web Workers for export
+- Add virtualization for large lists
+- Remove unused dependencies
+- Optimize font loading
+
+### Phase 3: Quality ⏳
+- Add unit tests (80% coverage)
+- Add E2E tests with Playwright
+- Accessibility audit and ARIA labels
+- Improve error boundaries
+
+### Phase 4: Features 🔮
+- Backend for larger datasets
+- Real-time collaboration
+- Version history with undo/redo
+- Cloud sync
+- Mobile app (React Native)
+- Analytics dashboard
 
 ---
 
 ## Conclusion
 
-The Instagram Carousel Generator is a well-architected client-side application that balances simplicity with powerful features. The modular component structure, clear data flow, and comprehensive type safety make it maintainable and extensible. Future enhancements should focus on performance optimization, accessibility improvements, and user experience refinements while maintaining the current architectural simplicity.
+The Social Post Helper has evolved into a sophisticated, feature-rich design platform that far exceeds its original scope as a simple carousel generator. The application demonstrates excellent TypeScript practices, clean component architecture, and thoughtful UX design.
+
+**Key Strengths**:
+- Comprehensive project management system
+- Powerful custom layout builder
+- Professional font management
+- Multi-platform export capabilities
+- localStorage persistence with auto-save
+
+**Primary Areas for Improvement**:
+- Performance optimizations (memoization, Web Workers)
+- Security hardening (HTML sanitization, CSP)
+- Storage quota management
+- Test coverage
+- Mobile responsiveness
+
+The codebase is well-organized, maintainable, and ready for continued iteration and enhancement. With the critical fixes in Phase 1 and performance optimizations in Phase 2, the application will be production-ready and scalable for thousands of users.
