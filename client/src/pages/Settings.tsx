@@ -32,6 +32,7 @@ import {
   Info,
 } from 'lucide-react';
 import FontsSettings from '../components/FontsSettings';
+import ComponentLayoutsSettings from '../components/ComponentLayoutsSettings';
 import {
   getAllCustomLayouts,
   createCustomLayout,
@@ -250,6 +251,12 @@ export default function Settings() {
               Custom Layouts
             </TabsTrigger>
             <TabsTrigger
+              value="component-layouts"
+              className="rounded-full px-10 py-3.5 font-bold uppercase text-sm data-[state=active]:bg-black data-[state=active]:text-white transition-all"
+            >
+              Component Layouts
+            </TabsTrigger>
+            <TabsTrigger
               value="fonts"
               className="rounded-full px-10 py-3.5 font-bold uppercase text-sm data-[state=active]:bg-black data-[state=active]:text-white transition-all"
             >
@@ -371,6 +378,10 @@ export default function Settings() {
                 )}
               </div>
             </div>
+          </TabsContent>
+
+          <TabsContent value="component-layouts">
+            <ComponentLayoutsSettings />
           </TabsContent>
 
           <TabsContent value="fonts">
