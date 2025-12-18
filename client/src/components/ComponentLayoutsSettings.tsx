@@ -93,19 +93,30 @@ export default function ComponentLayoutsSettings() {
         createdAt: editingLayout?.createdAt || Date.now(),
       };
 
-      // Validate schema has required fields
-      if (!layout.root || !layout.width || !layout.height) {
+      // Validate schema has required fields (allow 0 as valid value)
+      if (layout.root == null || layout.width === undefined || layout.height === undefined) {
         toast.error('Invalid schema: missing root, width, or height');
         return;
       }
 
-      saveComponentLayout(layout);
-      loadComponentLayouts();
-      setEditorOpen(false);
-      toast.success(editingLayout ? 'Layout updated' : 'Layout created');
-    } catch (error) {
-      console.error('Error saving layout:', error);
-      toast.error('Invalid JSON schema');
+      try {
+        saveComponentLayout(layout);
+        loadComponentLayouts();
+        setEditorOpen(false);
+        toast.success(editingLayout ? 'Layout updated' : 'Layout created');
+      } catch (saveError: any) {
+        console.error('Error saving layout:', saveError);
+
+        // Check for quota exceeded error
+        if (saveError?.message?.includes('quota') || saveError?.message?.includes('QuotaExceeded') || saveError?.name === 'QuotaExceededError') {
+          toast.error('Storage quota exceeded. Please delete some layouts or export them first.', { duration: 5000 });
+        } else {
+          toast.error(`Failed to save layout: ${saveError?.message || 'Unknown error'}`, { duration: 5000 });
+        }
+      }
+    } catch (error: any) {
+      console.error('Error parsing schema:', error);
+      toast.error(`Invalid JSON schema: ${error?.message || 'Syntax error'}`, { duration: 5000 });
     }
   };
 
@@ -176,10 +187,18 @@ export default function ComponentLayoutsSettings() {
       } catch (error) {
         console.error('Import error:', error);
         toast.error('Failed to import layout');
+      } finally {
+        event.target.value = '';
       }
     };
+
+    reader.onerror = () => {
+      console.error('FileReader error:', reader.error?.message || 'Unknown file read error');
+      toast.error('Failed to read file. Please try again.');
+      event.target.value = '';
+    };
+
     reader.readAsText(file);
-    event.target.value = '';
   };
 
   const handleLoadTemplate = (templateId: string) => {
@@ -231,12 +250,28 @@ export default function ComponentLayoutsSettings() {
       fonts: getFontSettings(),
     };
 
+    // Calculate scale to fit preview container
+    const containerSize = 540;
+    const scale = Math.min(
+      containerSize / previewLayout.width,
+      containerSize / previewLayout.height
+    );
+
     return (
       <div
-        className="bg-white rounded-lg shadow-lg overflow-hidden"
-        style={{ width: '540px', height: '540px' }}
+        className="bg-white rounded-lg shadow-lg overflow-hidden flex items-center justify-center"
+        style={{ width: `${containerSize}px`, height: `${containerSize}px` }}
       >
-        <ComponentRenderer schema={previewLayout} context={context} />
+        <div
+          style={{
+            transform: `scale(${scale})`,
+            transformOrigin: 'center center',
+            width: `${previewLayout.width}px`,
+            height: `${previewLayout.height}px`,
+          }}
+        >
+          <ComponentRenderer schema={previewLayout} context={context} />
+        </div>
       </div>
     );
   };
