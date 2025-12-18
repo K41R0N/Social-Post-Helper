@@ -296,10 +296,28 @@ export function seedQuickStartTemplates(): void {
     }
   });
 
+  // Check storage quota before saving
+  const dataSize = estimateDataSize(existing);
+  const quota = getStorageQuota();
+
+  if (!hasEnoughSpace(dataSize)) {
+    const error = new Error(
+      `Cannot seed templates: localStorage quota would be exceeded.\n` +
+      `Templates size: ${formatBytes(dataSize)}\n` +
+      `Storage used: ${formatBytes(quota.used)} / ${formatBytes(quota.total)}\n` +
+      `Available: ${formatBytes(quota.available)}`
+    );
+    console.error('Error seeding quick start templates:', error);
+    throw error;
+  }
+
   try {
     safeSetItem(STORAGE_KEY, JSON.stringify(existing));
   } catch (error) {
     console.error('Error seeding quick start templates:', error);
-    // Don't throw here since this is initialization code
+    if (error instanceof Error && error.message.includes('quota')) {
+      throw error;
+    }
+    // Only silently fail for non-quota errors during initialization
   }
 }

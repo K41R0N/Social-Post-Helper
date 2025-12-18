@@ -22,9 +22,8 @@ import type {
   Border,
   Shadow,
   ComponentContext,
-  resolveField,
-  applyColorVariables,
 } from '../types/componentLayout';
+import { resolveField, applyColorVariables } from '../types/componentLayout';
 import * as LucideIcons from 'lucide-react';
 
 // ============================================================================
@@ -78,10 +77,10 @@ function componentStyleToCSS(
 
     // Positioning
     position: processed.position,
-    top: processed.top ? `${processed.top}px` : undefined,
-    right: processed.right ? `${processed.right}px` : undefined,
-    bottom: processed.bottom ? `${processed.bottom}px` : undefined,
-    left: processed.left ? `${processed.left}px` : undefined,
+    top: processed.top != null ? `${processed.top}px` : undefined,
+    right: processed.right != null ? `${processed.right}px` : undefined,
+    bottom: processed.bottom != null ? `${processed.bottom}px` : undefined,
+    left: processed.left != null ? `${processed.left}px` : undefined,
     zIndex: processed.zIndex,
 
     // Flexbox
@@ -327,11 +326,11 @@ function renderDivider(
     dividerStyles.height = '100%';
   }
 
-  if (component.style === 'dashed' || component.style === 'dotted') {
+  if (component.lineStyle === 'dashed' || component.lineStyle === 'dotted') {
     dividerStyles.background = 'none';
     dividerStyles.border = 'none';
     dividerStyles[component.orientation === 'horizontal' ? 'borderTop' : 'borderLeft'] =
-      `${component.thickness || 1}px ${component.style} ${component.color || '#000'}`;
+      `${component.thickness || 1}px ${component.lineStyle} ${component.color || '#000'}`;
   }
 
   return <div key={key} style={dividerStyles} />;

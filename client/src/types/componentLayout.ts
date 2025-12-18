@@ -182,7 +182,7 @@ export interface DividerComponent extends BaseComponent {
   orientation: 'horizontal' | 'vertical';
   thickness?: number;
   color?: string;
-  style?: 'solid' | 'dashed' | 'dotted';
+  lineStyle?: 'solid' | 'dashed' | 'dotted';
 }
 
 export interface IconComponent extends BaseComponent {
@@ -334,7 +334,10 @@ export function applyColorVariables(
 ): ComponentStyle | undefined {
   if (!style) return style;
 
-  const processed = { ...style };
+  const processed = {
+    ...style,
+    border: style.border ? { ...style.border } : undefined,
+  };
 
   // Replace color variables
   if (processed.backgroundColor === '{{background_color}}') {
