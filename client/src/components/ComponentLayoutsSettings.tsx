@@ -442,79 +442,13 @@ export default function ComponentLayoutsSettings() {
 
       {/* Editor Dialog */}
       <Dialog open={editorOpen} onOpenChange={setEditorOpen}>
-        <DialogContent className="max-w-[98vw] h-[96vh] p-0 flex flex-col border-4 border-black rounded-3xl">
-          <DialogHeader className="px-6 py-4 border-b-2 border-black flex-shrink-0">
-            <div className="flex items-center gap-4">
-              <DialogTitle className="text-lg font-bold whitespace-nowrap">
-                {editingLayout ? 'EDIT' : 'NEW'} LAYOUT
-              </DialogTitle>
-
-              <Input
-                value={layoutName}
-                onChange={(e) => setLayoutName(e.target.value)}
-                placeholder="Layout Name"
-                className="h-9 text-sm flex-1"
-              />
-
-              <Input
-                type="text"
-                value={layoutDescription}
-                onChange={(e) => setLayoutDescription(e.target.value)}
-                placeholder="Description (optional)"
-                className="h-9 text-sm flex-1"
-              />
-
-              {/* Quick Start Templates Dropdown */}
-              {QUICK_START_TEMPLATES.length > 0 && !editingLayout && (
-                <select
-                  className="h-9 px-3 border-[3px] border-black rounded-lg text-xs font-bold hover:bg-gray-50 transition-colors cursor-pointer"
-                  onChange={(e) => {
-                    if (e.target.value) {
-                      handleLoadTemplate(e.target.value);
-                      e.target.value = '';
-                    }
-                  }}
-                  defaultValue=""
-                >
-                  <option value="" disabled>Load Template</option>
-                  {QUICK_START_TEMPLATES.map((template) => (
-                    <option key={template.id} value={template.id}>
-                      {template.name}
-                    </option>
-                  ))}
-                </select>
-              )}
-
-              {/* AI Assistant Info Button */}
-              <button
-                className="h-9 px-3 border-[3px] border-purple-600 text-purple-600 rounded-lg text-xs font-bold hover:bg-purple-50 transition-colors flex items-center gap-1.5 whitespace-nowrap"
-                onClick={() => {
-                  const prompt = `Create a JSON component layout for a 1080x1080 social media slide. Use this schema: root container with display:flex, children array with text/heading/shape components. Include template variables like {{title}}, {{quote}}, {{background_color}}. Example: centered quote card with large quote text, decorative line, and attribution. Return only valid JSON.`;
-                  navigator.clipboard.writeText(prompt);
-                  toast.success('Prompt copied! Paste it into ChatGPT, Claude, or any LLM. See LLM_LAYOUT_PROMPT.md for detailed guide.');
-                }}
-              >
-                <Zap className="h-3 w-3" />
-                AI
-              </button>
-            </div>
-          </DialogHeader>
-
-          <div className="flex-1 flex overflow-hidden min-h-0">
-            {/* Full-Width Code Editor */}
-            <div className="flex-1 flex flex-col p-6 min-h-0">
-              <CodeEditorPanel
-                title="Schema Editor (JSON)"
-                language="json"
-                value={schemaCode}
-                onChange={setSchemaCode}
-                hint="Monaco Editor • Ctrl+Space for autocomplete"
-              />
-            </div>
-          </div>
-
-          <DialogFooter className="px-6 py-3 border-t-2 border-black flex-shrink-0">
-            <div className="flex gap-3 w-full justify-end">
+        <DialogContent className="!w-[95vw] !max-w-[2000px] h-[92vh] p-0 flex flex-col border-4 border-black rounded-3xl overflow-hidden">
+          {/* Compact Header */}
+          <div className="px-8 py-5 border-b-3 border-black flex items-center justify-between flex-shrink-0">
+            <h2 className="text-xl font-bold">
+              {editingLayout ? 'EDIT COMPONENT LAYOUT' : 'NEW COMPONENT LAYOUT'}
+            </h2>
+            <div className="flex gap-3">
               <Button
                 variant="outline"
                 onClick={() => setEditorOpen(false)}
@@ -529,7 +463,88 @@ export default function ComponentLayoutsSettings() {
                 {editingLayout ? 'Save Changes' : 'Create Layout'}
               </Button>
             </div>
-          </DialogFooter>
+          </div>
+
+          {/* Main Content - Full Height */}
+          <div className="flex-1 flex overflow-hidden min-h-0">
+            {/* Left Sidebar - 40% width */}
+            <div className="w-[40%] border-r-3 border-black p-5 overflow-y-auto flex-shrink-0">
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-xs font-bold mb-1.5 uppercase">
+                    Layout Name *
+                  </label>
+                  <Input
+                    value={layoutName}
+                    onChange={(e) => setLayoutName(e.target.value)}
+                    placeholder="e.g., Bold Quote Card"
+                    className="h-9 text-sm"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold mb-1.5 uppercase">
+                    Description
+                  </label>
+                  <Textarea
+                    value={layoutDescription}
+                    onChange={(e) => setLayoutDescription(e.target.value)}
+                    placeholder="Optional description"
+                    rows={2}
+                    className="text-sm"
+                  />
+                </div>
+
+                {/* AI Assistant - Compact */}
+                <div className="bg-gradient-to-br from-purple-50 to-blue-50 border-2 border-purple-600 rounded-xl p-3">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Zap className="h-3 w-3 text-purple-800" />
+                    <h4 className="text-xs font-bold text-purple-900">AI Generation</h4>
+                  </div>
+                  <button
+                    onClick={() => {
+                      const prompt = `Create a JSON component layout for a 1080x1080 social media slide. Use this schema: root container with display:flex, children array with text/heading/shape components. Include template variables like {{title}}, {{quote}}, {{background_color}}. Example: centered quote card with large quote text, decorative line, and attribution. Return only valid JSON.`;
+                      navigator.clipboard.writeText(prompt);
+                      toast.success('Prompt copied! Paste into ChatGPT or Claude.');
+                    }}
+                    className="w-full px-2 py-1.5 bg-purple-800 text-white border border-purple-900 rounded text-xs font-bold hover:bg-purple-900 transition-colors"
+                  >
+                    <Copy className="inline h-2.5 w-2.5 mr-1" />
+                    COPY PROMPT
+                  </button>
+                </div>
+
+                {/* Quick Start Templates - Compact */}
+                {QUICK_START_TEMPLATES.length > 0 && !editingLayout && (
+                  <div className="bg-blue-50 border-2 border-black rounded-xl p-3">
+                    <h4 className="text-xs font-bold mb-2">QUICK START</h4>
+                    <div className="space-y-1.5">
+                      {QUICK_START_TEMPLATES.map((template) => (
+                        <button
+                          key={template.id}
+                          onClick={() => handleLoadTemplate(template.id)}
+                          className="w-full text-left px-2 py-1.5 bg-white border border-black rounded text-xs hover:bg-gray-50 transition-colors"
+                        >
+                          <div className="font-bold">{template.name}</div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Right Side - Code Editor FULL HEIGHT (60% width) */}
+            <div className="w-[60%] flex flex-col min-h-0 p-5 flex-shrink-0">
+              <CodeEditorPanel
+                title="Schema Editor (JSON)"
+                language="json"
+                value={schemaCode}
+                onChange={setSchemaCode}
+                hint="Monaco Editor • Ctrl+Space for autocomplete"
+              />
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
 

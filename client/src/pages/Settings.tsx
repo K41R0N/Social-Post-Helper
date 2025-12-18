@@ -408,85 +408,13 @@ export default function Settings() {
 
       {/* Layout Editor Dialog */}
       <Dialog open={editorOpen} onOpenChange={setEditorOpen}>
-        <DialogContent className="max-w-[98vw] h-[96vh] p-0 flex flex-col border-4 border-black rounded-3xl">
-          <DialogHeader className="px-6 py-4 border-b-2 border-black flex-shrink-0">
-            <div className="flex items-center gap-4">
-              <DialogTitle className="text-lg font-bold whitespace-nowrap">
-                {editingLayout ? 'EDIT' : 'NEW'} LAYOUT
-              </DialogTitle>
-
-              <Input
-                type="text"
-                placeholder="Layout Name"
-                value={layoutName}
-                onChange={(e) => setLayoutName(e.target.value)}
-                className="h-9 text-sm flex-1"
-              />
-
-              <Input
-                type="text"
-                placeholder="Description (optional)"
-                value={layoutDescription}
-                onChange={(e) => setLayoutDescription(e.target.value)}
-                className="h-9 text-sm flex-1"
-              />
-
-              {/* Template Variables Info Button */}
-              <button
-                className="h-9 px-3 border-[3px] border-blue-600 text-blue-600 rounded-lg text-xs font-bold hover:bg-blue-50 transition-colors flex items-center gap-1.5 whitespace-nowrap"
-                onClick={() => {
-                  const vars = TEMPLATE_VARIABLES.map(v => `${v.name}: ${v.description}`).join('\n');
-                  alert(`Available Template Variables:\n\n${vars}`);
-                }}
-              >
-                <Info className="h-3 w-3" />
-                Variables
-              </button>
-            </div>
-          </DialogHeader>
-
-          <div className="flex-1 flex overflow-hidden min-h-0">
-            {/* Full-Width Code Editors with Tabs */}
-            <div className="flex-1 flex flex-col min-h-0">
-              <Tabs defaultValue="html" className="flex-1 flex flex-col min-h-0">
-                <TabsList className="mx-6 mt-4 bg-gray-100 p-1.5 rounded-full border-[3px] border-black flex-shrink-0">
-                  <TabsTrigger
-                    value="html"
-                    className="rounded-full px-8 py-2 font-bold uppercase text-xs data-[state=active]:bg-black data-[state=active]:text-white transition-all"
-                  >
-                    HTML
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="css"
-                    className="rounded-full px-8 py-2 font-bold uppercase text-xs data-[state=active]:bg-black data-[state=active]:text-white transition-all"
-                  >
-                    CSS
-                  </TabsTrigger>
-                </TabsList>
-
-                <TabsContent value="html" className="flex-1 px-6 pb-6 pt-4 min-h-0">
-                  <CodeEditorPanel
-                    title="HTML Editor"
-                    language="html"
-                    value={htmlCode}
-                    onChange={setHtmlCode}
-                  />
-                </TabsContent>
-
-                <TabsContent value="css" className="flex-1 px-6 pb-6 pt-4 min-h-0">
-                  <CodeEditorPanel
-                    title="CSS Editor"
-                    language="css"
-                    value={cssCode}
-                    onChange={setCssCode}
-                  />
-                </TabsContent>
-              </Tabs>
-            </div>
-          </div>
-
-          <DialogFooter className="px-6 py-3 border-t-2 border-black flex-shrink-0">
-            <div className="flex gap-3 w-full justify-end">
+        <DialogContent className="!w-[95vw] !max-w-[2000px] h-[92vh] p-0 flex flex-col border-4 border-black rounded-3xl overflow-hidden">
+          {/* Compact Header */}
+          <div className="px-8 py-5 border-b-3 border-black flex items-center justify-between flex-shrink-0">
+            <h2 className="text-xl font-bold">
+              {editingLayout ? 'EDIT CUSTOM LAYOUT' : 'CREATE CUSTOM LAYOUT'}
+            </h2>
+            <div className="flex gap-3">
               <Button
                 variant="outline"
                 onClick={() => setEditorOpen(false)}
@@ -501,7 +429,96 @@ export default function Settings() {
                 {editingLayout ? 'UPDATE LAYOUT' : 'CREATE LAYOUT'}
               </Button>
             </div>
-          </DialogFooter>
+          </div>
+
+          {/* Main Content - Full Height */}
+          <div className="flex-1 flex overflow-hidden min-h-0">
+            {/* Left Sidebar - 40% width */}
+            <div className="w-[40%] border-r-3 border-black p-5 overflow-y-auto flex-shrink-0">
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-xs font-bold mb-1.5 uppercase">
+                    Layout Name *
+                  </label>
+                  <Input
+                    type="text"
+                    placeholder="e.g., Bold Quote Layout"
+                    value={layoutName}
+                    onChange={(e) => setLayoutName(e.target.value)}
+                    className="h-9 text-sm"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold mb-1.5 uppercase">
+                    Description
+                  </label>
+                  <Textarea
+                    placeholder="Optional description"
+                    value={layoutDescription}
+                    onChange={(e) => setLayoutDescription(e.target.value)}
+                    rows={2}
+                    className="text-sm"
+                  />
+                </div>
+
+                {/* Template Variables - Compact */}
+                <div className="bg-blue-50 border-2 border-black rounded-xl p-3">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Info className="h-3 w-3 text-black" />
+                    <h4 className="text-xs font-bold">TEMPLATE VARS</h4>
+                  </div>
+                  <div className="space-y-1.5">
+                    {TEMPLATE_VARIABLES.slice(0, 5).map((variable) => (
+                      <div key={variable.name}>
+                        <code className="bg-black text-white px-1.5 py-0.5 rounded text-xs font-bold">
+                          {variable.name}
+                        </code>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Side - Code Editors FULL HEIGHT (60% width) */}
+            <div className="w-[60%] flex flex-col min-h-0 flex-shrink-0">
+              <Tabs defaultValue="html" className="flex-1 flex flex-col min-h-0">
+                <TabsList className="mx-5 mt-5 bg-gray-100 p-2 rounded-full border-3 border-black flex-shrink-0">
+                  <TabsTrigger
+                    value="html"
+                    className="rounded-full px-8 py-2 font-bold uppercase text-xs data-[state=active]:bg-black data-[state=active]:text-white transition-all"
+                  >
+                    HTML
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="css"
+                    className="rounded-full px-8 py-2 font-bold uppercase text-xs data-[state=active]:bg-black data-[state=active]:text-white transition-all"
+                  >
+                    CSS
+                  </TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="html" className="flex-1 px-5 pb-5 pt-4 min-h-0">
+                  <CodeEditorPanel
+                    title="HTML Editor"
+                    language="html"
+                    value={htmlCode}
+                    onChange={setHtmlCode}
+                  />
+                </TabsContent>
+
+                <TabsContent value="css" className="flex-1 px-5 pb-5 pt-4 min-h-0">
+                  <CodeEditorPanel
+                    title="CSS Editor"
+                    language="css"
+                    value={cssCode}
+                    onChange={setCssCode}
+                  />
+                </TabsContent>
+              </Tabs>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
 
