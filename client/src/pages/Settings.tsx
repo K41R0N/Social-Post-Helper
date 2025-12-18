@@ -402,58 +402,59 @@ export default function Settings() {
 
       {/* Layout Editor Dialog */}
       <Dialog open={editorOpen} onOpenChange={setEditorOpen}>
-        <DialogContent className="max-w-6xl max-h-[90vh] overflow-hidden flex flex-col border-4 border-black rounded-3xl">
-          <DialogHeader>
-            <DialogTitle className="dof-title">
+        <DialogContent className="max-w-[98vw] h-[96vh] p-0 flex flex-col border-4 border-black rounded-3xl">
+          <DialogHeader className="px-10 pt-10 pb-8 border-b-3 border-black flex-shrink-0">
+            <DialogTitle className="text-3xl font-bold mb-3">
               {editingLayout ? 'EDIT CUSTOM LAYOUT' : 'CREATE CUSTOM LAYOUT'}
             </DialogTitle>
-            <DialogDescription className="dof-body-sm">
+            <DialogDescription className="text-base">
               Use HTML and CSS to create your custom slide layout. Use template variables like {'{{title}}'}
             </DialogDescription>
           </DialogHeader>
 
-          <div className="flex-1 overflow-y-auto">
-            <div className="space-y-6 mb-8">
-              <div>
-                <label className="dof-body-sm font-bold mb-3 block">
-                  LAYOUT NAME *
-                </label>
-                <input
-                  type="text"
-                  placeholder="e.g., Bold Quote Layout"
-                  value={layoutName}
-                  onChange={(e) => setLayoutName(e.target.value)}
-                  className="dof-input"
-                />
-              </div>
+          <div className="flex-1 flex overflow-hidden min-h-0">
+            {/* Left Side - Form Fields */}
+            <div className="w-[35%] border-r-3 border-black p-10 overflow-y-auto">
+              <div className="space-y-8">
+                <div>
+                  <label className="block text-sm font-bold mb-3 uppercase">
+                    Layout Name *
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g., Bold Quote Layout"
+                    value={layoutName}
+                    onChange={(e) => setLayoutName(e.target.value)}
+                    className="dof-input h-12 text-base"
+                  />
+                </div>
 
-              <div>
-                <label className="dof-body-sm font-bold mb-3 block">
-                  DESCRIPTION
-                </label>
-                <textarea
-                  placeholder="Describe what this layout is for..."
-                  value={layoutDescription}
-                  onChange={(e) => setLayoutDescription(e.target.value)}
-                  rows={2}
-                  className="dof-input"
-                />
-              </div>
-            </div>
+                <div>
+                  <label className="block text-sm font-bold mb-3 uppercase">
+                    Description
+                  </label>
+                  <textarea
+                    placeholder="Describe what this layout is for..."
+                    value={layoutDescription}
+                    onChange={(e) => setLayoutDescription(e.target.value)}
+                    rows={3}
+                    className="dof-input text-base"
+                  />
+                </div>
 
-            {/* Template Variables Info */}
-            <div className="bg-blue-50 border-3 border-black rounded-2xl p-8 mb-8">
-              <div className="flex items-start gap-4">
-                <Info className="h-6 w-6 text-black mt-0.5 flex-shrink-0" />
-                <div className="flex-1">
-                  <h4 className="dof-subtitle mb-6">AVAILABLE TEMPLATE VARIABLES</h4>
-                  <div className="grid grid-cols-2 gap-4">
+                {/* Template Variables Info */}
+                <div className="bg-blue-50 border-3 border-black rounded-2xl p-6">
+                  <div className="flex items-start gap-3 mb-4">
+                    <Info className="h-5 w-5 text-black mt-0.5 flex-shrink-0" />
+                    <h4 className="text-sm font-bold uppercase">Available Template Variables</h4>
+                  </div>
+                  <div className="space-y-3">
                     {TEMPLATE_VARIABLES.map((variable) => (
-                      <div key={variable.name} className="flex items-start gap-3">
-                        <code className="bg-black text-white px-3 py-1 rounded-full text-xs font-bold">
+                      <div key={variable.name} className="flex flex-col gap-1">
+                        <code className="bg-black text-white px-3 py-1.5 rounded-full text-xs font-bold inline-block w-fit">
                           {variable.name}
                         </code>
-                        <span className="dof-body-sm">{variable.description}</span>
+                        <span className="text-sm text-gray-700">{variable.description}</span>
                       </div>
                     ))}
                   </div>
@@ -461,60 +462,92 @@ export default function Settings() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-8">
-              <div>
-                <label className="dof-body-sm font-bold mb-4 block">
-                  HTML TEMPLATE *
-                </label>
-                <div className="border-3 border-black rounded-2xl overflow-hidden">
-                  <Editor
-                    height="300px"
-                    defaultLanguage="html"
-                    value={htmlCode}
-                    onChange={(value) => setHtmlCode(value || '')}
-                    theme="vs-light"
-                    options={{
-                      minimap: { enabled: false },
-                      fontSize: 13,
-                      lineNumbers: 'on',
-                      scrollBeyondLastLine: false,
-                      wordWrap: 'on',
-                    }}
-                  />
-                </div>
-              </div>
+            {/* Right Side - Code Editors with Tabs */}
+            <div className="flex-1 flex flex-col min-h-0">
+              <Tabs defaultValue="html" className="flex-1 flex flex-col min-h-0">
+                <TabsList className="mx-10 mt-10 bg-gray-100 p-2 rounded-full border-3 border-black flex-shrink-0">
+                  <TabsTrigger
+                    value="html"
+                    className="rounded-full px-8 py-3 font-bold uppercase text-sm data-[state=active]:bg-black data-[state=active]:text-white transition-all"
+                  >
+                    HTML Template
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="css"
+                    className="rounded-full px-8 py-3 font-bold uppercase text-sm data-[state=active]:bg-black data-[state=active]:text-white transition-all"
+                  >
+                    CSS Template
+                  </TabsTrigger>
+                </TabsList>
 
-              <div>
-                <label className="dof-body-sm font-bold mb-4 block">
-                  CSS TEMPLATE
-                </label>
-                <div className="border-3 border-black rounded-2xl overflow-hidden">
-                  <Editor
-                    height="300px"
-                    defaultLanguage="css"
-                    value={cssCode}
-                    onChange={(value) => setCssCode(value || '')}
-                    theme="vs-light"
-                    options={{
-                      minimap: { enabled: false },
-                      fontSize: 13,
-                      lineNumbers: 'on',
-                      scrollBeyondLastLine: false,
-                      wordWrap: 'on',
-                    }}
-                  />
-                </div>
-              </div>
+                <TabsContent value="html" className="flex-1 px-10 pb-10 pt-6 min-h-0">
+                  <div className="h-full border-3 border-black rounded-2xl overflow-hidden flex flex-col">
+                    <div className="bg-gray-100 px-6 py-4 border-b-2 border-black flex items-center justify-between flex-shrink-0">
+                      <span className="text-base font-bold">HTML Editor</span>
+                      <span className="text-sm text-gray-600 font-medium">Ctrl+Space for autocomplete</span>
+                    </div>
+                    <div className="flex-1 min-h-0">
+                      <Editor
+                        height="100%"
+                        defaultLanguage="html"
+                        value={htmlCode}
+                        onChange={(value) => setHtmlCode(value || '')}
+                        theme="vs-light"
+                        options={{
+                          minimap: { enabled: true },
+                          fontSize: 14,
+                          lineNumbers: 'on',
+                          scrollBeyondLastLine: false,
+                          wordWrap: 'on',
+                          formatOnPaste: true,
+                          formatOnType: true,
+                          padding: { top: 16, bottom: 16 },
+                        }}
+                      />
+                    </div>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="css" className="flex-1 px-10 pb-10 pt-6 min-h-0">
+                  <div className="h-full border-3 border-black rounded-2xl overflow-hidden flex flex-col">
+                    <div className="bg-gray-100 px-6 py-4 border-b-2 border-black flex items-center justify-between flex-shrink-0">
+                      <span className="text-base font-bold">CSS Editor</span>
+                      <span className="text-sm text-gray-600 font-medium">Ctrl+Space for autocomplete</span>
+                    </div>
+                    <div className="flex-1 min-h-0">
+                      <Editor
+                        height="100%"
+                        defaultLanguage="css"
+                        value={cssCode}
+                        onChange={(value) => setCssCode(value || '')}
+                        theme="vs-light"
+                        options={{
+                          minimap: { enabled: true },
+                          fontSize: 14,
+                          lineNumbers: 'on',
+                          scrollBeyondLastLine: false,
+                          wordWrap: 'on',
+                          formatOnPaste: true,
+                          formatOnType: true,
+                          padding: { top: 16, bottom: 16 },
+                        }}
+                      />
+                    </div>
+                  </div>
+                </TabsContent>
+              </Tabs>
             </div>
           </div>
 
-          <DialogFooter className="mt-8 gap-4">
-            <button onClick={() => setEditorOpen(false)} className="dof-btn dof-btn-outline">
-              Cancel
-            </button>
-            <button onClick={handleSaveLayout} className="dof-btn dof-btn-green">
-              {editingLayout ? 'UPDATE LAYOUT' : 'CREATE LAYOUT'}
-            </button>
+          <DialogFooter className="px-10 py-8 border-t-3 border-black flex-shrink-0">
+            <div className="flex gap-4 w-full justify-end">
+              <button onClick={() => setEditorOpen(false)} className="dof-btn dof-btn-outline px-8 py-6 text-base font-bold">
+                Cancel
+              </button>
+              <button onClick={handleSaveLayout} className="dof-btn dof-btn-green px-8 py-6 text-base font-bold">
+                {editingLayout ? 'UPDATE LAYOUT' : 'CREATE LAYOUT'}
+              </button>
+            </div>
           </DialogFooter>
         </DialogContent>
       </Dialog>

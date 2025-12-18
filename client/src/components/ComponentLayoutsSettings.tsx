@@ -427,69 +427,98 @@ export default function ComponentLayoutsSettings() {
 
       {/* Editor Dialog */}
       <Dialog open={editorOpen} onOpenChange={setEditorOpen}>
-        <DialogContent className="max-w-[98vw] h-[96vh] p-0 flex flex-col">
-          <DialogHeader className="px-10 pt-10 pb-8 border-b flex-shrink-0">
+        <DialogContent className="max-w-[98vw] h-[96vh] p-0 flex flex-col border-4 border-black rounded-3xl">
+          <DialogHeader className="px-10 pt-10 pb-8 border-b-3 border-black flex-shrink-0">
             <DialogTitle className="text-3xl font-bold mb-3">
-              {editingLayout ? 'Edit Component Layout' : 'New Component Layout'}
+              {editingLayout ? 'EDIT COMPONENT LAYOUT' : 'NEW COMPONENT LAYOUT'}
             </DialogTitle>
             <DialogDescription className="text-base">
               Create layouts using JSON schemas with visual components
             </DialogDescription>
           </DialogHeader>
 
-          <div className="flex-1 overflow-hidden flex flex-col px-10 py-8 min-h-0">
-            {/* Form Fields */}
-            <div className="grid grid-cols-2 gap-8 mb-8 flex-shrink-0">
-              <div>
-                <label className="block text-sm font-bold mb-3">Layout Name</label>
-                <Input
-                  value={layoutName}
-                  onChange={(e) => setLayoutName(e.target.value)}
-                  placeholder="e.g., Bold Quote Card"
-                  className="h-12 text-base"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-bold mb-3">Description (Optional)</label>
-                <Input
-                  value={layoutDescription}
-                  onChange={(e) => setLayoutDescription(e.target.value)}
-                  placeholder="e.g., Quote with large typography"
-                  className="h-12 text-base"
-                />
+          <div className="flex-1 flex overflow-hidden min-h-0">
+            {/* Left Side - Form Fields */}
+            <div className="w-[30%] border-r-3 border-black p-10 overflow-y-auto">
+              <div className="space-y-8">
+                <div>
+                  <label className="block text-sm font-bold mb-3 uppercase">
+                    Layout Name *
+                  </label>
+                  <Input
+                    value={layoutName}
+                    onChange={(e) => setLayoutName(e.target.value)}
+                    placeholder="e.g., Bold Quote Card"
+                    className="h-12 text-base"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-bold mb-3 uppercase">
+                    Description
+                  </label>
+                  <Textarea
+                    value={layoutDescription}
+                    onChange={(e) => setLayoutDescription(e.target.value)}
+                    placeholder="e.g., Quote with large typography and custom styling"
+                    rows={3}
+                    className="text-base"
+                  />
+                </div>
+
+                {/* Quick Start Templates */}
+                {QUICK_START_TEMPLATES.length > 0 && !editingLayout && (
+                  <div className="bg-blue-50 border-3 border-black rounded-2xl p-6">
+                    <h4 className="text-sm font-bold uppercase mb-4">Quick Start</h4>
+                    <div className="space-y-2">
+                      {QUICK_START_TEMPLATES.map((template) => (
+                        <button
+                          key={template.id}
+                          onClick={() => handleLoadTemplate(template.id)}
+                          className="w-full text-left px-4 py-3 bg-white border-2 border-black rounded-lg hover:bg-gray-50 transition-colors"
+                        >
+                          <div className="font-bold text-sm mb-1">{template.name}</div>
+                          <div className="text-xs text-gray-600">{template.description}</div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
-            {/* Schema Editor */}
-            <div className="flex-1 border-3 border-black rounded-2xl overflow-hidden flex flex-col min-h-0">
-              <div className="bg-gray-100 px-6 py-4 border-b-2 border-black flex items-center justify-between flex-shrink-0">
-                <span className="text-base font-bold">Schema Editor (JSON)</span>
-                <span className="text-sm text-gray-600 font-medium">Monaco Editor • Ctrl+Space for autocomplete</span>
-              </div>
-              <div className="flex-1 min-h-0">
-                <Editor
-                  height="100%"
-                  defaultLanguage="json"
-                  value={schemaCode}
-                  onChange={(value) => setSchemaCode(value || '')}
-                  theme="vs-light"
-                  options={{
-                    minimap: { enabled: true },
-                    fontSize: 14,
-                    lineNumbers: 'on',
-                    scrollBeyondLastLine: false,
-                    wordWrap: 'on',
-                    formatOnPaste: true,
-                    formatOnType: true,
-                    tabSize: 2,
-                    padding: { top: 16, bottom: 16 },
-                  }}
-                />
+            {/* Right Side - Code Editor */}
+            <div className="flex-1 flex flex-col p-10 min-h-0">
+              <div className="flex-1 border-3 border-black rounded-2xl overflow-hidden flex flex-col min-h-0">
+                <div className="bg-gray-100 px-6 py-4 border-b-2 border-black flex items-center justify-between flex-shrink-0">
+                  <span className="text-base font-bold">Schema Editor (JSON)</span>
+                  <span className="text-sm text-gray-600 font-medium">Monaco Editor • Ctrl+Space for autocomplete</span>
+                </div>
+                <div className="flex-1 min-h-0">
+                  <Editor
+                    height="100%"
+                    defaultLanguage="json"
+                    value={schemaCode}
+                    onChange={(value) => setSchemaCode(value || '')}
+                    theme="vs-light"
+                    options={{
+                      minimap: { enabled: true },
+                      fontSize: 14,
+                      lineNumbers: 'on',
+                      scrollBeyondLastLine: false,
+                      wordWrap: 'on',
+                      formatOnPaste: true,
+                      formatOnType: true,
+                      tabSize: 2,
+                      padding: { top: 16, bottom: 16 },
+                    }}
+                  />
+                </div>
               </div>
             </div>
           </div>
 
-          <DialogFooter className="px-10 py-8 border-t-2 border-black flex-shrink-0">
+          <DialogFooter className="px-10 py-8 border-t-3 border-black flex-shrink-0">
             <div className="flex gap-4 w-full justify-end">
               <Button
                 variant="outline"
