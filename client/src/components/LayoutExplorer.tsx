@@ -243,8 +243,8 @@ export default function LayoutExplorer({
             </div>
           </div>
 
-          {/* Main Preview Area - Full Height! */}
-          <div className="flex-1 flex items-center justify-center bg-gray-50 p-12">
+          {/* Main Preview Area - TRUE 1:1 PREVIEW */}
+          <div className="flex-1 overflow-auto bg-gray-50 flex items-center justify-center p-8">
             <div className="flex flex-col items-center">
               {/* Layout Name Badge */}
               <div className="mb-6">
@@ -253,17 +253,19 @@ export default function LayoutExplorer({
                 </span>
               </div>
 
-              {/* Massive Preview - 1000x1000! */}
+              {/* TRUE 1:1 Preview - Actual Export Size! */}
               <div
                 className="bg-white rounded-2xl border-[3px] border-black shadow-2xl overflow-hidden"
-                style={{ width: '1000px', height: '1000px' }}
+                style={{ width: '1080px', height: '1080px' }}
               >
                 {renderLayout(previewLayout)}
               </div>
 
-              {/* Scale Info */}
-              <div className="mt-4 text-sm text-gray-500 font-medium">
-                Preview at 93% scale (1000×1000px)
+              {/* True Size Badge */}
+              <div className="mt-4 px-4 py-2 bg-green-100 border-2 border-green-600 rounded-full">
+                <span className="text-sm text-green-800 font-bold">
+                  ✓ 1:1 Preview (1080×1080px - Actual Size)
+                </span>
               </div>
             </div>
           </div>
