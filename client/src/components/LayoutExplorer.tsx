@@ -146,30 +146,33 @@ export default function LayoutExplorer({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-[98vw] h-[95vh] p-0">
-        <DialogHeader className="px-8 pt-8 pb-6 border-b">
-          <DialogTitle className="text-2xl font-bold">Layout Explorer</DialogTitle>
-          <DialogDescription className="text-base mt-2">
-            Test different layouts with your content. Current: <Badge variant="outline" className="ml-2">{slide.layout_type}</Badge>
+      <DialogContent className="max-w-[98vw] h-[96vh] p-0 flex flex-col border-4 border-black rounded-3xl">
+        <DialogHeader className="px-10 pt-10 pb-8 border-b-3 border-black flex-shrink-0">
+          <DialogTitle className="text-3xl font-bold mb-3">LAYOUT EXPLORER</DialogTitle>
+          <DialogDescription className="text-base">
+            Test different layouts with your content. Current: <Badge variant="outline" className="ml-2 text-sm">{slide.layout_type}</Badge>
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex h-full overflow-hidden">
+        <div className="flex flex-1 overflow-hidden min-h-0">
           {/* Sidebar - Layout List */}
-          <div className="w-96 border-r flex flex-col">
+          <div className="w-[400px] border-r-3 border-black flex flex-col">
             {/* Category Filter */}
-            <div className="p-6 border-b">
-              <div className="flex flex-wrap gap-3">
+            <div className="p-8 border-b-3 border-black">
+              <h3 className="text-sm font-bold uppercase mb-4">Filter by Category</h3>
+              <div className="flex flex-wrap gap-2">
                 {LAYOUT_CATEGORIES.map(cat => (
-                  <Button
+                  <button
                     key={cat}
-                    variant={selectedCategory === cat ? 'default' : 'outline'}
-                    size="default"
-                    className="px-4 py-2"
+                    className={`px-6 py-2.5 rounded-full font-bold uppercase text-xs transition-all border-2 border-black ${
+                      selectedCategory === cat
+                        ? 'bg-black text-white'
+                        : 'bg-white text-black hover:bg-gray-100'
+                    }`}
                     onClick={() => setSelectedCategory(cat)}
                   >
                     {cat}
-                  </Button>
+                  </button>
                 ))}
               </div>
             </div>
@@ -178,146 +181,164 @@ export default function LayoutExplorer({
             <ScrollArea className="flex-1">
               <div className="p-6 space-y-3">
                 {filteredLayouts.map(layout => (
-                  <Card
+                  <div
                     key={layout.id}
-                    className={`cursor-pointer transition-all hover:border-primary ${
-                      previewLayout === layout.id ? 'border-primary bg-primary/5 shadow-md' : ''
+                    className={`cursor-pointer transition-all p-5 rounded-2xl border-3 ${
+                      previewLayout === layout.id
+                        ? 'border-black bg-gray-50 shadow-lg'
+                        : 'border-gray-300 hover:border-black hover:shadow-md'
                     }`}
                     onClick={() => setPreviewLayout(layout.id)}
                   >
-                    <CardHeader className="p-4">
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="flex-1 min-w-0">
-                          <CardTitle className="text-base font-semibold leading-tight mb-2">
-                            {layout.name}
-                          </CardTitle>
-                          <p className="text-sm text-muted-foreground leading-relaxed">
-                            {layout.description}
-                          </p>
-                        </div>
-                        <div className="flex flex-col gap-1">
-                          {layout.isCustom && (
-                            <Badge variant="secondary" className="text-xs whitespace-nowrap">Custom</Badge>
-                          )}
-                          {layout.isComponent && (
-                            <Badge variant="default" className="text-xs whitespace-nowrap">Component</Badge>
-                          )}
-                        </div>
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex-1 min-w-0">
+                        <h4 className="text-base font-bold mb-2 leading-tight">
+                          {layout.name}
+                        </h4>
+                        <p className="text-sm text-gray-600 leading-relaxed">
+                          {layout.description}
+                        </p>
                       </div>
-                    </CardHeader>
-                  </Card>
+                      <div className="flex flex-col gap-1.5">
+                        {layout.isCustom && (
+                          <span className="px-2.5 py-1 bg-purple-100 text-purple-800 border-2 border-purple-800 rounded-full text-xs font-bold">
+                            CUSTOM
+                          </span>
+                        )}
+                        {layout.isComponent && (
+                          <span className="px-2.5 py-1 bg-blue-100 text-blue-800 border-2 border-blue-800 rounded-full text-xs font-bold">
+                            COMPONENT
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
                 ))}
               </div>
             </ScrollArea>
 
             {/* Actions */}
-            <div className="p-6 border-t space-y-3">
-              <Button
-                className="w-full"
-                size="lg"
-                variant={compareMode ? 'outline' : 'default'}
+            <div className="p-8 border-t-3 border-black space-y-3">
+              <button
+                className={`w-full px-6 py-4 rounded-2xl font-bold uppercase text-sm transition-all border-3 ${
+                  compareMode
+                    ? 'border-black bg-white text-black hover:bg-gray-100'
+                    : 'border-black bg-black text-white hover:bg-gray-800'
+                }`}
                 onClick={() => {
                   setCompareMode(!compareMode);
                   if (!compareMode) setCompareLayout(slide.layout_type);
                 }}
               >
                 {compareMode ? 'Exit Compare Mode' : 'Compare Layouts'}
-              </Button>
+              </button>
             </div>
           </div>
 
           {/* Main Preview Area */}
-          <div className="flex-1 flex flex-col">
-            <div className="flex-1 overflow-auto bg-muted/20">
+          <div className="flex-1 flex flex-col min-h-0">
+            <div className="flex-1 overflow-auto bg-gray-50 p-10">
               {compareMode ? (
                 // Split view for comparison
-                <div className="h-full grid grid-cols-2 gap-4 p-6">
+                <div className="h-full grid grid-cols-2 gap-8">
                   {/* Current/Original Layout */}
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-medium">Current Layout</h3>
-                      <Badge variant="outline">{slide.layout_type}</Badge>
+                  <div className="flex flex-col">
+                    <div className="flex items-center justify-between mb-6 px-2">
+                      <h3 className="text-lg font-bold uppercase">Current Layout</h3>
+                      <span className="px-4 py-2 bg-gray-200 border-2 border-black rounded-full text-sm font-bold">
+                        {slide.layout_type}
+                      </span>
                     </div>
-                    <div
-                      className="bg-white rounded-lg shadow-lg overflow-hidden"
-                      style={{
-                        width: '540px',
-                        height: '540px',
-                        transform: 'scale(0.9)',
-                        transformOrigin: 'top left'
-                      }}
-                    >
-                      {renderLayout(compareLayout || slide.layout_type)}
+                    <div className="flex items-center justify-center flex-1">
+                      <div
+                        className="bg-white rounded-2xl border-3 border-black shadow-xl overflow-hidden"
+                        style={{
+                          width: '540px',
+                          height: '540px'
+                        }}
+                      >
+                        {renderLayout(compareLayout || slide.layout_type)}
+                      </div>
                     </div>
                   </div>
 
                   {/* Preview Layout */}
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-medium">Preview Layout</h3>
-                      <Badge>{allLayouts.find(l => l.id === previewLayout)?.name}</Badge>
+                  <div className="flex flex-col">
+                    <div className="flex items-center justify-between mb-6 px-2">
+                      <h3 className="text-lg font-bold uppercase">Preview Layout</h3>
+                      <span className="px-4 py-2 bg-black text-white border-2 border-black rounded-full text-sm font-bold">
+                        {allLayouts.find(l => l.id === previewLayout)?.name}
+                      </span>
                     </div>
-                    <div
-                      className="bg-white rounded-lg shadow-lg overflow-hidden"
-                      style={{
-                        width: '540px',
-                        height: '540px',
-                        transform: 'scale(0.9)',
-                        transformOrigin: 'top left'
-                      }}
-                    >
-                      {renderLayout(previewLayout)}
+                    <div className="flex items-center justify-center flex-1">
+                      <div
+                        className="bg-white rounded-2xl border-3 border-black shadow-xl overflow-hidden"
+                        style={{
+                          width: '540px',
+                          height: '540px'
+                        }}
+                      >
+                        {renderLayout(previewLayout)}
+                      </div>
                     </div>
                   </div>
                 </div>
               ) : (
                 // Full preview
-                <div className="flex items-center justify-center h-full p-8">
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <Badge className="text-lg px-4 py-2">
-                        {allLayouts.find(l => l.id === previewLayout)?.name}
-                      </Badge>
-                    </div>
-                    <div
-                      className="bg-white rounded-lg shadow-2xl overflow-hidden"
-                      style={{ width: '1080px', height: '1080px' }}
-                    >
-                      {renderLayout(previewLayout)}
-                    </div>
+                <div className="flex flex-col items-center justify-center h-full">
+                  <div className="mb-6">
+                    <span className="px-6 py-3 bg-black text-white border-2 border-black rounded-full text-base font-bold">
+                      {allLayouts.find(l => l.id === previewLayout)?.name}
+                    </span>
+                  </div>
+                  <div
+                    className="bg-white rounded-2xl border-4 border-black shadow-2xl overflow-hidden"
+                    style={{ width: '600px', height: '600px' }}
+                  >
+                    {renderLayout(previewLayout)}
                   </div>
                 </div>
               )}
             </div>
 
             {/* Bottom Action Bar */}
-            <div className="border-t p-6 bg-background">
+            <div className="border-t-3 border-black p-8 bg-white flex-shrink-0">
               <div className="flex items-center justify-between gap-6">
-                <div className="text-base text-muted-foreground">
+                <div className="text-base">
                   {previewLayout === slide.layout_type ? (
-                    <span>Showing current layout</span>
+                    <span className="text-gray-600 font-medium">Showing current layout</span>
                   ) : (
-                    <span className="text-primary font-semibold">
-                      Layout changed: {slide.layout_type} → {allLayouts.find(l => l.id === previewLayout)?.name}
+                    <span className="text-black font-bold">
+                      Layout changed: <span className="text-gray-600">{slide.layout_type}</span> → <span className="text-coral">{allLayouts.find(l => l.id === previewLayout)?.name}</span>
                     </span>
                   )}
                 </div>
-                <div className="flex gap-3">
-                  <Button variant="outline" size="lg" onClick={onClose}>
+                <div className="flex gap-4">
+                  <button
+                    className="px-8 py-4 border-3 border-black rounded-2xl font-bold uppercase text-sm bg-white hover:bg-gray-100 transition-colors"
+                    onClick={onClose}
+                  >
                     Cancel
-                  </Button>
+                  </button>
                   {onApplyToAll && previewLayout !== slide.layout_type && (
-                    <Button variant="secondary" size="lg" onClick={handleApplyToAll}>
+                    <button
+                      className="px-8 py-4 border-3 border-black bg-blue-500 text-white rounded-2xl font-bold uppercase text-sm hover:bg-blue-600 transition-colors"
+                      onClick={handleApplyToAll}
+                    >
                       Apply to All Slides
-                    </Button>
+                    </button>
                   )}
-                  <Button
-                    size="lg"
+                  <button
+                    className={`px-8 py-4 border-3 border-black rounded-2xl font-bold uppercase text-sm transition-colors ${
+                      previewLayout === slide.layout_type
+                        ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                        : 'bg-coral text-white hover:bg-coral-dark'
+                    }`}
                     onClick={handleApply}
                     disabled={previewLayout === slide.layout_type}
                   >
                     Apply Layout
-                  </Button>
+                  </button>
                 </div>
               </div>
             </div>
