@@ -400,56 +400,38 @@ export default function Settings() {
       {/* Layout Editor Dialog */}
       <Dialog open={editorOpen} onOpenChange={setEditorOpen}>
         <DialogContent className="max-w-[98vw] h-[96vh] p-0 flex flex-col border-4 border-black rounded-3xl">
-          <DialogHeader className="px-10 pt-10 pb-6 border-b-3 border-black flex-shrink-0">
-            <div className="flex items-start gap-6 mb-6">
-              <div className="flex-1">
-                <DialogTitle className="text-3xl font-bold mb-2">
-                  {editingLayout ? 'EDIT CUSTOM LAYOUT' : 'CREATE CUSTOM LAYOUT'}
-                </DialogTitle>
-                <DialogDescription className="text-base">
-                  Use HTML and CSS to create your custom slide layout
-                </DialogDescription>
-              </div>
-            </div>
+          <DialogHeader className="px-6 py-4 border-b-2 border-black flex-shrink-0">
+            <div className="flex items-center gap-4">
+              <DialogTitle className="text-lg font-bold whitespace-nowrap">
+                {editingLayout ? 'EDIT' : 'NEW'} LAYOUT
+              </DialogTitle>
 
-            {/* Compact Form Fields in Header */}
-            <div className="flex gap-6 items-start">
-              <div className="flex-1">
-                <label className="block text-xs font-bold mb-2 uppercase text-gray-600">
-                  Layout Name *
-                </label>
-                <Input
-                  type="text"
-                  placeholder="e.g., Bold Quote Layout"
-                  value={layoutName}
-                  onChange={(e) => setLayoutName(e.target.value)}
-                  className="h-11 text-base"
-                />
-              </div>
+              <Input
+                type="text"
+                placeholder="Layout Name"
+                value={layoutName}
+                onChange={(e) => setLayoutName(e.target.value)}
+                className="h-9 text-sm flex-1"
+              />
 
-              <div className="flex-1">
-                <label className="block text-xs font-bold mb-2 uppercase text-gray-600">
-                  Description (optional)
-                </label>
-                <Input
-                  type="text"
-                  placeholder="Describe what this layout is for..."
-                  value={layoutDescription}
-                  onChange={(e) => setLayoutDescription(e.target.value)}
-                  className="h-11 text-base"
-                />
-              </div>
+              <Input
+                type="text"
+                placeholder="Description (optional)"
+                value={layoutDescription}
+                onChange={(e) => setLayoutDescription(e.target.value)}
+                className="h-9 text-sm flex-1"
+              />
 
               {/* Template Variables Info Button */}
               <button
-                className="mt-7 px-5 py-2.5 border-2 border-blue-600 text-blue-600 rounded-full text-xs font-bold hover:bg-blue-50 transition-colors flex items-center gap-2 whitespace-nowrap"
+                className="h-9 px-3 border-2 border-blue-600 text-blue-600 rounded-lg text-xs font-bold hover:bg-blue-50 transition-colors flex items-center gap-1.5 whitespace-nowrap"
                 onClick={() => {
                   const vars = TEMPLATE_VARIABLES.map(v => `${v.name}: ${v.description}`).join('\n');
                   alert(`Available Template Variables:\n\n${vars}`);
                 }}
               >
-                <Info className="h-3.5 w-3.5" />
-                Template Vars
+                <Info className="h-3 w-3" />
+                Variables
               </button>
             </div>
           </DialogHeader>
@@ -458,22 +440,22 @@ export default function Settings() {
             {/* Full-Width Code Editors with Tabs */}
             <div className="flex-1 flex flex-col min-h-0">
               <Tabs defaultValue="html" className="flex-1 flex flex-col min-h-0">
-                <TabsList className="mx-10 mt-8 bg-gray-100 p-2 rounded-full border-3 border-black flex-shrink-0">
+                <TabsList className="mx-6 mt-4 bg-gray-100 p-1.5 rounded-full border-2 border-black flex-shrink-0">
                   <TabsTrigger
                     value="html"
-                    className="rounded-full px-10 py-3 font-bold uppercase text-sm data-[state=active]:bg-black data-[state=active]:text-white transition-all"
+                    className="rounded-full px-8 py-2 font-bold uppercase text-xs data-[state=active]:bg-black data-[state=active]:text-white transition-all"
                   >
-                    HTML Template
+                    HTML
                   </TabsTrigger>
                   <TabsTrigger
                     value="css"
-                    className="rounded-full px-10 py-3 font-bold uppercase text-sm data-[state=active]:bg-black data-[state=active]:text-white transition-all"
+                    className="rounded-full px-8 py-2 font-bold uppercase text-xs data-[state=active]:bg-black data-[state=active]:text-white transition-all"
                   >
-                    CSS Template
+                    CSS
                   </TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="html" className="flex-1 px-10 pb-10 pt-6 min-h-0">
+                <TabsContent value="html" className="flex-1 px-6 pb-6 pt-4 min-h-0">
                   <CodeEditorPanel
                     title="HTML Editor"
                     language="html"
@@ -482,7 +464,7 @@ export default function Settings() {
                   />
                 </TabsContent>
 
-                <TabsContent value="css" className="flex-1 px-10 pb-10 pt-6 min-h-0">
+                <TabsContent value="css" className="flex-1 px-6 pb-6 pt-4 min-h-0">
                   <CodeEditorPanel
                     title="CSS Editor"
                     language="css"
@@ -494,20 +476,18 @@ export default function Settings() {
             </div>
           </div>
 
-          <DialogFooter className="px-10 py-8 border-t-3 border-black flex-shrink-0">
-            <div className="flex gap-4 w-full justify-end">
+          <DialogFooter className="px-6 py-3 border-t-2 border-black flex-shrink-0">
+            <div className="flex gap-3 w-full justify-end">
               <Button
                 variant="outline"
-                size="lg"
                 onClick={() => setEditorOpen(false)}
-                className="px-8 py-6 text-base font-bold"
+                className="px-6 py-2 text-sm font-bold"
               >
                 Cancel
               </Button>
               <Button
-                size="lg"
                 onClick={handleSaveLayout}
-                className="px-8 py-6 text-base font-bold bg-green-600 hover:bg-green-700"
+                className="px-6 py-2 text-sm font-bold bg-green-600 hover:bg-green-700"
               >
                 {editingLayout ? 'UPDATE LAYOUT' : 'CREATE LAYOUT'}
               </Button>
