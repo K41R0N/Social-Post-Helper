@@ -232,10 +232,7 @@ export default function Settings() {
                 <ArrowLeft size={18} />
                 Back to Dashboard
               </button>
-              <div className="mb-6">
-                <span className="text-sm font-bold text-gray-500 uppercase tracking-wider">go round</span>
-              </div>
-              <h1 className="dof-huge-title mb-3">
+              <h1 className="dof-huge-title mb-6">
                 SETTINGS
               </h1>
             </div>

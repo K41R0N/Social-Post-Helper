@@ -10,3 +10,5 @@
 [build.environment]
   NODE_VERSION = "22.13.0"
   PNPM_VERSION = "10"
+  VITE_APP_TITLE = "Go-Round - Create Stunning Social Media Carousels"
+  VITE_APP_LOGO = "/favicon.png"

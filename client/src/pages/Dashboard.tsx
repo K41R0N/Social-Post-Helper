@@ -160,7 +160,7 @@ export default function Dashboard() {
           <Monitor className="h-16 w-16 mx-auto mb-6 text-black" />
           <h1 className="dof-title mb-4">Desktop Only</h1>
           <p className="dof-body mb-4">
-            The Instagram Carousel Generator requires a desktop screen for the best experience.
+            Go-Round requires a desktop screen for the best experience.
           </p>
           <p className="dof-body-sm">
             Please visit this site on a device with a screen width of at least 1024px.
@@ -177,14 +177,11 @@ export default function Dashboard() {
         <div className="max-w-[1600px] mx-auto px-8 py-10">
           <div className="flex items-start justify-between mb-10">
             <div className="flex-1">
-              <div className="mb-6">
-                <span className="text-sm font-bold text-gray-500 uppercase tracking-wider">go round</span>
-              </div>
               <h1 className="dof-huge-title mb-3">
-                CAROUSEL PROJECTS
+                GO-ROUND
               </h1>
               <p className="dof-body text-gray-600">
-                Manage your Instagram carousel projects
+                Create stunning social media carousels
               </p>
             </div>
 
