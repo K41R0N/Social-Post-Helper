@@ -11,12 +11,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from '@/components/ui/tabs';
 import { toast } from 'sonner';
 import {
   Plus,
@@ -49,7 +43,6 @@ export default function ComponentLayoutsSettings() {
   const [editingLayout, setEditingLayout] = useState<LayoutSchema | null>(null);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewLayout, setPreviewLayout] = useState<LayoutSchema | null>(null);
-  const [editorMode, setEditorMode] = useState<'visual' | 'code'>('visual');
 
   // Form state
   const [layoutName, setLayoutName] = useState('');
@@ -70,7 +63,6 @@ export default function ComponentLayoutsSettings() {
     setLayoutName('');
     setLayoutDescription('');
     setSchemaCode(JSON.stringify(getDefaultSchema(), null, 2));
-    setEditorMode('visual');
     setEditorOpen(true);
   };
 
@@ -79,7 +71,6 @@ export default function ComponentLayoutsSettings() {
     setLayoutName(layout.name);
     setLayoutDescription(layout.description || '');
     setSchemaCode(JSON.stringify(layout, null, 2));
-    setEditorMode('code');
     setEditorOpen(true);
   };
 
@@ -95,7 +86,7 @@ export default function ComponentLayoutsSettings() {
 
       const layout: LayoutSchema = {
         ...parsedSchema,
-        id: editingLayout?.id || `layout-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        id: editingLayout?.id || `layout-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
         name: layoutName,
         description: layoutDescription,
         updatedAt: Date.now(),
@@ -170,10 +161,18 @@ export default function ComponentLayoutsSettings() {
     reader.onload = (e) => {
       try {
         const content = e.target?.result as string;
-        const imported = importLayoutFromJSON(content);
-        saveComponentLayout(imported);
+        const parsed = JSON.parse(content);
+
+        // Support both single layout and array of layouts
+        const layouts = Array.isArray(parsed) ? parsed : [parsed];
+
+        // Save each layout
+        layouts.forEach(layout => {
+          saveComponentLayout(layout);
+        });
+
         loadComponentLayouts();
-        toast.success('Layout imported');
+        toast.success(`${layouts.length} layout${layouts.length > 1 ? 's' : ''} imported successfully`);
       } catch (error) {
         console.error('Import error:', error);
         toast.error('Failed to import layout');
@@ -191,7 +190,6 @@ export default function ComponentLayoutsSettings() {
     setLayoutDescription(template.description);
     setSchemaCode(JSON.stringify(template.schema, null, 2));
     setEditingLayout(null);
-    setEditorMode('visual');
     setEditorOpen(true);
     toast.success('Template loaded');
   };
@@ -291,43 +289,47 @@ export default function ComponentLayoutsSettings() {
 
         {/* Layouts List */}
         <div className="p-10">
-          {componentLayouts.length === 0 && QUICK_START_TEMPLATES.length > 0 ? (
+          {componentLayouts.length === 0 ? (
             <div>
               <div className="text-center py-12 mb-12 border-b-2 border-gray-200">
                 <Code className="h-20 w-20 mx-auto mb-6 text-gray-200 stroke-[1.5]" />
                 <h3 className="dof-title mb-4">NO COMPONENT LAYOUTS YET</h3>
                 <p className="dof-body mb-8">
-                  Start from a template or create from scratch
+                  {QUICK_START_TEMPLATES.length > 0
+                    ? 'Start from a template or create from scratch'
+                    : 'Create your first component layout'}
                 </p>
               </div>
 
-              {/* Quick Start Templates */}
-              <div className="mb-12">
-                <div className="flex items-center gap-3 mb-6">
-                  <Sparkles className="h-6 w-6 text-coral" />
-                  <h3 className="dof-subtitle">QUICK START TEMPLATES</h3>
-                </div>
-                <div className="dof-grid dof-grid-2">
-                  {QUICK_START_TEMPLATES.map((template) => (
-                    <div key={template.id} className="dof-card">
-                      <div className="mb-6">
-                        <h4 className="dof-subtitle mb-2">{template.name}</h4>
-                        <p className="dof-body-sm text-gray-600">{template.description}</p>
+              {/* Quick Start Templates (if available) */}
+              {QUICK_START_TEMPLATES.length > 0 && (
+                <div className="mb-12">
+                  <div className="flex items-center gap-3 mb-6">
+                    <Sparkles className="h-6 w-6 text-coral" />
+                    <h3 className="dof-subtitle">QUICK START TEMPLATES</h3>
+                  </div>
+                  <div className="dof-grid dof-grid-2">
+                    {QUICK_START_TEMPLATES.map((template) => (
+                      <div key={template.id} className="dof-card">
+                        <div className="mb-6">
+                          <h4 className="dof-subtitle mb-2">{template.name}</h4>
+                          <p className="dof-body-sm text-gray-600">{template.description}</p>
+                        </div>
+                        <button
+                          className="dof-btn dof-btn-black w-full"
+                          onClick={() => handleLoadTemplate(template.id)}
+                        >
+                          <Plus size={16} />
+                          Use Template
+                        </button>
                       </div>
-                      <button
-                        className="dof-btn dof-btn-black w-full"
-                        onClick={() => handleLoadTemplate(template.id)}
-                      >
-                        <Plus size={16} />
-                        Use Template
-                      </button>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Create from Scratch */}
-              <div className="text-center pt-8 border-t-2 border-gray-200">
+              <div className={`text-center ${QUICK_START_TEMPLATES.length > 0 ? 'pt-8 border-t-2 border-gray-200' : 'pt-0'}`}>
                 <button onClick={handleNewLayout} className="dof-btn dof-btn-coral dof-btn-lg">
                   <Code size={24} />
                   CREATE FROM SCRATCH
