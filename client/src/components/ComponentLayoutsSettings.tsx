@@ -390,95 +390,113 @@ export default function ComponentLayoutsSettings() {
 
       {/* Editor Dialog */}
       <Dialog open={editorOpen} onOpenChange={setEditorOpen}>
-        <DialogContent className="max-w-[95vw] h-[92vh] p-0">
-          <DialogHeader className="px-8 pt-8 pb-6 border-b">
-            <DialogTitle className="text-2xl font-bold">
-              {editingLayout ? 'Edit Layout' : 'New Component Layout'}
+        <DialogContent className="max-w-[98vw] h-[96vh] p-0 flex flex-col">
+          <DialogHeader className="px-10 pt-10 pb-8 border-b flex-shrink-0">
+            <DialogTitle className="text-3xl font-bold mb-3">
+              {editingLayout ? 'Edit Component Layout' : 'New Component Layout'}
             </DialogTitle>
             <DialogDescription className="text-base">
               Create layouts using JSON schemas with visual components
             </DialogDescription>
           </DialogHeader>
 
-          <div className="flex-1 overflow-hidden flex flex-col px-8">
+          <div className="flex-1 overflow-hidden flex flex-col px-10 py-8 min-h-0">
             {/* Form Fields */}
-            <div className="grid grid-cols-2 gap-6 mb-6">
+            <div className="grid grid-cols-2 gap-8 mb-8 flex-shrink-0">
               <div>
-                <label className="block text-sm font-semibold mb-2">Layout Name</label>
+                <label className="block text-sm font-bold mb-3">Layout Name</label>
                 <Input
                   value={layoutName}
                   onChange={(e) => setLayoutName(e.target.value)}
                   placeholder="e.g., Bold Quote Card"
-                  className="h-11"
+                  className="h-12 text-base"
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold mb-2">Description</label>
+                <label className="block text-sm font-bold mb-3">Description (Optional)</label>
                 <Input
                   value={layoutDescription}
                   onChange={(e) => setLayoutDescription(e.target.value)}
                   placeholder="e.g., Quote with large typography"
-                  className="h-11"
+                  className="h-12 text-base"
                 />
               </div>
             </div>
 
             {/* Schema Editor */}
-            <div className="flex-1 border-2 border-gray-200 rounded-lg overflow-hidden">
-              <div className="bg-gray-50 px-4 py-2 border-b flex items-center justify-between">
-                <span className="text-sm font-semibold">Schema Editor (JSON)</span>
-                <div className="flex gap-2">
-                  <span className="text-xs text-gray-500">Monaco Editor</span>
-                </div>
+            <div className="flex-1 border-3 border-black rounded-2xl overflow-hidden flex flex-col min-h-0">
+              <div className="bg-gray-100 px-6 py-4 border-b-2 border-black flex items-center justify-between flex-shrink-0">
+                <span className="text-base font-bold">Schema Editor (JSON)</span>
+                <span className="text-sm text-gray-600 font-medium">Monaco Editor • Ctrl+Space for autocomplete</span>
               </div>
-              <Editor
-                height="100%"
-                defaultLanguage="json"
-                value={schemaCode}
-                onChange={(value) => setSchemaCode(value || '')}
-                theme="vs-light"
-                options={{
-                  minimap: { enabled: false },
-                  fontSize: 13,
-                  lineNumbers: 'on',
-                  scrollBeyondLastLine: false,
-                  wordWrap: 'on',
-                  formatOnPaste: true,
-                  formatOnType: true,
-                }}
-              />
+              <div className="flex-1 min-h-0">
+                <Editor
+                  height="100%"
+                  defaultLanguage="json"
+                  value={schemaCode}
+                  onChange={(value) => setSchemaCode(value || '')}
+                  theme="vs-light"
+                  options={{
+                    minimap: { enabled: true },
+                    fontSize: 14,
+                    lineNumbers: 'on',
+                    scrollBeyondLastLine: false,
+                    wordWrap: 'on',
+                    formatOnPaste: true,
+                    formatOnType: true,
+                    tabSize: 2,
+                    padding: { top: 16, bottom: 16 },
+                  }}
+                />
+              </div>
             </div>
           </div>
 
-          <DialogFooter className="px-8 py-6 border-t gap-3">
-            <Button variant="outline" size="lg" onClick={() => setEditorOpen(false)}>
-              Cancel
-            </Button>
-            <Button size="lg" onClick={handleSaveLayout}>
-              {editingLayout ? 'Save Changes' : 'Create Layout'}
-            </Button>
+          <DialogFooter className="px-10 py-8 border-t-2 border-black flex-shrink-0">
+            <div className="flex gap-4 w-full justify-end">
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={() => setEditorOpen(false)}
+                className="px-8 py-6 text-base font-bold"
+              >
+                Cancel
+              </Button>
+              <Button
+                size="lg"
+                onClick={handleSaveLayout}
+                className="px-8 py-6 text-base font-bold"
+              >
+                {editingLayout ? 'Save Changes' : 'Create Layout'}
+              </Button>
+            </div>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
       {/* Preview Dialog */}
       <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
-        <DialogContent className="max-w-[800px]">
-          <DialogHeader>
-            <DialogTitle className="text-xl font-bold">
+        <DialogContent className="max-w-[900px]">
+          <DialogHeader className="pb-6">
+            <DialogTitle className="text-2xl font-bold mb-2">
               {previewLayout?.name}
             </DialogTitle>
-            <DialogDescription>
-              {previewLayout?.description || 'Layout preview'}
+            <DialogDescription className="text-base">
+              {previewLayout?.description || 'Layout preview with sample data'}
             </DialogDescription>
           </DialogHeader>
 
-          <div className="flex items-center justify-center py-8">
+          <div className="flex items-center justify-center py-10">
             {renderPreview()}
           </div>
 
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setPreviewOpen(false)}>
+          <DialogFooter className="pt-6">
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={() => setPreviewOpen(false)}
+              className="px-6 py-3 text-base font-bold"
+            >
               Close
             </Button>
           </DialogFooter>

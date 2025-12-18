@@ -177,6 +177,9 @@ export default function Dashboard() {
         <div className="max-w-[1600px] mx-auto px-8 py-10">
           <div className="flex items-start justify-between mb-10">
             <div className="flex-1">
+              <div className="mb-6">
+                <span className="text-sm font-bold text-gray-500 uppercase tracking-wider">go round</span>
+              </div>
               <h1 className="dof-huge-title mb-3">
                 CAROUSEL PROJECTS
               </h1>
