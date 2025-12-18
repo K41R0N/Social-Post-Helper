@@ -5,16 +5,17 @@ import JSZip from 'jszip';
 import Papa from 'papaparse';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import { parseCarouselCSV, validateSlideData } from '../lib/csvParser';
-import type { CarouselData, SlideData } from '../types/carousel';
+import type { CarouselData, SlideData, LayoutType } from '../types/carousel';
 import type { Project } from '../types/project';
 import LayoutRenderer from '../components/LayoutRenderer';
 import SlideEditor from '../components/SlideEditor';
+import LayoutExplorer from '../components/LayoutExplorer';
 import { PanZoomCanvas } from '../components/PanZoomCanvas';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { 
-  Upload, Download, ChevronLeft, ChevronRight, Plus, Edit, Trash2, 
-  FileDown, Sparkles, GripVertical, Monitor, ArrowLeft 
+import {
+  Upload, Download, ChevronLeft, ChevronRight, Plus, Edit, Trash2,
+  FileDown, Sparkles, GripVertical, Monitor, ArrowLeft, Palette
 } from 'lucide-react';
 import { EXPORT_PRESETS, type ExportPreset, getDefaultPreset } from '../lib/exportPresets';
 import { CAROUSEL_TEMPLATES } from '../lib/carouselTemplates';
@@ -48,6 +49,8 @@ export default function Editor() {
   const [editorOpen, setEditorOpen] = useState(false);
   const [editingSlide, setEditingSlide] = useState<SlideData | undefined>();
   const [templatesOpen, setTemplatesOpen] = useState(false);
+  const [layoutExplorerOpen, setLayoutExplorerOpen] = useState(false);
+  const [layoutExplorerSlide, setLayoutExplorerSlide] = useState<SlideData | undefined>();
   const [isLoading, setIsLoading] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   
@@ -381,6 +384,53 @@ export default function Editor() {
     toast.success(`Template "${template.name}" loaded`);
   };
 
+  const handleOpenLayoutExplorer = (slide: SlideData) => {
+    setLayoutExplorerSlide(slide);
+    setLayoutExplorerOpen(true);
+  };
+
+  const handleApplyLayout = (layoutType: LayoutType | string) => {
+    if (!selectedCarousel || !layoutExplorerSlide) return;
+
+    const updatedCarousels = [...carousels];
+    const slideIndex = selectedCarousel.slides.findIndex(
+      s => s.slide_number === layoutExplorerSlide.slide_number
+    );
+
+    if (slideIndex !== -1) {
+      updatedCarousels[selectedCarouselIndex] = {
+        ...selectedCarousel,
+        slides: selectedCarousel.slides.map((s, i) =>
+          i === slideIndex ? { ...s, layout_type: layoutType as LayoutType } : s
+        ),
+      };
+
+      setCarousels(updatedCarousels);
+      toast.success(`Layout changed to ${layoutType}`);
+    }
+
+    setLayoutExplorerOpen(false);
+    setLayoutExplorerSlide(undefined);
+  };
+
+  const handleApplyLayoutToAll = (layoutType: LayoutType | string) => {
+    if (!selectedCarousel) return;
+
+    const updatedCarousels = [...carousels];
+    updatedCarousels[selectedCarouselIndex] = {
+      ...selectedCarousel,
+      slides: selectedCarousel.slides.map(s => ({
+        ...s,
+        layout_type: layoutType as LayoutType,
+      })),
+    };
+
+    setCarousels(updatedCarousels);
+    toast.success(`Layout "${layoutType}" applied to all ${selectedCarousel.slides.length} slides`);
+    setLayoutExplorerOpen(false);
+    setLayoutExplorerSlide(undefined);
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">
@@ -681,27 +731,39 @@ export default function Editor() {
                               </div>
                             </div>
 
-                            <div className="flex gap-2 mt-3 pt-3 border-t-2 border-gray-200">
+                            <div className="space-y-2 mt-3 pt-3 border-t-2 border-gray-200">
                               <button
-                                className="flex-1 px-3 py-1.5 border-2 border-black rounded-full text-[10px] font-bold hover:bg-gray-100 transition-colors"
+                                className="w-full px-3 py-2 border-2 border-purple-600 text-purple-600 rounded-full text-[10px] font-bold hover:bg-purple-50 transition-colors flex items-center justify-center gap-1"
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  handleEditSlide(slide);
+                                  handleOpenLayoutExplorer(slide);
                                 }}
                               >
-                                <Edit className="h-3 w-3 inline mr-1" />
-                                EDIT
+                                <Palette className="h-3 w-3" />
+                                TEST LAYOUTS
                               </button>
-                              <button
-                                className="flex-1 px-3 py-1.5 border-2 border-red-600 text-red-600 rounded-full text-[10px] font-bold hover:bg-red-50 transition-colors"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleDeleteSlide(slide.slide_number);
-                                }}
-                              >
-                                <Trash2 className="h-3 w-3 inline mr-1" />
-                                DELETE
-                              </button>
+                              <div className="flex gap-2">
+                                <button
+                                  className="flex-1 px-3 py-1.5 border-2 border-black rounded-full text-[10px] font-bold hover:bg-gray-100 transition-colors"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleEditSlide(slide);
+                                  }}
+                                >
+                                  <Edit className="h-3 w-3 inline mr-1" />
+                                  EDIT
+                                </button>
+                                <button
+                                  className="flex-1 px-3 py-1.5 border-2 border-red-600 text-red-600 rounded-full text-[10px] font-bold hover:bg-red-50 transition-colors"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleDeleteSlide(slide.slide_number);
+                                  }}
+                                >
+                                  <Trash2 className="h-3 w-3 inline mr-1" />
+                                  DELETE
+                                </button>
+                              </div>
                             </div>
                           </div>
                         )}
@@ -816,6 +878,20 @@ export default function Editor() {
         carouselId={selectedCarousel.id}
         nextSlideNumber={nextSlideNumber}
       />
+
+      {/* Layout Explorer Dialog */}
+      {layoutExplorerSlide && (
+        <LayoutExplorer
+          open={layoutExplorerOpen}
+          onClose={() => {
+            setLayoutExplorerOpen(false);
+            setLayoutExplorerSlide(undefined);
+          }}
+          slide={layoutExplorerSlide}
+          onApplyLayout={handleApplyLayout}
+          onApplyToAll={handleApplyLayoutToAll}
+        />
+      )}
 
       {/* Hidden Export Container - Used for html2canvas capture */}
       <div
