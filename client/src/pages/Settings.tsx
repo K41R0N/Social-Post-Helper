@@ -403,78 +403,74 @@ export default function Settings() {
       {/* Layout Editor Dialog */}
       <Dialog open={editorOpen} onOpenChange={setEditorOpen}>
         <DialogContent className="max-w-[98vw] h-[96vh] p-0 flex flex-col border-4 border-black rounded-3xl">
-          <DialogHeader className="px-10 pt-10 pb-8 border-b-3 border-black flex-shrink-0">
-            <DialogTitle className="text-3xl font-bold mb-3">
-              {editingLayout ? 'EDIT CUSTOM LAYOUT' : 'CREATE CUSTOM LAYOUT'}
-            </DialogTitle>
-            <DialogDescription className="text-base">
-              Use HTML and CSS to create your custom slide layout. Use template variables like {'{{title}}'}
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="flex-1 flex overflow-hidden min-h-0">
-            {/* Left Side - Form Fields */}
-            <div className="w-[35%] border-r-3 border-black p-10 overflow-y-auto">
-              <div className="space-y-8">
-                <div>
-                  <label className="block text-sm font-bold mb-3 uppercase">
-                    Layout Name *
-                  </label>
-                  <Input
-                    type="text"
-                    placeholder="e.g., Bold Quote Layout"
-                    value={layoutName}
-                    onChange={(e) => setLayoutName(e.target.value)}
-                    className="h-12 text-base"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-bold mb-3 uppercase">
-                    Description
-                  </label>
-                  <Textarea
-                    placeholder="Describe what this layout is for..."
-                    value={layoutDescription}
-                    onChange={(e) => setLayoutDescription(e.target.value)}
-                    rows={3}
-                    className="text-base"
-                  />
-                </div>
-
-                {/* Template Variables Info */}
-                <div className="bg-blue-50 border-3 border-black rounded-2xl p-6">
-                  <div className="flex items-start gap-3 mb-4">
-                    <Info className="h-5 w-5 text-black mt-0.5 flex-shrink-0" />
-                    <h4 className="text-sm font-bold uppercase">Available Template Variables</h4>
-                  </div>
-                  <div className="space-y-3">
-                    {TEMPLATE_VARIABLES.map((variable) => (
-                      <div key={variable.name} className="flex flex-col gap-1">
-                        <code className="bg-black text-white px-3 py-1.5 rounded-full text-xs font-bold inline-block w-fit">
-                          {variable.name}
-                        </code>
-                        <span className="text-sm text-gray-700">{variable.description}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+          <DialogHeader className="px-10 pt-10 pb-6 border-b-3 border-black flex-shrink-0">
+            <div className="flex items-start gap-6 mb-6">
+              <div className="flex-1">
+                <DialogTitle className="text-3xl font-bold mb-2">
+                  {editingLayout ? 'EDIT CUSTOM LAYOUT' : 'CREATE CUSTOM LAYOUT'}
+                </DialogTitle>
+                <DialogDescription className="text-base">
+                  Use HTML and CSS to create your custom slide layout
+                </DialogDescription>
               </div>
             </div>
 
-            {/* Right Side - Code Editors with Tabs */}
+            {/* Compact Form Fields in Header */}
+            <div className="flex gap-6 items-start">
+              <div className="flex-1">
+                <label className="block text-xs font-bold mb-2 uppercase text-gray-600">
+                  Layout Name *
+                </label>
+                <Input
+                  type="text"
+                  placeholder="e.g., Bold Quote Layout"
+                  value={layoutName}
+                  onChange={(e) => setLayoutName(e.target.value)}
+                  className="h-11 text-base"
+                />
+              </div>
+
+              <div className="flex-1">
+                <label className="block text-xs font-bold mb-2 uppercase text-gray-600">
+                  Description (optional)
+                </label>
+                <Input
+                  type="text"
+                  placeholder="Describe what this layout is for..."
+                  value={layoutDescription}
+                  onChange={(e) => setLayoutDescription(e.target.value)}
+                  className="h-11 text-base"
+                />
+              </div>
+
+              {/* Template Variables Info Button */}
+              <button
+                className="mt-7 px-5 py-2.5 border-2 border-blue-600 text-blue-600 rounded-full text-xs font-bold hover:bg-blue-50 transition-colors flex items-center gap-2 whitespace-nowrap"
+                onClick={() => {
+                  const vars = TEMPLATE_VARIABLES.map(v => `${v.name}: ${v.description}`).join('\n');
+                  alert(`Available Template Variables:\n\n${vars}`);
+                }}
+              >
+                <Info className="h-3.5 w-3.5" />
+                Template Vars
+              </button>
+            </div>
+          </DialogHeader>
+
+          <div className="flex-1 flex overflow-hidden min-h-0">
+            {/* Full-Width Code Editors with Tabs */}
             <div className="flex-1 flex flex-col min-h-0">
               <Tabs defaultValue="html" className="flex-1 flex flex-col min-h-0">
-                <TabsList className="mx-10 mt-10 bg-gray-100 p-2 rounded-full border-3 border-black flex-shrink-0">
+                <TabsList className="mx-10 mt-8 bg-gray-100 p-2 rounded-full border-3 border-black flex-shrink-0">
                   <TabsTrigger
                     value="html"
-                    className="rounded-full px-8 py-3 font-bold uppercase text-sm data-[state=active]:bg-black data-[state=active]:text-white transition-all"
+                    className="rounded-full px-10 py-3 font-bold uppercase text-sm data-[state=active]:bg-black data-[state=active]:text-white transition-all"
                   >
                     HTML Template
                   </TabsTrigger>
                   <TabsTrigger
                     value="css"
-                    className="rounded-full px-8 py-3 font-bold uppercase text-sm data-[state=active]:bg-black data-[state=active]:text-white transition-all"
+                    className="rounded-full px-10 py-3 font-bold uppercase text-sm data-[state=active]:bg-black data-[state=active]:text-white transition-all"
                   >
                     CSS Template
                   </TabsTrigger>
