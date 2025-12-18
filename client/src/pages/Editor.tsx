@@ -669,25 +669,25 @@ export default function Editor() {
       {/* Middle: Sidebar + Canvas - Flex-1 */}
       <div className="flex-1 flex overflow-hidden min-h-0">
         {/* Slide List Sidebar - Fixed Width */}
-        <div className="w-80 bg-gray-50 border-r-4 border-black flex flex-col flex-shrink-0">
+        <div className="w-96 bg-gray-50 border-r-4 border-black flex flex-col flex-shrink-0">
           <div className="p-6 border-b-3 border-black bg-white flex-shrink-0">
-            <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center justify-between mb-3">
               <h2 className="dof-subtitle">SLIDES</h2>
-              <button onClick={handleAddSlide} className="dof-btn dof-btn-coral">
-                <Plus size={16} />
+              <button onClick={handleAddSlide} className="dof-btn dof-btn-coral px-4 py-2">
+                <Plus size={18} />
                 ADD
               </button>
             </div>
-            <p className="text-xs text-gray-600 font-bold">
+            <p className="text-sm text-gray-600 font-bold">
               {selectedCarousel?.slides.length} slide{selectedCarousel?.slides.length !== 1 ? 's' : ''}
             </p>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-4">
+          <div className="flex-1 overflow-y-auto p-5">
             <DragDropContext onDragEnd={handleDragEnd}>
               <Droppable droppableId="slides">
                 {(provided) => (
-                  <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-3">
+                  <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-4">
                     {selectedCarousel?.slides.map((slide, index) => (
                       <Draggable
                         key={slide.slide_number}
@@ -698,7 +698,7 @@ export default function Editor() {
                           <div
                             ref={provided.innerRef}
                             {...provided.draggableProps}
-                            className={`group relative bg-white border-3 rounded-2xl p-3 transition-all duration-200 ${
+                            className={`group relative bg-white border-3 rounded-2xl p-4 transition-all duration-200 ${
                               index === currentSlideIndex
                                 ? 'border-coral shadow-lg'
                                 : 'border-black hover:shadow-md'
@@ -708,59 +708,59 @@ export default function Editor() {
                               ...provided.draggableProps.style
                             }}
                           >
-                            <div className="flex items-start gap-3">
+                            <div className="flex items-start gap-3 mb-3">
                               <div {...provided.dragHandleProps} className="mt-1 cursor-grab active:cursor-grabbing flex-shrink-0">
-                                <GripVertical className="h-4 w-4 text-gray-400" />
+                                <GripVertical className="h-5 w-5 text-gray-400" />
                               </div>
-                              
-                              <div 
-                                className="flex-1 cursor-pointer min-w-0" 
+
+                              <div
+                                className="flex-1 cursor-pointer min-w-0"
                                 onClick={() => goToSlide(index)}
                               >
                                 <div className="flex items-center justify-between mb-2 gap-2">
-                                  <p className="text-xs font-bold uppercase">
+                                  <p className="text-sm font-bold uppercase">
                                     SLIDE {slide.slide_number}
                                   </p>
-                                  <span className="text-[10px] bg-black text-white px-2 py-0.5 rounded-full font-bold uppercase flex-shrink-0">
+                                  <span className="text-xs bg-black text-white px-2.5 py-1 rounded-full font-bold uppercase flex-shrink-0">
                                     {slide.layout_type.replace('_', ' ')}
                                   </span>
                                 </div>
                                 {slide.title && (
-                                  <p className="text-xs truncate text-gray-600">{slide.title}</p>
+                                  <p className="text-sm truncate text-gray-600">{slide.title}</p>
                                 )}
                               </div>
                             </div>
 
-                            <div className="space-y-2 mt-3 pt-3 border-t-2 border-gray-200">
+                            <div className="space-y-2.5 pt-3 border-t-2 border-gray-200">
                               <button
-                                className="w-full px-3 py-2 border-2 border-purple-600 text-purple-600 rounded-full text-[10px] font-bold hover:bg-purple-50 transition-colors flex items-center justify-center gap-1"
+                                className="w-full px-4 py-2.5 border-2 border-purple-600 text-purple-600 rounded-full text-xs font-bold hover:bg-purple-50 transition-colors flex items-center justify-center gap-2"
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   handleOpenLayoutExplorer(slide);
                                 }}
                               >
-                                <Palette className="h-3 w-3" />
+                                <Palette className="h-4 w-4" />
                                 TEST LAYOUTS
                               </button>
-                              <div className="flex gap-2">
+                              <div className="flex gap-2.5">
                                 <button
-                                  className="flex-1 px-3 py-1.5 border-2 border-black rounded-full text-[10px] font-bold hover:bg-gray-100 transition-colors"
+                                  className="flex-1 px-4 py-2 border-2 border-black rounded-full text-xs font-bold hover:bg-gray-100 transition-colors flex items-center justify-center gap-1.5"
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     handleEditSlide(slide);
                                   }}
                                 >
-                                  <Edit className="h-3 w-3 inline mr-1" />
+                                  <Edit className="h-3.5 w-3.5" />
                                   EDIT
                                 </button>
                                 <button
-                                  className="flex-1 px-3 py-1.5 border-2 border-red-600 text-red-600 rounded-full text-[10px] font-bold hover:bg-red-50 transition-colors"
+                                  className="flex-1 px-4 py-2 border-2 border-red-600 text-red-600 rounded-full text-xs font-bold hover:bg-red-50 transition-colors flex items-center justify-center gap-1.5"
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     handleDeleteSlide(slide.slide_number);
                                   }}
                                 >
-                                  <Trash2 className="h-3 w-3 inline mr-1" />
+                                  <Trash2 className="h-3.5 w-3.5" />
                                   DELETE
                                 </button>
                               </div>
@@ -799,31 +799,31 @@ export default function Editor() {
 
       {/* Bottom Bar - Fixed Height */}
       <div className="bg-white border-t-4 border-black flex-shrink-0">
-        <div className="px-8 py-5">
+        <div className="px-8 py-6">
           <div className="flex items-center justify-between">
             {/* Left: Navigation Controls */}
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-8">
               <button
                 onClick={prevSlide}
                 disabled={isExporting || !selectedCarousel || selectedCarousel.slides.length <= 1}
-                className="w-12 h-12 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-800 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                className="w-14 h-14 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-800 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
               >
-                <ChevronLeft className="h-6 w-6" />
+                <ChevronLeft className="h-7 w-7" />
               </button>
 
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-bold uppercase text-gray-600">
+              <div className="flex items-center gap-3">
+                <span className="text-sm font-bold uppercase text-gray-600">
                   Slide {currentSlideIndex + 1} of {selectedCarousel?.slides.length}
                 </span>
-                <div className="flex gap-2 ml-4">
+                <div className="flex gap-2.5 ml-5">
                   {selectedCarousel?.slides.map((_, index) => (
                     <button
                       key={index}
                       onClick={() => goToSlide(index)}
-                      className={`h-2 rounded-full transition-all ${
+                      className={`h-2.5 rounded-full transition-all ${
                         index === currentSlideIndex
-                          ? 'w-8 bg-black'
-                          : 'w-2 bg-gray-300 hover:bg-gray-400'
+                          ? 'w-10 bg-black'
+                          : 'w-2.5 bg-gray-300 hover:bg-gray-400'
                       }`}
                     />
                   ))}
@@ -833,35 +833,35 @@ export default function Editor() {
               <button
                 onClick={nextSlide}
                 disabled={isExporting || !selectedCarousel || selectedCarousel.slides.length <= 1}
-                className="w-12 h-12 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-800 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                className="w-14 h-14 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-800 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
               >
-                <ChevronRight className="h-6 w-6" />
+                <ChevronRight className="h-7 w-7" />
               </button>
             </div>
 
             {/* Center: Export Info */}
             <div className="text-center">
-              <p className="text-xs text-gray-600 font-bold">
+              <p className="text-sm text-gray-600 font-bold">
                 {exportPreset.name} • {exportPreset.width}×{exportPreset.height}px
               </p>
             </div>
 
             {/* Right: Download Buttons */}
-            <div className="flex gap-3">
+            <div className="flex gap-4">
               <button
                 onClick={downloadSlide}
                 disabled={isExporting}
-                className="dof-btn dof-btn-coral"
+                className="dof-btn dof-btn-coral px-5 py-3 text-sm"
               >
-                <Download size={16} />
+                <Download size={18} />
                 DOWNLOAD SLIDE
               </button>
               <button
                 onClick={downloadAllSlides}
                 disabled={isExporting}
-                className="dof-btn dof-btn-black"
+                className="dof-btn dof-btn-black px-5 py-3 text-sm"
               >
-                <Download size={16} />
+                <Download size={18} />
                 ALL ({selectedCarousel?.slides.length})
               </button>
             </div>

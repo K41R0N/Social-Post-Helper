@@ -107,18 +107,18 @@ export default function SlideEditor({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>{slide ? 'Edit Slide' : 'Add New Slide'}</DialogTitle>
-          <DialogDescription>
+      <DialogContent className="max-w-3xl max-h-[92vh] overflow-y-auto">
+        <DialogHeader className="space-y-3">
+          <DialogTitle className="text-2xl">{slide ? 'Edit Slide' : 'Add New Slide'}</DialogTitle>
+          <DialogDescription className="text-base">
             Configure the slide properties and content
           </DialogDescription>
         </DialogHeader>
 
-        <div className="grid gap-4 py-4">
+        <div className="grid gap-6 py-6">
           {/* Slide Number */}
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="slide_number" className="text-right">
+          <div className="grid grid-cols-4 items-center gap-6">
+            <Label htmlFor="slide_number" className="text-right font-semibold">
               Slide #
             </Label>
             <Input
@@ -126,20 +126,20 @@ export default function SlideEditor({
               type="number"
               value={formData.slide_number}
               onChange={(e) => updateField('slide_number', parseInt(e.target.value))}
-              className="col-span-3"
+              className="col-span-3 h-11"
             />
           </div>
 
           {/* Layout Type */}
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="layout_type" className="text-right">
+          <div className="grid grid-cols-4 items-center gap-6">
+            <Label htmlFor="layout_type" className="text-right font-semibold">
               Layout
             </Label>
             <Select
               value={formData.layout_type}
               onValueChange={(value) => updateField('layout_type', value)}
             >
-              <SelectTrigger className="col-span-3">
+              <SelectTrigger className="col-span-3 h-11">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -153,143 +153,143 @@ export default function SlideEditor({
           </div>
 
           {/* Colors */}
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="background_color" className="text-right">
+          <div className="grid grid-cols-4 items-center gap-6">
+            <Label htmlFor="background_color" className="text-right font-semibold">
               Background
             </Label>
-            <div className="col-span-3 flex gap-2">
+            <div className="col-span-3 flex gap-3">
               <Input
                 id="background_color"
                 type="color"
                 value={formData.background_color}
                 onChange={(e) => updateField('background_color', e.target.value)}
-                className="w-20"
+                className="w-24 h-11"
               />
               <Input
                 type="text"
                 value={formData.background_color}
                 onChange={(e) => updateField('background_color', e.target.value)}
-                className="flex-1"
+                className="flex-1 h-11"
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="font_color" className="text-right">
+          <div className="grid grid-cols-4 items-center gap-6">
+            <Label htmlFor="font_color" className="text-right font-semibold">
               Text Color
             </Label>
-            <div className="col-span-3 flex gap-2">
+            <div className="col-span-3 flex gap-3">
               <Input
                 id="font_color"
                 type="color"
                 value={formData.font_color}
                 onChange={(e) => updateField('font_color', e.target.value)}
-                className="w-20"
+                className="w-24 h-11"
               />
               <Input
                 type="text"
                 value={formData.font_color}
                 onChange={(e) => updateField('font_color', e.target.value)}
-                className="flex-1"
+                className="flex-1 h-11"
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="accent_color" className="text-right">
+          <div className="grid grid-cols-4 items-center gap-6">
+            <Label htmlFor="accent_color" className="text-right font-semibold">
               Accent Color
             </Label>
-            <div className="col-span-3 flex gap-2">
+            <div className="col-span-3 flex gap-3">
               <Input
                 id="accent_color"
                 type="color"
                 value={formData.accent_color}
                 onChange={(e) => updateField('accent_color', e.target.value)}
-                className="w-20"
+                className="w-24 h-11"
               />
               <Input
                 type="text"
                 value={formData.accent_color}
                 onChange={(e) => updateField('accent_color', e.target.value)}
-                className="flex-1"
+                className="flex-1 h-11"
               />
             </div>
           </div>
 
           {/* Content Fields */}
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="title" className="text-right">
+          <div className="grid grid-cols-4 items-center gap-6">
+            <Label htmlFor="title" className="text-right font-semibold">
               Title
             </Label>
             <Input
               id="title"
               value={formData.title || ''}
               onChange={(e) => updateField('title', e.target.value)}
-              className="col-span-3"
+              className="col-span-3 h-11"
               placeholder="Main heading"
             />
           </div>
 
-          <div className="grid grid-cols-4 items-start gap-4">
-            <Label htmlFor="body_text" className="text-right pt-2">
+          <div className="grid grid-cols-4 items-start gap-6">
+            <Label htmlFor="body_text" className="text-right pt-3 font-semibold">
               Body Text
             </Label>
             <Textarea
               id="body_text"
               value={formData.body_text || ''}
               onChange={(e) => updateField('body_text', e.target.value)}
-              className="col-span-3"
-              rows={4}
+              className="col-span-3 min-h-[120px]"
+              rows={5}
               placeholder="Main content (use <br /><br /> for paragraph breaks)"
             />
           </div>
 
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="subtitle" className="text-right">
+          <div className="grid grid-cols-4 items-center gap-6">
+            <Label htmlFor="subtitle" className="text-right font-semibold">
               Subtitle
             </Label>
             <Input
               id="subtitle"
               value={formData.subtitle || ''}
               onChange={(e) => updateField('subtitle', e.target.value)}
-              className="col-span-3"
+              className="col-span-3 h-11"
               placeholder="Secondary text"
             />
           </div>
 
-          <div className="grid grid-cols-4 items-start gap-4">
-            <Label htmlFor="quote" className="text-right pt-2">
+          <div className="grid grid-cols-4 items-start gap-6">
+            <Label htmlFor="quote" className="text-right pt-3 font-semibold">
               Quote
             </Label>
             <Textarea
               id="quote"
               value={formData.quote || ''}
               onChange={(e) => updateField('quote', e.target.value)}
-              className="col-span-3"
-              rows={3}
+              className="col-span-3 min-h-[100px]"
+              rows={4}
               placeholder="Quote or etymology text"
             />
           </div>
 
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="image_url" className="text-right">
+          <div className="grid grid-cols-4 items-center gap-6">
+            <Label htmlFor="image_url" className="text-right font-semibold">
               Image URL
             </Label>
             <Input
               id="image_url"
               value={formData.image_url || ''}
               onChange={(e) => updateField('image_url', e.target.value)}
-              className="col-span-3"
+              className="col-span-3 h-11"
               placeholder="https://example.com/image.jpg"
             />
           </div>
         </div>
 
-        <DialogFooter>
-          <Button variant="outline" onClick={onClose}>
+        <DialogFooter className="gap-3">
+          <Button variant="outline" size="lg" onClick={onClose}>
             Cancel
           </Button>
-          <Button onClick={handleSave}>
+          <Button size="lg" onClick={handleSave}>
             {slide ? 'Save Changes' : 'Add Slide'}
           </Button>
         </DialogFooter>

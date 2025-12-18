@@ -146,25 +146,26 @@ export default function LayoutExplorer({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-[95vw] h-[90vh] p-0">
-        <DialogHeader className="px-6 pt-6 pb-4 border-b">
-          <DialogTitle>Layout Explorer</DialogTitle>
-          <DialogDescription>
-            Test different layouts with your content. Current: <Badge variant="outline">{slide.layout_type}</Badge>
+      <DialogContent className="max-w-[98vw] h-[95vh] p-0">
+        <DialogHeader className="px-8 pt-8 pb-6 border-b">
+          <DialogTitle className="text-2xl font-bold">Layout Explorer</DialogTitle>
+          <DialogDescription className="text-base mt-2">
+            Test different layouts with your content. Current: <Badge variant="outline" className="ml-2">{slide.layout_type}</Badge>
           </DialogDescription>
         </DialogHeader>
 
         <div className="flex h-full overflow-hidden">
           {/* Sidebar - Layout List */}
-          <div className="w-80 border-r flex flex-col">
+          <div className="w-96 border-r flex flex-col">
             {/* Category Filter */}
-            <div className="p-4 border-b">
-              <div className="flex flex-wrap gap-2">
+            <div className="p-6 border-b">
+              <div className="flex flex-wrap gap-3">
                 {LAYOUT_CATEGORIES.map(cat => (
                   <Button
                     key={cat}
                     variant={selectedCategory === cat ? 'default' : 'outline'}
-                    size="sm"
+                    size="default"
+                    className="px-4 py-2"
                     onClick={() => setSelectedCategory(cat)}
                   >
                     {cat}
@@ -175,31 +176,33 @@ export default function LayoutExplorer({
 
             {/* Layout List */}
             <ScrollArea className="flex-1">
-              <div className="p-4 space-y-2">
+              <div className="p-6 space-y-3">
                 {filteredLayouts.map(layout => (
                   <Card
                     key={layout.id}
                     className={`cursor-pointer transition-all hover:border-primary ${
-                      previewLayout === layout.id ? 'border-primary bg-primary/5' : ''
+                      previewLayout === layout.id ? 'border-primary bg-primary/5 shadow-md' : ''
                     }`}
                     onClick={() => setPreviewLayout(layout.id)}
                   >
-                    <CardHeader className="p-3">
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <CardTitle className="text-sm font-medium">
+                    <CardHeader className="p-4">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex-1 min-w-0">
+                          <CardTitle className="text-base font-semibold leading-tight mb-2">
                             {layout.name}
                           </CardTitle>
-                          <p className="text-xs text-muted-foreground mt-1">
+                          <p className="text-sm text-muted-foreground leading-relaxed">
                             {layout.description}
                           </p>
                         </div>
-                        {layout.isCustom && (
-                          <Badge variant="secondary" className="text-xs">Custom</Badge>
-                        )}
-                        {layout.isComponent && (
-                          <Badge variant="default" className="text-xs">Component</Badge>
-                        )}
+                        <div className="flex flex-col gap-1">
+                          {layout.isCustom && (
+                            <Badge variant="secondary" className="text-xs whitespace-nowrap">Custom</Badge>
+                          )}
+                          {layout.isComponent && (
+                            <Badge variant="default" className="text-xs whitespace-nowrap">Component</Badge>
+                          )}
+                        </div>
                       </div>
                     </CardHeader>
                   </Card>
@@ -208,10 +211,10 @@ export default function LayoutExplorer({
             </ScrollArea>
 
             {/* Actions */}
-            <div className="p-4 border-t space-y-2">
+            <div className="p-6 border-t space-y-3">
               <Button
                 className="w-full"
-                size="sm"
+                size="lg"
                 variant={compareMode ? 'outline' : 'default'}
                 onClick={() => {
                   setCompareMode(!compareMode);
@@ -288,27 +291,28 @@ export default function LayoutExplorer({
             </div>
 
             {/* Bottom Action Bar */}
-            <div className="border-t p-4 bg-background">
-              <div className="flex items-center justify-between">
-                <div className="text-sm text-muted-foreground">
+            <div className="border-t p-6 bg-background">
+              <div className="flex items-center justify-between gap-6">
+                <div className="text-base text-muted-foreground">
                   {previewLayout === slide.layout_type ? (
                     <span>Showing current layout</span>
                   ) : (
-                    <span className="text-primary font-medium">
+                    <span className="text-primary font-semibold">
                       Layout changed: {slide.layout_type} → {allLayouts.find(l => l.id === previewLayout)?.name}
                     </span>
                   )}
                 </div>
-                <div className="flex gap-2">
-                  <Button variant="outline" onClick={onClose}>
+                <div className="flex gap-3">
+                  <Button variant="outline" size="lg" onClick={onClose}>
                     Cancel
                   </Button>
                   {onApplyToAll && previewLayout !== slide.layout_type && (
-                    <Button variant="secondary" onClick={handleApplyToAll}>
+                    <Button variant="secondary" size="lg" onClick={handleApplyToAll}>
                       Apply to All Slides
                     </Button>
                   )}
                   <Button
+                    size="lg"
                     onClick={handleApply}
                     disabled={previewLayout === slide.layout_type}
                   >
