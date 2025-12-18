@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import Editor from '@monaco-editor/react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import CodeEditorPanel from './CodeEditorPanel';
 import {
   Dialog,
   DialogContent,
@@ -439,7 +439,7 @@ export default function ComponentLayoutsSettings() {
 
           <div className="flex-1 flex overflow-hidden min-h-0">
             {/* Left Side - Form Fields */}
-            <div className="w-[30%] border-r-3 border-black p-10 overflow-y-auto">
+            <div className="w-[35%] border-r-3 border-black p-10 overflow-y-auto">
               <div className="space-y-8">
                 <div>
                   <label className="block text-sm font-bold mb-3 uppercase">
@@ -489,32 +489,13 @@ export default function ComponentLayoutsSettings() {
 
             {/* Right Side - Code Editor */}
             <div className="flex-1 flex flex-col p-10 min-h-0">
-              <div className="flex-1 border-3 border-black rounded-2xl overflow-hidden flex flex-col min-h-0">
-                <div className="bg-gray-100 px-6 py-4 border-b-2 border-black flex items-center justify-between flex-shrink-0">
-                  <span className="text-base font-bold">Schema Editor (JSON)</span>
-                  <span className="text-sm text-gray-600 font-medium">Monaco Editor • Ctrl+Space for autocomplete</span>
-                </div>
-                <div className="flex-1 min-h-0">
-                  <Editor
-                    height="100%"
-                    defaultLanguage="json"
-                    value={schemaCode}
-                    onChange={(value) => setSchemaCode(value || '')}
-                    theme="vs-light"
-                    options={{
-                      minimap: { enabled: true },
-                      fontSize: 14,
-                      lineNumbers: 'on',
-                      scrollBeyondLastLine: false,
-                      wordWrap: 'on',
-                      formatOnPaste: true,
-                      formatOnType: true,
-                      tabSize: 2,
-                      padding: { top: 16, bottom: 16 },
-                    }}
-                  />
-                </div>
-              </div>
+              <CodeEditorPanel
+                title="Schema Editor (JSON)"
+                language="json"
+                value={schemaCode}
+                onChange={setSchemaCode}
+                hint="Monaco Editor • Ctrl+Space for autocomplete"
+              />
             </div>
           </div>
 

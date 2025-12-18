@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
-import Editor from '@monaco-editor/react';
 import DOMPurify from 'isomorphic-dompurify';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import CodeEditorPanel from '../components/CodeEditorPanel';
 import {
   Dialog,
   DialogContent,
@@ -420,12 +420,12 @@ export default function Settings() {
                   <label className="block text-sm font-bold mb-3 uppercase">
                     Layout Name *
                   </label>
-                  <input
+                  <Input
                     type="text"
                     placeholder="e.g., Bold Quote Layout"
                     value={layoutName}
                     onChange={(e) => setLayoutName(e.target.value)}
-                    className="dof-input h-12 text-base"
+                    className="h-12 text-base"
                   />
                 </div>
 
@@ -433,12 +433,12 @@ export default function Settings() {
                   <label className="block text-sm font-bold mb-3 uppercase">
                     Description
                   </label>
-                  <textarea
+                  <Textarea
                     placeholder="Describe what this layout is for..."
                     value={layoutDescription}
                     onChange={(e) => setLayoutDescription(e.target.value)}
                     rows={3}
-                    className="dof-input text-base"
+                    className="text-base"
                   />
                 </div>
 
@@ -481,59 +481,21 @@ export default function Settings() {
                 </TabsList>
 
                 <TabsContent value="html" className="flex-1 px-10 pb-10 pt-6 min-h-0">
-                  <div className="h-full border-3 border-black rounded-2xl overflow-hidden flex flex-col">
-                    <div className="bg-gray-100 px-6 py-4 border-b-2 border-black flex items-center justify-between flex-shrink-0">
-                      <span className="text-base font-bold">HTML Editor</span>
-                      <span className="text-sm text-gray-600 font-medium">Ctrl+Space for autocomplete</span>
-                    </div>
-                    <div className="flex-1 min-h-0">
-                      <Editor
-                        height="100%"
-                        defaultLanguage="html"
-                        value={htmlCode}
-                        onChange={(value) => setHtmlCode(value || '')}
-                        theme="vs-light"
-                        options={{
-                          minimap: { enabled: true },
-                          fontSize: 14,
-                          lineNumbers: 'on',
-                          scrollBeyondLastLine: false,
-                          wordWrap: 'on',
-                          formatOnPaste: true,
-                          formatOnType: true,
-                          padding: { top: 16, bottom: 16 },
-                        }}
-                      />
-                    </div>
-                  </div>
+                  <CodeEditorPanel
+                    title="HTML Editor"
+                    language="html"
+                    value={htmlCode}
+                    onChange={setHtmlCode}
+                  />
                 </TabsContent>
 
                 <TabsContent value="css" className="flex-1 px-10 pb-10 pt-6 min-h-0">
-                  <div className="h-full border-3 border-black rounded-2xl overflow-hidden flex flex-col">
-                    <div className="bg-gray-100 px-6 py-4 border-b-2 border-black flex items-center justify-between flex-shrink-0">
-                      <span className="text-base font-bold">CSS Editor</span>
-                      <span className="text-sm text-gray-600 font-medium">Ctrl+Space for autocomplete</span>
-                    </div>
-                    <div className="flex-1 min-h-0">
-                      <Editor
-                        height="100%"
-                        defaultLanguage="css"
-                        value={cssCode}
-                        onChange={(value) => setCssCode(value || '')}
-                        theme="vs-light"
-                        options={{
-                          minimap: { enabled: true },
-                          fontSize: 14,
-                          lineNumbers: 'on',
-                          scrollBeyondLastLine: false,
-                          wordWrap: 'on',
-                          formatOnPaste: true,
-                          formatOnType: true,
-                          padding: { top: 16, bottom: 16 },
-                        }}
-                      />
-                    </div>
-                  </div>
+                  <CodeEditorPanel
+                    title="CSS Editor"
+                    language="css"
+                    value={cssCode}
+                    onChange={setCssCode}
+                  />
                 </TabsContent>
               </Tabs>
             </div>
@@ -541,12 +503,21 @@ export default function Settings() {
 
           <DialogFooter className="px-10 py-8 border-t-3 border-black flex-shrink-0">
             <div className="flex gap-4 w-full justify-end">
-              <button onClick={() => setEditorOpen(false)} className="dof-btn dof-btn-outline px-8 py-6 text-base font-bold">
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={() => setEditorOpen(false)}
+                className="px-8 py-6 text-base font-bold"
+              >
                 Cancel
-              </button>
-              <button onClick={handleSaveLayout} className="dof-btn dof-btn-green px-8 py-6 text-base font-bold">
+              </Button>
+              <Button
+                size="lg"
+                onClick={handleSaveLayout}
+                className="px-8 py-6 text-base font-bold bg-green-600 hover:bg-green-700"
+              >
                 {editingLayout ? 'UPDATE LAYOUT' : 'CREATE LAYOUT'}
-              </button>
+              </Button>
             </div>
           </DialogFooter>
         </DialogContent>
