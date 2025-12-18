@@ -45,6 +45,8 @@ export default function ComponentLayoutsSettings() {
   const [editingLayout, setEditingLayout] = useState<LayoutSchema | null>(null);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewLayout, setPreviewLayout] = useState<LayoutSchema | null>(null);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [layoutToDelete, setLayoutToDelete] = useState<string | null>(null);
 
   // Form state
   const [layoutName, setLayoutName] = useState('');
@@ -123,10 +125,21 @@ export default function ComponentLayoutsSettings() {
   };
 
   const handleDeleteLayout = (id: string) => {
-    if (confirm('Are you sure you want to delete this layout?')) {
-      deleteComponentLayout(id);
+    setLayoutToDelete(id);
+    setDeleteConfirmOpen(true);
+  };
+
+  const confirmDeleteLayout = () => {
+    if (!layoutToDelete) return;
+
+    try {
+      deleteComponentLayout(layoutToDelete);
       loadComponentLayouts();
       toast.success('Layout deleted');
+      setDeleteConfirmOpen(false);
+      setLayoutToDelete(null);
+    } catch (error) {
+      toast.error('Failed to delete layout');
     }
   };
 
@@ -328,7 +341,7 @@ export default function ComponentLayoutsSettings() {
         <div className="p-10">
           {componentLayouts.length === 0 ? (
             <div>
-              <div className="text-center py-12 mb-12 border-b-2 border-gray-200">
+              <div className="text-center py-12 mb-12 border-b-[3px] border-black">
                 <Code className="h-20 w-20 mx-auto mb-6 text-gray-200 stroke-[1.5]" />
                 <h3 className="dof-title mb-4">NO COMPONENT LAYOUTS YET</h3>
                 <p className="dof-body mb-8">
@@ -366,7 +379,7 @@ export default function ComponentLayoutsSettings() {
               )}
 
               {/* Create from Scratch */}
-              <div className={`text-center ${QUICK_START_TEMPLATES.length > 0 ? 'pt-8 border-t-2 border-gray-200' : 'pt-0'}`}>
+              <div className={`text-center ${QUICK_START_TEMPLATES.length > 0 ? 'pt-8 border-t-[3px] border-black' : 'pt-0'}`}>
                 <button onClick={handleNewLayout} className="dof-btn dof-btn-coral dof-btn-lg">
                   <Code size={24} />
                   CREATE FROM SCRATCH
@@ -389,14 +402,14 @@ export default function ComponentLayoutsSettings() {
 
                   <div className="grid grid-cols-2 gap-2 mb-4">
                     <button
-                      className="px-4 py-2 border-2 border-black rounded-full text-xs font-bold hover:bg-gray-100 transition-colors"
+                      className="px-4 py-2 border-[3px] border-black rounded-full text-xs font-bold hover:bg-gray-100 transition-colors"
                       onClick={() => handlePreview(layout)}
                     >
                       <Eye className="inline h-3 w-3 mr-1" />
                       PREVIEW
                     </button>
                     <button
-                      className="px-4 py-2 border-2 border-black rounded-full text-xs font-bold hover:bg-gray-100 transition-colors"
+                      className="px-4 py-2 border-[3px] border-black rounded-full text-xs font-bold hover:bg-gray-100 transition-colors"
                       onClick={() => handleEditLayout(layout)}
                     >
                       <Edit className="inline h-3 w-3 mr-1" />
@@ -406,14 +419,14 @@ export default function ComponentLayoutsSettings() {
 
                   <div className="grid grid-cols-2 gap-2">
                     <button
-                      className="px-4 py-2 border-2 border-blue-600 text-blue-600 rounded-full text-xs font-bold hover:bg-blue-50 transition-colors"
+                      className="px-4 py-2 border-[3px] border-blue-600 text-blue-600 rounded-full text-xs font-bold hover:bg-blue-50 transition-colors"
                       onClick={() => handleDuplicateLayout(layout.id)}
                     >
                       <Copy className="inline h-3 w-3 mr-1" />
                       DUPLICATE
                     </button>
                     <button
-                      className="px-4 py-2 border-2 border-red-600 text-red-600 rounded-full text-xs font-bold hover:bg-red-50 transition-colors"
+                      className="px-4 py-2 border-[3px] border-red-600 text-red-600 rounded-full text-xs font-bold hover:bg-red-50 transition-colors"
                       onClick={() => handleDeleteLayout(layout.id)}
                     >
                       <Trash2 className="inline h-3 w-3 mr-1" />
@@ -454,7 +467,7 @@ export default function ComponentLayoutsSettings() {
               {/* Quick Start Templates Dropdown */}
               {QUICK_START_TEMPLATES.length > 0 && !editingLayout && (
                 <select
-                  className="h-9 px-3 border-2 border-black rounded-lg text-xs font-bold hover:bg-gray-50 transition-colors cursor-pointer"
+                  className="h-9 px-3 border-[3px] border-black rounded-lg text-xs font-bold hover:bg-gray-50 transition-colors cursor-pointer"
                   onChange={(e) => {
                     if (e.target.value) {
                       handleLoadTemplate(e.target.value);
@@ -474,7 +487,7 @@ export default function ComponentLayoutsSettings() {
 
               {/* AI Assistant Info Button */}
               <button
-                className="h-9 px-3 border-2 border-purple-600 text-purple-600 rounded-lg text-xs font-bold hover:bg-purple-50 transition-colors flex items-center gap-1.5 whitespace-nowrap"
+                className="h-9 px-3 border-[3px] border-purple-600 text-purple-600 rounded-lg text-xs font-bold hover:bg-purple-50 transition-colors flex items-center gap-1.5 whitespace-nowrap"
                 onClick={() => {
                   const prompt = `Create a JSON component layout for a 1080x1080 social media slide. Use this schema: root container with display:flex, children array with text/heading/shape components. Include template variables like {{title}}, {{quote}}, {{background_color}}. Example: centered quote card with large quote text, decorative line, and attribution. Return only valid JSON.`;
                   navigator.clipboard.writeText(prompt);
@@ -545,6 +558,35 @@ export default function ComponentLayoutsSettings() {
             >
               Close
             </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
+        <DialogContent className="border-4 border-black rounded-3xl max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold uppercase">
+              DELETE LAYOUT
+            </DialogTitle>
+            <DialogDescription className="text-base">
+              Are you sure you want to delete this component layout? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-3">
+            <button
+              onClick={() => setDeleteConfirmOpen(false)}
+              className="dof-btn dof-btn-outline"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={confirmDeleteLayout}
+              className="dof-btn dof-btn-coral"
+            >
+              <Trash2 size={18} />
+              Delete Layout
+            </button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

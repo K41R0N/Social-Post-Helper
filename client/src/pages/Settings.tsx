@@ -54,6 +54,8 @@ export default function Settings() {
   const [editingLayout, setEditingLayout] = useState<CustomLayout | null>(null);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewLayout, setPreviewLayout] = useState<CustomLayout | null>(null);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [layoutToDelete, setLayoutToDelete] = useState<{ id: string; name: string } | null>(null);
 
   // Form state
   const [layoutName, setLayoutName] = useState('');
@@ -129,11 +131,18 @@ export default function Settings() {
   };
 
   const handleDeleteLayout = (id: string, name: string) => {
-    if (!confirm(`Delete layout "${name}"? This cannot be undone.`)) return;
+    setLayoutToDelete({ id, name });
+    setDeleteConfirmOpen(true);
+  };
+
+  const confirmDeleteLayout = () => {
+    if (!layoutToDelete) return;
 
     try {
-      deleteCustomLayout(id);
+      deleteCustomLayout(layoutToDelete.id);
       loadCustomLayouts();
+      setDeleteConfirmOpen(false);
+      setLayoutToDelete(null);
       toast.success('Layout deleted');
     } catch (error) {
       toast.error('Failed to delete layout');
@@ -348,28 +357,28 @@ export default function Settings() {
 
                         <div className="flex gap-3 mb-5">
                           <button
-                            className="flex-1 px-5 py-2.5 border-2 border-black rounded-full text-xs font-bold hover:bg-gray-100 transition-colors"
+                            className="flex-1 px-5 py-2.5 border-[3px] border-black rounded-full text-xs font-bold hover:bg-gray-100 transition-colors"
                             onClick={() => handlePreview(layout)}
                           >
                             <Eye className="inline h-3 w-3 mr-1" />
                             PREVIEW
                           </button>
                           <button
-                            className="flex-1 px-5 py-2.5 border-2 border-black rounded-full text-xs font-bold hover:bg-gray-100 transition-colors"
+                            className="flex-1 px-5 py-2.5 border-[3px] border-black rounded-full text-xs font-bold hover:bg-gray-100 transition-colors"
                             onClick={() => handleEditLayout(layout)}
                           >
                             <Edit className="inline h-3 w-3 mr-1" />
                             EDIT
                           </button>
                           <button
-                            className="px-5 py-2.5 border-2 border-red-600 text-red-600 rounded-full text-xs font-bold hover:bg-red-50 transition-colors"
+                            className="px-5 py-2.5 border-[3px] border-red-600 text-red-600 rounded-full text-xs font-bold hover:bg-red-50 transition-colors"
                             onClick={() => handleDeleteLayout(layout.id, layout.name)}
                           >
                             <Trash2 className="h-3 w-3" />
                           </button>
                         </div>
 
-                        <div className="pt-5 border-t-2 border-gray-200 dof-body-sm text-gray-500">
+                        <div className="pt-5 border-t-[3px] border-black dof-body-sm text-gray-500">
                           Modified {new Date(layout.modifiedAt).toLocaleDateString()}
                         </div>
                       </div>
@@ -424,7 +433,7 @@ export default function Settings() {
 
               {/* Template Variables Info Button */}
               <button
-                className="h-9 px-3 border-2 border-blue-600 text-blue-600 rounded-lg text-xs font-bold hover:bg-blue-50 transition-colors flex items-center gap-1.5 whitespace-nowrap"
+                className="h-9 px-3 border-[3px] border-blue-600 text-blue-600 rounded-lg text-xs font-bold hover:bg-blue-50 transition-colors flex items-center gap-1.5 whitespace-nowrap"
                 onClick={() => {
                   const vars = TEMPLATE_VARIABLES.map(v => `${v.name}: ${v.description}`).join('\n');
                   alert(`Available Template Variables:\n\n${vars}`);
@@ -440,7 +449,7 @@ export default function Settings() {
             {/* Full-Width Code Editors with Tabs */}
             <div className="flex-1 flex flex-col min-h-0">
               <Tabs defaultValue="html" className="flex-1 flex flex-col min-h-0">
-                <TabsList className="mx-6 mt-4 bg-gray-100 p-1.5 rounded-full border-2 border-black flex-shrink-0">
+                <TabsList className="mx-6 mt-4 bg-gray-100 p-1.5 rounded-full border-[3px] border-black flex-shrink-0">
                   <TabsTrigger
                     value="html"
                     className="rounded-full px-8 py-2 font-bold uppercase text-xs data-[state=active]:bg-black data-[state=active]:text-white transition-all"
@@ -524,6 +533,35 @@ export default function Settings() {
           <DialogFooter>
             <button onClick={() => setPreviewOpen(false)} className="dof-btn dof-btn-black">
               Close
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Layout Confirmation Dialog */}
+      <Dialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
+        <DialogContent className="border-4 border-black rounded-3xl max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold uppercase">
+              DELETE LAYOUT
+            </DialogTitle>
+            <DialogDescription className="text-base">
+              Are you sure you want to delete "{layoutToDelete?.name}"? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-3">
+            <button
+              onClick={() => setDeleteConfirmOpen(false)}
+              className="dof-btn dof-btn-outline"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={confirmDeleteLayout}
+              className="dof-btn dof-btn-coral"
+            >
+              <Trash2 size={18} />
+              Delete Layout
             </button>
           </DialogFooter>
         </DialogContent>

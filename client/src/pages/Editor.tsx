@@ -53,7 +53,10 @@ export default function Editor() {
   const [layoutExplorerSlide, setLayoutExplorerSlide] = useState<SlideData | undefined>();
   const [isLoading, setIsLoading] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
-  
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [slideToDelete, setSlideToDelete] = useState<number | null>(null);
+
   const slideRef = useRef<HTMLDivElement>(null);
   const exportRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -88,11 +91,33 @@ export default function Editor() {
       const updatedProject = { ...project, carousels };
       saveProject(updatedProject);
       setProject(updatedProject);
+      setLastSaved(new Date());
     }
   }, [carousels]);
 
+  // Update time ago display every second
+  const [, forceUpdate] = useState(0);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      forceUpdate(n => n + 1);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
   const selectedCarousel = carousels[selectedCarouselIndex];
   const currentSlide = selectedCarousel?.slides[currentSlideIndex];
+
+  // Helper function to format time ago
+  const getTimeAgo = (date: Date | null): string => {
+    if (!date) return '';
+    const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000);
+    if (seconds < 10) return 'just now';
+    if (seconds < 60) return `${seconds}s ago`;
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return `${minutes}m ago`;
+    const hours = Math.floor(minutes / 60);
+    return `${hours}h ago`;
+  };
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -331,20 +356,28 @@ export default function Editor() {
       toast.error('Cannot delete the last slide');
       return;
     }
+    setSlideToDelete(slideNumber);
+    setDeleteConfirmOpen(true);
+  };
+
+  const confirmDeleteSlide = () => {
+    if (!selectedCarousel || slideToDelete === null) return;
 
     const updatedCarousels = [...carousels];
     updatedCarousels[selectedCarouselIndex] = {
       ...selectedCarousel,
-      slides: selectedCarousel.slides.filter(s => s.slide_number !== slideNumber),
+      slides: selectedCarousel.slides.filter(s => s.slide_number !== slideToDelete),
     };
 
     setCarousels(updatedCarousels);
-    
+
     if (currentSlideIndex >= updatedCarousels[selectedCarouselIndex].slides.length) {
       setCurrentSlideIndex(updatedCarousels[selectedCarouselIndex].slides.length - 1);
     }
 
     toast.success('Slide deleted');
+    setDeleteConfirmOpen(false);
+    setSlideToDelete(null);
   };
 
   const handleDragEnd = (result: DropResult) => {
@@ -582,13 +615,13 @@ export default function Editor() {
       <div className="bg-white border-b-4 border-black flex-shrink-0">
         <div className="px-8 py-5">
           <div className="flex items-center justify-between gap-8">
-            {/* Left: Back Arrow */}
+            {/* Left: Back to Dashboard Button */}
             <button
               onClick={() => setLocation('/dashboard')}
-              className="flex-shrink-0 w-11 h-11 flex items-center justify-center border-3 border-black rounded-xl hover:bg-gray-100 transition-colors"
-              title="Back to Dashboard"
+              className="flex-shrink-0 dof-btn dof-btn-outline dof-btn-sm inline-flex items-center gap-2"
             >
-              <ArrowLeft size={20} />
+              <ArrowLeft size={18} />
+              Back to Dashboard
             </button>
 
             {/* Middle: Carousel Selector + Export Preset Dropdowns */}
@@ -635,6 +668,24 @@ export default function Editor() {
                 </SelectContent>
               </Select>
             </div>
+
+            {/* Last Saved Indicator */}
+            {lastSaved && (
+              <div className="flex items-center gap-2 text-sm text-gray-600 flex-shrink-0">
+                <svg
+                  className="w-4 h-4 text-green-600"
+                  fill="none"
+                  strokeWidth="2.5"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+                <span className="font-medium whitespace-nowrap">
+                  Saved {getTimeAgo(lastSaved)}
+                </span>
+              </div>
+            )}
 
             {/* Right: Icon Buttons */}
             <div className="flex items-center gap-3 flex-shrink-0">
@@ -731,9 +782,9 @@ export default function Editor() {
                               </div>
                             </div>
 
-                            <div className="space-y-2.5 pt-3 border-t-2 border-gray-200">
+                            <div className="space-y-2.5 pt-3 border-t-[3px] border-black">
                               <button
-                                className="w-full px-4 py-2.5 border-2 border-purple-600 text-purple-600 rounded-full text-xs font-bold hover:bg-purple-50 transition-colors flex items-center justify-center gap-2"
+                                className="w-full px-4 py-2.5 border-[3px] border-purple-600 text-purple-600 rounded-full text-xs font-bold hover:bg-purple-50 transition-colors flex items-center justify-center gap-2"
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   handleOpenLayoutExplorer(slide);
@@ -744,7 +795,7 @@ export default function Editor() {
                               </button>
                               <div className="flex gap-2.5">
                                 <button
-                                  className="flex-1 px-4 py-2 border-2 border-black rounded-full text-xs font-bold hover:bg-gray-100 transition-colors flex items-center justify-center gap-1.5"
+                                  className="flex-1 px-4 py-2 border-[3px] border-black rounded-full text-xs font-bold hover:bg-gray-100 transition-colors flex items-center justify-center gap-1.5"
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     handleEditSlide(slide);
@@ -754,7 +805,7 @@ export default function Editor() {
                                   EDIT
                                 </button>
                                 <button
-                                  className="flex-1 px-4 py-2 border-2 border-red-600 text-red-600 rounded-full text-xs font-bold hover:bg-red-50 transition-colors flex items-center justify-center gap-1.5"
+                                  className="flex-1 px-4 py-2 border-[3px] border-red-600 text-red-600 rounded-full text-xs font-bold hover:bg-red-50 transition-colors flex items-center justify-center gap-1.5"
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     handleDeleteSlide(slide.slide_number);
@@ -938,6 +989,35 @@ export default function Editor() {
               </button>
             ))}
           </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Slide Confirmation Dialog */}
+      <Dialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
+        <DialogContent className="border-4 border-black rounded-3xl max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold uppercase">
+              DELETE SLIDE
+            </DialogTitle>
+            <DialogDescription className="text-base">
+              Are you sure you want to delete slide #{slideToDelete}? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-3">
+            <button
+              onClick={() => setDeleteConfirmOpen(false)}
+              className="dof-btn dof-btn-outline"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={confirmDeleteSlide}
+              className="dof-btn dof-btn-coral"
+            >
+              <Trash2 size={18} />
+              Delete Slide
+            </button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

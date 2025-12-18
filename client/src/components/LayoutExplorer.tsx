@@ -164,7 +164,7 @@ export default function LayoutExplorer({
                 {LAYOUT_CATEGORIES.map(cat => (
                   <button
                     key={cat}
-                    className={`px-6 py-2.5 rounded-full font-bold uppercase text-xs transition-all border-2 border-black ${
+                    className={`px-6 py-2.5 rounded-full font-bold uppercase text-xs transition-all border-[3px] border-black ${
                       selectedCategory === cat
                         ? 'bg-black text-white'
                         : 'bg-white text-black hover:bg-gray-100'
@@ -183,10 +183,10 @@ export default function LayoutExplorer({
                 {filteredLayouts.map(layout => (
                   <div
                     key={layout.id}
-                    className={`cursor-pointer transition-all p-5 rounded-2xl border-3 ${
+                    className={`cursor-pointer transition-all p-5 rounded-2xl border-[3px] ${
                       previewLayout === layout.id
                         ? 'border-black bg-gray-50 shadow-lg'
-                        : 'border-gray-300 hover:border-black hover:shadow-md'
+                        : 'border-black hover:shadow-md'
                     }`}
                     onClick={() => setPreviewLayout(layout.id)}
                   >
@@ -201,12 +201,12 @@ export default function LayoutExplorer({
                       </div>
                       <div className="flex flex-col gap-1.5">
                         {layout.isCustom && (
-                          <span className="px-2.5 py-1 bg-purple-100 text-purple-800 border-2 border-purple-800 rounded-full text-xs font-bold">
+                          <span className="px-2.5 py-1 bg-purple-100 text-purple-800 border-[3px] border-purple-800 rounded-full text-xs font-bold">
                             CUSTOM
                           </span>
                         )}
                         {layout.isComponent && (
-                          <span className="px-2.5 py-1 bg-blue-100 text-blue-800 border-2 border-blue-800 rounded-full text-xs font-bold">
+                          <span className="px-2.5 py-1 bg-blue-100 text-blue-800 border-[3px] border-blue-800 rounded-full text-xs font-bold">
                             COMPONENT
                           </span>
                         )}
@@ -245,13 +245,13 @@ export default function LayoutExplorer({
                   <div className="flex flex-col">
                     <div className="flex items-center justify-between mb-6 px-2">
                       <h3 className="text-lg font-bold uppercase">Current Layout</h3>
-                      <span className="px-4 py-2 bg-gray-200 border-2 border-black rounded-full text-sm font-bold">
+                      <span className="px-4 py-2 bg-gray-200 border-[3px] border-black rounded-full text-sm font-bold">
                         {slide.layout_type}
                       </span>
                     </div>
                     <div className="flex items-center justify-center flex-1">
                       <div
-                        className="bg-white rounded-2xl border-3 border-black shadow-xl overflow-hidden"
+                        className="bg-white rounded-2xl border-[3px] border-black shadow-xl overflow-hidden"
                         style={{
                           width: '540px',
                           height: '540px'
@@ -266,13 +266,13 @@ export default function LayoutExplorer({
                   <div className="flex flex-col">
                     <div className="flex items-center justify-between mb-6 px-2">
                       <h3 className="text-lg font-bold uppercase">Preview Layout</h3>
-                      <span className="px-4 py-2 bg-black text-white border-2 border-black rounded-full text-sm font-bold">
+                      <span className="px-4 py-2 bg-black text-white border-[3px] border-black rounded-full text-sm font-bold">
                         {allLayouts.find(l => l.id === previewLayout)?.name}
                       </span>
                     </div>
                     <div className="flex items-center justify-center flex-1">
                       <div
-                        className="bg-white rounded-2xl border-3 border-black shadow-xl overflow-hidden"
+                        className="bg-white rounded-2xl border-[3px] border-black shadow-xl overflow-hidden"
                         style={{
                           width: '540px',
                           height: '540px'
@@ -287,12 +287,12 @@ export default function LayoutExplorer({
                 // Full preview
                 <div className="flex flex-col items-center justify-center h-full">
                   <div className="mb-6">
-                    <span className="px-6 py-3 bg-black text-white border-2 border-black rounded-full text-base font-bold">
+                    <span className="px-6 py-3 bg-black text-white border-[3px] border-black rounded-full text-base font-bold">
                       {allLayouts.find(l => l.id === previewLayout)?.name}
                     </span>
                   </div>
                   <div
-                    className="bg-white rounded-2xl border-4 border-black shadow-2xl overflow-hidden"
+                    className="bg-white rounded-2xl border-[3px] border-black shadow-2xl overflow-hidden"
                     style={{ width: '600px', height: '600px' }}
                   >
                     {renderLayout(previewLayout)}

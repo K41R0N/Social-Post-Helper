@@ -46,6 +46,8 @@ export default function FontsSettings() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredFonts, setFilteredFonts] = useState<GoogleFont[]>([]);
   const [loadingGoogleFonts, setLoadingGoogleFonts] = useState(false);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [fontToDelete, setFontToDelete] = useState<{ id: string; name: string } | null>(null);
 
   useEffect(() => {
     loadCustomFonts();
@@ -73,13 +75,20 @@ export default function FontsSettings() {
   };
 
   const handleDeleteFont = (id: string, name: string) => {
-    if (!confirm(`Delete font "${name}"? This cannot be undone.`)) return;
+    setFontToDelete({ id, name });
+    setDeleteConfirmOpen(true);
+  };
+
+  const confirmDeleteFont = () => {
+    if (!fontToDelete) return;
 
     try {
-      deleteCustomFont(id);
+      deleteCustomFont(fontToDelete.id);
       loadCustomFonts();
       injectCustomFonts();
       toast.success('Font deleted');
+      setDeleteConfirmOpen(false);
+      setFontToDelete(null);
     } catch (error) {
       toast.error('Failed to delete font');
     }
@@ -142,7 +151,7 @@ export default function FontsSettings() {
   return (
     <div className="space-y-8">
       {/* Font Assignment */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+      <div className="bg-white rounded-xl border-[3px] border-black shadow-sm p-6">
         <h2 className="text-2xl font-semibold text-gray-900 mb-4">Font Assignment</h2>
         <p className="text-gray-600 mb-6">
           Assign fonts to different text types across all layouts
@@ -215,8 +224,8 @@ export default function FontsSettings() {
       </div>
 
       {/* Custom Fonts */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
-        <div className="p-6 border-b border-gray-200">
+      <div className="bg-white rounded-xl border-[3px] border-black shadow-sm">
+        <div className="p-6 border-b-[3px] border-black">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-2xl font-semibold text-gray-900 mb-2">Custom Fonts</h2>
@@ -267,7 +276,7 @@ export default function FontsSettings() {
               {customFonts.map((font) => (
                 <div
                   key={font.id}
-                  className="border-2 border-gray-200 rounded-xl p-6 hover:border-blue-500 transition-all duration-200"
+                  className="border-[3px] border-black rounded-xl p-6 hover:border-blue-500 transition-all duration-200"
                 >
                   <div className="flex items-start justify-between mb-4">
                     <div>
@@ -302,7 +311,7 @@ export default function FontsSettings() {
       </div>
 
       {/* Google Fonts */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+      <div className="bg-white rounded-xl border-[3px] border-black shadow-sm p-6">
         <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="text-2xl font-semibold text-gray-900 mb-2">Google Fonts</h2>
@@ -367,7 +376,7 @@ export default function FontsSettings() {
                 {filteredFonts.map((font) => (
                   <div
                     key={font.family}
-                    className="border border-gray-200 rounded-lg p-4 hover:border-blue-500 transition-all duration-200 flex items-center justify-between"
+                    className="border-[3px] border-black rounded-lg p-4 hover:border-blue-500 transition-all duration-200 flex items-center justify-between"
                   >
                     <div className="flex-1">
                       <h4 className="font-semibold text-gray-900 mb-1">{font.family}</h4>
@@ -402,6 +411,35 @@ export default function FontsSettings() {
 
           <DialogFooter>
             <Button onClick={() => setGoogleFontsDialogOpen(false)}>Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Font Confirmation Dialog */}
+      <Dialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
+        <DialogContent className="border-4 border-black rounded-3xl max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold uppercase">
+              DELETE FONT
+            </DialogTitle>
+            <DialogDescription className="text-base">
+              Are you sure you want to delete "{fontToDelete?.name}"? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-3">
+            <button
+              onClick={() => setDeleteConfirmOpen(false)}
+              className="dof-btn dof-btn-outline"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={confirmDeleteFont}
+              className="dof-btn dof-btn-coral"
+            >
+              <Trash2 size={18} />
+              Delete Font
+            </button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

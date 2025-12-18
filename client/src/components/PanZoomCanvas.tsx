@@ -169,8 +169,8 @@ export function PanZoomCanvas({ children, contentWidth, contentHeight }: PanZoom
 
       {/* Instructions - Fade out after interaction */}
       {showInstructions && (
-        <div 
-          className={`absolute top-6 left-1/2 -translate-x-1/2 bg-white border-2 border-black rounded-full px-4 py-2 shadow-lg transition-opacity duration-700 ${
+        <div
+          className={`absolute top-6 left-1/2 -translate-x-1/2 bg-white border-[3px] border-black rounded-full px-4 py-2 shadow-lg transition-opacity duration-700 ${
             hasInteracted ? 'opacity-0' : 'opacity-100'
           }`}
         >

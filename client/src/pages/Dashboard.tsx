@@ -51,6 +51,8 @@ export default function Dashboard() {
   const [renameDialogOpen, setRenameDialogOpen] = useState(false);
   const [renamingProject, setRenamingProject] = useState<ProjectMetadata | null>(null);
   const [renameValue, setRenameValue] = useState('');
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [projectToDelete, setProjectToDelete] = useState<{ id: string; name: string } | null>(null);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -89,12 +91,19 @@ export default function Dashboard() {
   };
 
   const handleDeleteProject = (id: string, name: string) => {
-    if (!confirm(`Delete project "${name}"? This cannot be undone.`)) return;
+    setProjectToDelete({ id, name });
+    setDeleteConfirmOpen(true);
+  };
+
+  const confirmDeleteProject = () => {
+    if (!projectToDelete) return;
 
     try {
-      deleteProject(id);
+      deleteProject(projectToDelete.id);
       loadProjects();
       toast.success('Project deleted');
+      setDeleteConfirmOpen(false);
+      setProjectToDelete(null);
     } catch (error) {
       toast.error('Failed to delete project');
     }
@@ -302,7 +311,7 @@ export default function Dashboard() {
                             <MoreVertical size={20} />
                           </button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="border-2 border-black rounded-xl w-48">
+                        <DropdownMenuContent align="end" className="border-[3px] border-black rounded-xl w-48">
                           <DropdownMenuItem onClick={() => setLocation(`/editor/${project.id}`)}>
                             <FolderOpen className="mr-3 h-4 w-4" />
                             Open
@@ -397,7 +406,7 @@ export default function Dashboard() {
                         <MoreVertical size={20} />
                       </button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="border-2 border-black rounded-xl">
+                    <DropdownMenuContent align="end" className="border-[3px] border-black rounded-xl">
                       <DropdownMenuItem onClick={() => setLocation(`/editor/${project.id}`)}>
                         <FolderOpen className="mr-2 h-4 w-4" />
                         Open
@@ -514,6 +523,35 @@ export default function Dashboard() {
             >
               Rename Project
               <ArrowRight size={18} />
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
+        <DialogContent className="border-4 border-black rounded-3xl max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold uppercase">
+              DELETE PROJECT
+            </DialogTitle>
+            <DialogDescription className="text-base">
+              Are you sure you want to delete "{projectToDelete?.name}"? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-3">
+            <button
+              onClick={() => setDeleteConfirmOpen(false)}
+              className="dof-btn dof-btn-outline"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={confirmDeleteProject}
+              className="dof-btn dof-btn-coral"
+            >
+              <Trash2 size={18} />
+              Delete Project
             </button>
           </DialogFooter>
         </DialogContent>
