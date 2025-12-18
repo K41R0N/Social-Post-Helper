@@ -399,7 +399,7 @@ export default function Settings() {
 
       {/* Layout Editor Dialog */}
       <Dialog open={editorOpen} onOpenChange={setEditorOpen}>
-        <DialogContent className="w-[95vw] max-w-[2000px] h-[92vh] p-0 flex flex-col border-4 border-black rounded-3xl">
+        <DialogContent className="!w-[95vw] !max-w-[2000px] h-[92vh] p-0 flex flex-col border-4 border-black rounded-3xl">
           <DialogHeader className="px-10 pt-10 pb-8 border-b-3 border-black flex-shrink-0">
             <DialogTitle className="text-2xl font-bold mb-4">
               {editingLayout ? 'EDIT CUSTOM LAYOUT' : 'CREATE CUSTOM LAYOUT'}
