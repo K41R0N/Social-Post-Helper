@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import type { SlideData, LayoutType } from '@/types/carousel';
 import LayoutRenderer from './LayoutRenderer';
+import ComponentRenderer from './ComponentRenderer';
 import { Button } from './ui/button';
 import { ScrollArea } from './ui/scroll-area';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
@@ -13,6 +14,9 @@ import {
 } from './ui/dialog';
 import { Badge } from './ui/badge';
 import { getAllCustomLayouts } from '@/lib/customLayoutStorage';
+import { getAllComponentLayouts } from '@/lib/componentLayoutStorage';
+import { getFontSettings } from '@/lib/fontStorage';
+import type { ComponentContext } from '@/types/componentLayout';
 
 interface LayoutExplorerProps {
   open: boolean;
@@ -39,7 +43,7 @@ const BUILT_IN_LAYOUTS = [
   { id: 'anti_marketing_cta', name: 'CTA (Anti-Marketing)', category: 'Marketing', description: 'CTA card with arrow' },
 ] as const;
 
-const LAYOUT_CATEGORIES = ['All', 'Text', 'Impact', 'Quote', 'Media', 'Marketing', 'Custom'] as const;
+const LAYOUT_CATEGORIES = ['All', 'Text', 'Impact', 'Quote', 'Media', 'Marketing', 'Custom', 'Component'] as const;
 
 export default function LayoutExplorer({
   open,
@@ -53,24 +57,35 @@ export default function LayoutExplorer({
   const [compareMode, setCompareMode] = useState(false);
   const [compareLayout, setCompareLayout] = useState<string | null>(null);
 
-  // Get custom layouts
+  // Get custom and component layouts
   const customLayouts = getAllCustomLayouts();
+  const componentLayouts = getAllComponentLayouts();
 
   // All available layouts
   const allLayouts = useMemo(() => {
     const builtIn = BUILT_IN_LAYOUTS.map(l => ({
       ...l,
-      isCustom: false
+      isCustom: false,
+      isComponent: false
     }));
     const custom = customLayouts.map(l => ({
       id: `custom-${l.id}`,
       name: l.name,
       category: 'Custom',
       description: l.description || 'Custom layout',
-      isCustom: true
+      isCustom: true,
+      isComponent: false
     }));
-    return [...builtIn, ...custom];
-  }, [customLayouts]);
+    const component = componentLayouts.map(l => ({
+      id: `component-${l.id}`,
+      name: l.name,
+      category: 'Component',
+      description: l.description || 'Component-based layout',
+      isCustom: false,
+      isComponent: true
+    }));
+    return [...builtIn, ...custom, ...component];
+  }, [customLayouts, componentLayouts]);
 
   // Filter layouts by category
   const filteredLayouts = useMemo(() => {
@@ -83,6 +98,39 @@ export default function LayoutExplorer({
     ...slide,
     layout_type: layoutType as LayoutType
   });
+
+  // Render the appropriate component based on layout type
+  const renderLayout = (layoutType: string) => {
+    // Check if it's a component-based layout
+    if (layoutType.startsWith('component-')) {
+      const layoutId = layoutType.replace('component-', '');
+      const componentLayout = componentLayouts.find(l => l.id === layoutId);
+
+      if (!componentLayout) {
+        return <div className="flex items-center justify-center h-full text-muted-foreground">Layout not found</div>;
+      }
+
+      // Create context for ComponentRenderer
+      const context: ComponentContext = {
+        slideData: {
+          title: slide.title,
+          body_text: slide.body_text,
+          subtitle: slide.subtitle,
+          quote: slide.quote,
+          image_url: slide.image_url,
+          background_color: slide.background_color,
+          font_color: slide.font_color,
+          accent_color: slide.accent_color,
+        },
+        fonts: getFontSettings(),
+      };
+
+      return <ComponentRenderer schema={componentLayout} context={context} />;
+    }
+
+    // Use LayoutRenderer for built-in and custom layouts
+    return <LayoutRenderer slide={getPreviewSlide(layoutType)} />;
+  };
 
   const handleApply = () => {
     onApplyLayout(previewLayout as LayoutType);
@@ -149,6 +197,9 @@ export default function LayoutExplorer({
                         {layout.isCustom && (
                           <Badge variant="secondary" className="text-xs">Custom</Badge>
                         )}
+                        {layout.isComponent && (
+                          <Badge variant="default" className="text-xs">Component</Badge>
+                        )}
                       </div>
                     </CardHeader>
                   </Card>
@@ -193,7 +244,7 @@ export default function LayoutExplorer({
                         transformOrigin: 'top left'
                       }}
                     >
-                      <LayoutRenderer slide={getPreviewSlide(compareLayout || slide.layout_type)} />
+                      {renderLayout(compareLayout || slide.layout_type)}
                     </div>
                   </div>
 
@@ -212,7 +263,7 @@ export default function LayoutExplorer({
                         transformOrigin: 'top left'
                       }}
                     >
-                      <LayoutRenderer slide={getPreviewSlide(previewLayout)} />
+                      {renderLayout(previewLayout)}
                     </div>
                   </div>
                 </div>
@@ -229,7 +280,7 @@ export default function LayoutExplorer({
                       className="bg-white rounded-lg shadow-2xl overflow-hidden"
                       style={{ width: '1080px', height: '1080px' }}
                     >
-                      <LayoutRenderer slide={getPreviewSlide(previewLayout)} />
+                      {renderLayout(previewLayout)}
                     </div>
                   </div>
                 </div>
