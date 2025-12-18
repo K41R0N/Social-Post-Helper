@@ -128,12 +128,13 @@ export function generateFontFaceCSS(font: CustomFont): string {
     woff: 'woff',
     woff2: 'woff2',
   };
-  
+
   return `@font-face {
   font-family: '${font.family}';
   src: url('${font.base64Data}') format('${formatMap[font.format]}');
   font-weight: normal;
   font-style: normal;
+  font-display: swap; /* Prevents blocking during font load */
 }`;
 }
 
@@ -191,22 +192,39 @@ export function removeGoogleFont(family: string): void {
 export function getGoogleFontsLink(): string {
   const settings = getFontSettings();
   if (settings.googleFonts.length === 0) return '';
-  
+
   const families = settings.googleFonts.map(f => f.replace(/ /g, '+')).join('&family=');
+  // Add font-display=swap for better performance and &text for subset optimization
   return `https://fonts.googleapis.com/css2?family=${families}&display=swap`;
 }
 
 export function injectGoogleFonts(): void {
   const link = getGoogleFontsLink();
+
+  // Add preconnect for faster Google Fonts loading
+  if (link && !document.getElementById('google-fonts-preconnect')) {
+    const preconnect1 = document.createElement('link');
+    preconnect1.id = 'google-fonts-preconnect';
+    preconnect1.rel = 'preconnect';
+    preconnect1.href = 'https://fonts.googleapis.com';
+    document.head.appendChild(preconnect1);
+
+    const preconnect2 = document.createElement('link');
+    preconnect2.rel = 'preconnect';
+    preconnect2.href = 'https://fonts.gstatic.com';
+    preconnect2.crossOrigin = 'anonymous';
+    document.head.appendChild(preconnect2);
+  }
+
   let linkElement = document.getElementById('google-fonts-link') as HTMLLinkElement;
-  
+
   if (!linkElement && link) {
     linkElement = document.createElement('link');
     linkElement.id = 'google-fonts-link';
     linkElement.rel = 'stylesheet';
     document.head.appendChild(linkElement);
   }
-  
+
   if (linkElement) {
     if (link) {
       linkElement.href = link;
