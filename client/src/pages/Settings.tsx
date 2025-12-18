@@ -411,7 +411,7 @@ export default function Settings() {
 
           <div className="flex-1 flex overflow-hidden min-h-0">
             {/* Left Sidebar - Form Fields */}
-            <div className="w-[22%] border-r-3 border-black p-8 overflow-y-auto">
+            <div className="w-[18%] border-r-3 border-black p-6 overflow-y-auto">
               <div className="space-y-6">
                 <div>
                   <label className="block text-sm font-bold mb-2 uppercase">
@@ -459,10 +459,10 @@ export default function Settings() {
               </div>
             </div>
 
-            {/* Right Side - Code Editors with Tabs */}
+            {/* Right Side - Code Editors with Tabs (82% width) */}
             <div className="flex-1 flex flex-col min-h-0">
               <Tabs defaultValue="html" className="flex-1 flex flex-col min-h-0">
-                <TabsList className="mx-10 mt-10 bg-gray-100 p-2 rounded-full border-3 border-black flex-shrink-0">
+                <TabsList className="mx-8 mt-8 bg-gray-100 p-2 rounded-full border-3 border-black flex-shrink-0">
                   <TabsTrigger
                     value="html"
                     className="rounded-full px-10 py-3 font-bold uppercase text-sm data-[state=active]:bg-black data-[state=active]:text-white transition-all"
@@ -477,7 +477,7 @@ export default function Settings() {
                   </TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="html" className="flex-1 px-10 pb-10 pt-6 min-h-0">
+                <TabsContent value="html" className="flex-1 px-8 pb-8 pt-6 min-h-0">
                   <CodeEditorPanel
                     title="HTML Editor"
                     language="html"
@@ -486,7 +486,7 @@ export default function Settings() {
                   />
                 </TabsContent>
 
-                <TabsContent value="css" className="flex-1 px-10 pb-10 pt-6 min-h-0">
+                <TabsContent value="css" className="flex-1 px-8 pb-8 pt-6 min-h-0">
                   <CodeEditorPanel
                     title="CSS Editor"
                     language="css"

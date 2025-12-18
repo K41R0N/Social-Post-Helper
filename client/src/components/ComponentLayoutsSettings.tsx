@@ -441,7 +441,7 @@ export default function ComponentLayoutsSettings() {
 
           <div className="flex-1 flex overflow-hidden min-h-0">
             {/* Left Sidebar - Form Fields */}
-            <div className="w-[22%] border-r-3 border-black p-8 overflow-y-auto">
+            <div className="w-[18%] border-r-3 border-black p-6 overflow-y-auto">
               <div className="space-y-6">
                 <div>
                   <label className="block text-sm font-bold mb-2 uppercase">
@@ -517,8 +517,8 @@ export default function ComponentLayoutsSettings() {
               </div>
             </div>
 
-            {/* Right Side - Code Editor */}
-            <div className="flex-1 flex flex-col p-10 min-h-0">
+            {/* Right Side - Code Editor (82% width) */}
+            <div className="flex-1 flex flex-col p-8 min-h-0">
               <CodeEditorPanel
                 title="Schema Editor (JSON)"
                 language="json"
