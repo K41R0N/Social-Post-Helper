@@ -22,6 +22,8 @@ import {
   Code,
   Sparkles,
   Copy,
+  Info,
+  Zap,
 } from 'lucide-react';
 import ComponentRenderer from './ComponentRenderer';
 import { getFontSettings } from '@/lib/fontStorage';
@@ -464,6 +466,39 @@ export default function ComponentLayoutsSettings() {
                     rows={3}
                     className="text-base"
                   />
+                </div>
+
+                {/* AI Assistant Info */}
+                <div className="bg-gradient-to-br from-purple-50 to-blue-50 border-3 border-purple-800 rounded-2xl p-6">
+                  <div className="flex items-start gap-3 mb-4">
+                    <Zap className="h-5 w-5 text-purple-800 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="text-sm font-bold uppercase text-purple-900 mb-2">AI-Powered Layout Generation</h4>
+                      <p className="text-xs text-purple-800 leading-relaxed mb-3">
+                        Use ChatGPT, Claude, or any LLM to generate layouts! Copy this prompt:
+                      </p>
+                    </div>
+                  </div>
+                  <div className="bg-white border-2 border-purple-800 rounded-lg p-3 mb-3">
+                    <p className="text-xs font-mono text-gray-700 leading-relaxed break-all">
+                      Create a JSON component layout for a 1080x1080 social media slide. Use this schema: root container with display:flex, children array with text/heading/shape components. Include template variables like {'{'}{'{'} title {'}'}{'}'},  {'{'}{'{'} quote {'}'}{'}'},  {'{'}{'{'} background_color {'}'}{'}'}.  Example: centered quote card with large quote text, decorative line, and attribution. Return only valid JSON.
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => {
+                      const prompt = `Create a JSON component layout for a 1080x1080 social media slide. Use this schema: root container with display:flex, children array with text/heading/shape components. Include template variables like {{title}}, {{quote}}, {{background_color}}. Example: centered quote card with large quote text, decorative line, and attribution. Return only valid JSON.`;
+                      navigator.clipboard.writeText(prompt);
+                      toast.success('Prompt copied! Paste it into ChatGPT, Claude, or any LLM');
+                    }}
+                    className="w-full px-4 py-2 bg-purple-800 text-white border-2 border-purple-900 rounded-lg text-xs font-bold hover:bg-purple-900 transition-colors flex items-center justify-center gap-2"
+                  >
+                    <Copy className="h-3 w-3" />
+                    COPY PROMPT TO CLIPBOARD
+                  </button>
+                  <p className="text-xs text-purple-700 mt-3 flex items-start gap-2">
+                    <Info className="h-3 w-3 flex-shrink-0 mt-0.5" />
+                    <span>See LLM_LAYOUT_PROMPT.md in the project root for a detailed guide</span>
+                  </p>
                 </div>
 
                 {/* Quick Start Templates */}
