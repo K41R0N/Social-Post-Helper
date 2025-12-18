@@ -1,8 +1,8 @@
-# Carousel Builder
+# go round
 
-A powerful, browser-based tool for creating stunning Instagram carousel posts with customizable layouts, fonts, and export options. Built with React, TypeScript, and Tailwind CSS.
+A powerful, browser-based tool for creating stunning social media carousel posts with customizable layouts, fonts, and export options. Built with React, TypeScript, and Tailwind CSS.
 
-![Carousel Builder](https://img.shields.io/badge/React-19-blue) ![TypeScript](https://img.shields.io/badge/TypeScript-5.6-blue) ![Tailwind](https://img.shields.io/badge/Tailwind-4.1-blue) ![License](https://img.shields.io/badge/License-MIT-green)
+![go round](https://img.shields.io/badge/React-18-blue) ![TypeScript](https://img.shields.io/badge/TypeScript-5.6-blue) ![Tailwind](https://img.shields.io/badge/Tailwind-4.1-blue) ![License](https://img.shields.io/badge/License-MIT-green)
 
 ## ✨ Features
 
@@ -36,8 +36,8 @@ A powerful, browser-based tool for creating stunning Instagram carousel posts wi
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/carousel-builder.git
-cd carousel-builder
+git clone https://github.com/yourusername/goround.git
+cd goround
 ```
 
 2. Install dependencies:
@@ -177,7 +177,7 @@ Create your own slide layouts:
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: React 19, TypeScript, Vite
+- **Frontend**: React 18, TypeScript, Vite
 - **Styling**: Tailwind CSS 4, shadcn/ui components
 - **Editor**: Monaco Editor (VS Code)
 - **Rendering**: html2canvas for PNG export
@@ -187,8 +187,8 @@ Create your own slide layouts:
 ## 📁 Project Structure
 
 ```
-carousel-builder/
-├── client/                 # Frontend application (REMOVED in this template)
+goround/
+├── client/                 # Frontend application
 ├── src/                    # Source files
 │   ├── components/        # React components
 │   ├── contexts/          # React contexts
@@ -247,7 +247,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## 🐛 Issues
 
-Found a bug or have a feature request? Please [open an issue](https://github.com/yourusername/carousel-builder/issues) on GitHub.
+Found a bug or have a feature request? Please [open an issue](https://github.com/yourusername/goround/issues) on GitHub.
 
 ## 📞 Support
 

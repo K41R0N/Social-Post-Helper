@@ -1,4 +1,4 @@
-# Social Post Helper - Architecture Documentation
+# go round - Architecture Documentation
 
 ## Table of Contents
 1. [System Overview](#system-overview)
@@ -19,7 +19,7 @@
 
 ## System Overview
 
-The Social Post Helper is a **multi-page client-side web application** built with React 18 that enables users to create professional social media carousels through a comprehensive project management interface. The application has evolved far beyond a simple carousel generator into a sophisticated design platform.
+go round is a **multi-page client-side web application** built with React 18 that enables users to create professional social media carousels through a comprehensive project management interface. The application has evolved far beyond a simple carousel generator into a sophisticated design platform.
 
 ### Core Features
 
