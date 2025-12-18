@@ -1,5 +1,12 @@
 import type { CustomLayout } from '../types/customLayout';
 import { ANTI_MARKETING_LAYOUTS } from './antiMarketingLayouts';
+import {
+  safeSetItem,
+  estimateDataSize,
+  formatBytes,
+  getStorageQuota,
+  hasEnoughSpace
+} from './storageUtils';
 
 const STORAGE_KEY = 'custom_layouts';
 
@@ -30,10 +37,27 @@ export function saveCustomLayout(layout: CustomLayout): void {
     layouts.push(layout);
   }
 
+  // Check storage quota before saving
+  const dataSize = estimateDataSize(layouts);
+  const quota = getStorageQuota();
+
+  if (!hasEnoughSpace(dataSize)) {
+    throw new Error(
+      `Cannot save custom layout: localStorage quota would be exceeded.\n\n` +
+      `Layout data size: ${formatBytes(dataSize)}\n` +
+      `Storage used: ${formatBytes(quota.used)} / ${formatBytes(quota.total)}\n` +
+      `Available: ${formatBytes(quota.available)}\n\n` +
+      `Try removing some old layouts or projects to free up space.`
+    );
+  }
+
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(layouts));
+    safeSetItem(STORAGE_KEY, JSON.stringify(layouts));
   } catch (error) {
     console.error('Error saving custom layout:', error);
+    if (error instanceof Error) {
+      throw error;
+    }
     throw new Error('Failed to save custom layout');
   }
 }
@@ -91,10 +115,23 @@ export function importCustomLayouts(jsonString: string): number {
       }
     });
 
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+    // Check quota before importing
+    const dataSize = estimateDataSize(merged);
+    if (!hasEnoughSpace(dataSize)) {
+      const quota = getStorageQuota();
+      throw new Error(
+        `Cannot import layouts: would exceed storage quota.\n` +
+        `Storage used: ${formatBytes(quota.used)} / ${formatBytes(quota.total)}`
+      );
+    }
+
+    safeSetItem(STORAGE_KEY, JSON.stringify(merged));
     return importedCount;
   } catch (error) {
     console.error('Error importing custom layouts:', error);
+    if (error instanceof Error) {
+      throw error;
+    }
     throw new Error('Invalid JSON format');
   }
 }
@@ -122,9 +159,10 @@ export function seedAntiMarketingLayouts(): void {
 
   if (modified) {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(layouts));
+      safeSetItem(STORAGE_KEY, JSON.stringify(layouts));
     } catch (error) {
       console.error('Error seeding anti-marketing layouts:', error);
+      // Don't throw here since this is initialization code
     }
   }
 }

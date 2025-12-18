@@ -1,3 +1,5 @@
+import { memo } from 'react';
+import DOMPurify from 'isomorphic-dompurify';
 import type { SlideData } from '../types/carousel';
 import { getAllCustomLayouts } from '../lib/customLayoutStorage';
 import type { CustomLayout } from '../types/customLayout';
@@ -7,7 +9,7 @@ interface LayoutRendererProps {
   slide: SlideData;
 }
 
-export default function LayoutRenderer({ slide }: LayoutRendererProps) {
+function LayoutRendererComponent({ slide }: LayoutRendererProps) {
   // Get font settings - these will be used throughout all layouts
   const fontSettings = getFontSettings();
   const headingFont = fontSettings.headingFont;
@@ -965,10 +967,29 @@ function CustomLayoutRenderer({ slide, layout }: { slide: SlideData; layout: Cus
     css = css.replace(regex, value);
   });
 
+  // Sanitize HTML to prevent XSS attacks
+  const sanitizedHtml = DOMPurify.sanitize(html, {
+    ALLOWED_TAGS: [
+      'div', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+      'span', 'strong', 'em', 'u', 'br', 'hr',
+      'ul', 'ol', 'li', 'a', 'img',
+      'section', 'article', 'header', 'footer', 'main'
+    ],
+    ALLOWED_ATTR: [
+      'class', 'style', 'id', 'href', 'src', 'alt', 'title',
+      'target', 'rel', 'data-*'
+    ],
+    ALLOW_DATA_ATTR: true
+  });
+
   return (
     <div className="w-full h-full">
       <style>{css}</style>
-      <div dangerouslySetInnerHTML={{ __html: html }} />
+      <div dangerouslySetInnerHTML={{ __html: sanitizedHtml }} />
     </div>
   );
 }
+
+
+// Memoize component to prevent unnecessary re-renders
+export default memo(LayoutRendererComponent);

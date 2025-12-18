@@ -1,5 +1,12 @@
 import type { CustomFont, FontSettings } from '../types/font';
 import { DEFAULT_FONT_SETTINGS } from '../types/font';
+import {
+  safeSetItem,
+  estimateDataSize,
+  formatBytes,
+  getStorageQuota,
+  hasEnoughSpace
+} from './storageUtils';
 
 const CUSTOM_FONTS_KEY = 'custom_fonts';
 const FONT_SETTINGS_KEY = 'font_settings';
@@ -18,17 +25,34 @@ export function getAllCustomFonts(): CustomFont[] {
 export function saveCustomFont(font: CustomFont): void {
   const fonts = getAllCustomFonts();
   const existing = fonts.findIndex(f => f.id === font.id);
-  
+
   if (existing >= 0) {
     fonts[existing] = font;
   } else {
     fonts.push(font);
   }
-  
+
+  // Check storage quota before saving
+  const dataSize = estimateDataSize(fonts);
+  const quota = getStorageQuota();
+
+  if (!hasEnoughSpace(dataSize)) {
+    throw new Error(
+      `Cannot save font: localStorage quota would be exceeded.\n\n` +
+      `Font size: ${formatBytes(dataSize)}\n` +
+      `Storage used: ${formatBytes(quota.used)} / ${formatBytes(quota.total)}\n` +
+      `Available: ${formatBytes(quota.available)}\n\n` +
+      `Try removing some custom fonts or projects to free up space.`
+    );
+  }
+
   try {
-    localStorage.setItem(CUSTOM_FONTS_KEY, JSON.stringify(fonts));
+    safeSetItem(CUSTOM_FONTS_KEY, JSON.stringify(fonts));
   } catch (error) {
     console.error('Error saving custom font:', error);
+    if (error instanceof Error) {
+      throw error;
+    }
     throw new Error('Failed to save font. File may be too large.');
   }
 }
@@ -46,22 +70,32 @@ export function deleteCustomFont(id: string): void {
 }
 
 export async function uploadFont(file: File): Promise<CustomFont> {
+  // Warn if file is very large (>1MB)
+  const fileSizeMB = file.size / (1024 * 1024);
+  if (fileSizeMB > 1) {
+    const quota = getStorageQuota();
+    console.warn(
+      `Large font file detected: ${fileSizeMB.toFixed(2)}MB. ` +
+      `Current storage: ${formatBytes(quota.used)} / ${formatBytes(quota.total)}`
+    );
+  }
+
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    
+
     reader.onload = (e) => {
       try {
         const base64Data = e.target?.result as string;
         const extension = file.name.split('.').pop()?.toLowerCase();
-        
+
         if (!extension || !['ttf', 'otf', 'woff', 'woff2'].includes(extension)) {
-          reject(new Error('Unsupported font format'));
+          reject(new Error('Unsupported font format. Please use TTF, OTF, WOFF, or WOFF2.'));
           return;
         }
-        
+
         const fontName = file.name.replace(/\.[^/.]+$/, '');
         const fontFamily = fontName.replace(/[-_]/g, ' ');
-        
+
         const font: CustomFont = {
           id: `font-${Date.now()}`,
           name: fontName,
@@ -70,14 +104,18 @@ export async function uploadFont(file: File): Promise<CustomFont> {
           base64Data,
           uploadedAt: new Date().toISOString(),
         };
-        
+
+        // Estimate size of this font
+        const estimatedSize = estimateDataSize(font);
+        console.log(`Font "${fontName}" estimated size: ${formatBytes(estimatedSize)}`);
+
         saveCustomFont(font);
         resolve(font);
       } catch (error) {
         reject(error);
       }
     };
-    
+
     reader.onerror = () => reject(new Error('Failed to read font file'));
     reader.readAsDataURL(file);
   });
@@ -126,9 +164,12 @@ export function getFontSettings(): FontSettings {
 
 export function saveFontSettings(settings: FontSettings): void {
   try {
-    localStorage.setItem(FONT_SETTINGS_KEY, JSON.stringify(settings));
+    safeSetItem(FONT_SETTINGS_KEY, JSON.stringify(settings));
   } catch (error) {
     console.error('Error saving font settings:', error);
+    if (error instanceof Error) {
+      throw error;
+    }
     throw new Error('Failed to save font settings');
   }
 }

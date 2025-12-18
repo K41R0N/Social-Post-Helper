@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import Editor from '@monaco-editor/react';
+import DOMPurify from 'isomorphic-dompurify';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -193,10 +194,25 @@ export default function Settings() {
       css = css.replace(regex, value);
     });
 
+    // Sanitize HTML to prevent XSS attacks
+    const sanitizedHtml = DOMPurify.sanitize(html, {
+      ALLOWED_TAGS: [
+        'div', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+        'span', 'strong', 'em', 'u', 'br', 'hr',
+        'ul', 'ol', 'li', 'a', 'img',
+        'section', 'article', 'header', 'footer', 'main'
+      ],
+      ALLOWED_ATTR: [
+        'class', 'style', 'id', 'href', 'src', 'alt', 'title',
+        'target', 'rel', 'data-*'
+      ],
+      ALLOW_DATA_ATTR: true
+    });
+
     return (
       <div className="w-full h-full">
         <style>{css}</style>
-        <div dangerouslySetInnerHTML={{ __html: html }} />
+        <div dangerouslySetInnerHTML={{ __html: sanitizedHtml }} />
       </div>
     );
   };
