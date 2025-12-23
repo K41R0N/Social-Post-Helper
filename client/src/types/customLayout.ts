@@ -5,7 +5,12 @@ export interface CustomLayout {
   htmlTemplate: string;
   cssTemplate: string;
   createdAt: string;
-  modifiedAt: string;
+  modifiedAt?: string;
+  // Figma import metadata
+  isFromFigma?: boolean;
+  originalSvg?: string;
+  detectedFonts?: string[];
+  detectedColors?: Record<string, string>;
 }
 
 export interface CustomLayoutFormData {

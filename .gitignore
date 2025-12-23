@@ -4,7 +4,9 @@
 
 # Build outputs
 dist/
+dist-electron/
 build/
+release/
 *.dist
 
 # Environment variables

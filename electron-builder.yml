@@ -1,0 +1,116 @@
+# Electron Builder Configuration
+# https://www.electron.build/configuration
+
+appId: dev.goround.app
+productName: Go Round
+copyright: Copyright © 2024 Go Round
+
+# Build directories
+directories:
+  buildResources: electron/resources
+  output: release
+
+# Files to include
+files:
+  - dist-electron/**/*
+  - "!node_modules/**/*"
+  - node_modules/**/*.js
+  - node_modules/**/*.json
+  - node_modules/**/*.node
+  - "!node_modules/**/test/**"
+  - "!node_modules/**/tests/**"
+  - "!node_modules/**/docs/**"
+  - "!node_modules/**/*.md"
+
+# macOS Configuration
+mac:
+  target:
+    - target: dmg
+      arch:
+        - x64
+        - arm64
+    - target: zip
+      arch:
+        - x64
+        - arm64
+  category: public.app-category.graphics-design
+  icon: electron/resources/icon.icns
+  hardenedRuntime: true
+  gatekeeperAssess: false
+  entitlements: electron/resources/entitlements.mac.plist
+  entitlementsInherit: electron/resources/entitlements.mac.plist
+
+# DMG Configuration
+dmg:
+  contents:
+    - x: 130
+      y: 220
+    - x: 410
+      y: 220
+      type: link
+      path: /Applications
+
+# Windows Configuration
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+    - target: portable
+      arch:
+        - x64
+  icon: electron/resources/icon.ico
+  publisherName: Go Round
+
+# NSIS Installer Configuration
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  perMachine: false
+  deleteAppDataOnUninstall: false
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: Go Round
+
+# Linux Configuration
+linux:
+  target:
+    - target: AppImage
+      arch:
+        - x64
+    - target: deb
+      arch:
+        - x64
+    - target: rpm
+      arch:
+        - x64
+  category: Graphics
+  icon: electron/resources/icons
+  maintainer: Go Round <support@goround.dev>
+  vendor: Go Round
+  synopsis: Social Media Carousel Generator
+  description: Create beautiful social media carousels with bulk generation and Figma integration
+
+# Debian package configuration
+deb:
+  depends:
+    - gconf2
+    - gconf-service
+    - libnotify4
+    - libappindicator1
+    - libxtst6
+    - libnss3
+
+# RPM package configuration
+rpm:
+  depends:
+    - libXScrnSaver
+
+# Auto-update configuration (optional)
+# publish:
+#   provider: github
+#   owner: goround
+#   repo: goround
+
+# Compression
+compression: maximum
